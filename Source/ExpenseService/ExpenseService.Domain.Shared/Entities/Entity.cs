@@ -1,4 +1,4 @@
-namespace ExpenseService.Domain.Shared.Models;
+namespace ExpenseService.Domain.Shared.Entities;
 
 /// <summary>
 /// Represents the base entity.
