@@ -12,7 +12,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseService.API", "Source\ExpenseService\ExpenseService.API\ExpenseService.API.csproj", "{577FF5B4-8320-41B9-A815-87F9D6CFDB5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseService.Domain.Shared", "Source\ExpenseService\ExpenseService.Domain.Shared\ExpenseService.Domain.Shared.csproj", "{58325D67-6642-42C9-8A1C-98CB20D0D4CD}"
-EndProject
+EndProject         
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +42,9 @@ Global
 		{58325D67-6642-42C9-8A1C-98CB20D0D4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58325D67-6642-42C9-8A1C-98CB20D0D4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58325D67-6642-42C9-8A1C-98CB20D0D4CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66B15C9A-06AC-4602-BD7A-789AE1CDBE62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B15C9A-06AC-4602-BD7A-789AE1CDBE62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B15C9A-06AC-4602-BD7A-789AE1CDBE62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B15C9A-06AC-4602-BD7A-789AE1CDBE62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,47 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace ExpenseService.Domain.Shared.Common;
 
-public class Error : IEquatable<Error>
+/// <summary>
+/// Represents an error that occurred during the execution of an operation.
+/// </summary>
+public class Error
 {
-	public string Code { get; }
 	public string Message { get; }
-	
-	public static readonly Error None = new (string.Empty, string.Empty);
-	public static readonly Error NullValue = new (nameof(NullValue), "Value cannot be null.");
-	
-	public Error(string code, string message)
+	public DomainException? Exception { get; }
+
+	public static readonly Error None = new (string.Empty);
+	public static readonly Error NullValue = new ("Value cannot be null.");
+
+
+	public Error(string message)
 	{
-		Code = code;
 		Message = message;
-	}
-	
-	public static Error FromException(Exception exception)
-	{
-		return new Error(exception.GetType().Name, exception.Message);
+		Exception = null;
 	}
 
-    public bool Equals(Error other) => other is not null && Code == other.Code && Message == other.Message;
-
-    public static implicit operator string(Error error) => error.Code;
-	
-	public static bool operator ==(Error left, Error right) 
+	public Error(string message, DomainException exception)
 	{
-		if (left is null && right is null)
-		{
-			return true;
-		}
-		
-		if (left is null || right is null)
-		{
-			return false;
-		}
-		
-		return left.Equals(right);
+		Message = message;
+		Exception = exception;
 	}
-	
-	public static bool operator !=(Error left, Error right) => !(left == right);
+
+	public static Error FromException(DomainException exception)
+	{
+		return new Error(exception.Message, exception);
+	}
 }

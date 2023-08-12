@@ -6,48 +6,68 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
     {
     }
 
-    public async Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAsync(int userId)
-    {
-        // implementation here
-        return await Task.FromResult(Enumerable.Empty<SubscriptionExpense>().AsQueryable());
-    }
-
-    public async Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
-    {
-        // implementation here
-        return await Task.FromResult(Enumerable.Empty<SubscriptionExpense>().AsQueryable());
-    }
-
-    public IQueryable<SubscriptionExpense> GetAll()
-    {
-        // implementation here
-        return Enumerable.Empty<SubscriptionExpense>().AsQueryable();
-    }
-
-    public SubscriptionExpense GetById(int id)
-    {
-        // implementation here
-        return null;
-    }
-
     public void Add(SubscriptionExpense entity)
     {
-        // implementation here
+        throw new NotImplementedException();
     }
 
-    public void Update(SubscriptionExpense entity)
+    public Task AddAsync(SubscriptionExpense entity)
     {
-        // implementation here
+        throw new NotImplementedException();
     }
 
     public void Delete(SubscriptionExpense entity)
     {
-        // implementation here
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(SubscriptionExpense entity)
+    {
+        throw new NotImplementedException();
     }
 
     public void Dispose()
     {
-        // implementation here
-        GC.SuppressFinalize(this);
+        throw new NotImplementedException();
+    }
+
+    public IQueryable<SubscriptionExpense> Get()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<SubscriptionExpense>> GetAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public SubscriptionExpense GetById(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<SubscriptionExpense> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(SubscriptionExpense entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(SubscriptionExpense entity)
+    {
+        throw new NotImplementedException();
     }
 }

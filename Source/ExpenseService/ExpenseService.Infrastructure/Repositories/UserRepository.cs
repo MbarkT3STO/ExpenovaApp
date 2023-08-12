@@ -6,33 +6,58 @@ public class UserRepository : Repository, IUserRepository
 	{
 	}
 
-	public IQueryable<User> GetAll()
-	{
-		throw new NotImplementedException();
-	}
+    public void Add(User entity)
+    {
+        throw new NotImplementedException();
+    }
 
-	public User GetById(string id)
-	{
-		throw new NotImplementedException();
-	}
+    public Task AddAsync(User entity)
+    {
+        throw new NotImplementedException();
+    }
 
-	public void Add(User user)
-	{
-		// implementation here
-	}
+    public void Delete(User entity)
+    {
+        throw new NotImplementedException();
+    }
 
-	public void Update(User user)
-	{
-		// implementation here
-	}
+    public Task DeleteAsync(User entity)
+    {
+        throw new NotImplementedException();
+    }
 
-	public void Delete(User user)
-	{
-		// implementation here
-	}
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
 
-	public void Dispose()
-	{
-		// implementation here
-	}
+    public IQueryable<User> Get()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<User>> GetAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public User GetById(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<User> GetByIdAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(User entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateAsync(User entity)
+    {
+        throw new NotImplementedException();
+    }
 }
