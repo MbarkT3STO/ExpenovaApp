@@ -12,7 +12,7 @@ public class SubscriptionExpenseEntity : AuditableEntity<Guid>
 	public RecurrenceInterval RecurrenceInterval { get; private set; }
 	public decimal BillingAmount { get; private set; }
 	
-	public int CategoryId { get; set; }
+	public Guid CategoryId { get; set; }
 	public CategoryEntity Category { get; set; }
 	
 	public string UserId { get; set; }

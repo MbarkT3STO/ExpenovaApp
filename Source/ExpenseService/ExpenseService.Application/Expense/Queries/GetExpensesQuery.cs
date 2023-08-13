@@ -1,8 +1,3 @@
-using AutoMapper;
-using ExpenseService.Application.Common;
-using ExpenseService.Domain.Repositories;
-using ExpenseService.Domain.Shared.Common;
-
 namespace ExpenseService.Application.Expense.Queries;
 
 public record GetExpensesQueryResultDTO

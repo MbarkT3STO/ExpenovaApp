@@ -5,7 +5,7 @@ namespace ExpenseService.Application.Common;
 /// <summary>
 /// Represents a failed command result with an error.
 /// </summary>
-public class FailedCommandResult : CommandResult
+public class FailedCommandResult<TValue> : CommandResult<TValue>
 {
 	public FailedCommandResult() : base(false)
 	{

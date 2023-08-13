@@ -43,5 +43,4 @@ public abstract class QueryResult<TValue> : IQueryResult<TValue>, IQueryResult
 	/// <param name="error">The error that caused the query to fail.</param>
 	/// <returns>A new instance of <see cref="FailedQuery{TValue}"/> with the specified <paramref name="error"/>.</returns>
 	public static FailedQuery<TValue> CreateFailed(Error error) => new(error);
-
 }

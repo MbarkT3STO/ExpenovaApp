@@ -28,4 +28,9 @@ public class Error
 	{
 		return new Error(exception.Message, exception);
 	}
+	
+	public static Error FromException(Exception exception)
+	{
+		return new Error(exception.Message, new DomainException(exception.Message, exception));
+	}
 }

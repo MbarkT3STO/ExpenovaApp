@@ -26,13 +26,13 @@ public class SubscriptionExpenseEntityConfig : IEntityTypeConfiguration<Subscrip
 		builder.ToTable(options => 
 		{
 			// The Amount column is constrained to be greater than 0
-			options.HasCheckConstraint("CK_SubscriptionExpenses_Amount", "amount > 0");
+			options.HasCheckConstraint("CK_SubscriptionExpenses_Amount", "\"Amount\" > 0");
 			
 			// The BillingAmount column is constrained to be greater than 0
-			options.HasCheckConstraint("CK_SubscriptionExpenses_BillingAmount", "billingAmount > 0");
+			options.HasCheckConstraint("CK_SubscriptionExpenses_BillingAmount", "\"BillingAmount\" > 0");
 			
 			// The StartDate column is constrained to be less than or equal to the EndDate column
-			options.HasCheckConstraint("CK_SubscriptionExpenses_StartDate", "startDate <= endDate");
+			options.HasCheckConstraint("CK_SubscriptionExpenses_StartDate", "\"StartDate\" <= \"EndDate\"");
 		});
 	}
 }

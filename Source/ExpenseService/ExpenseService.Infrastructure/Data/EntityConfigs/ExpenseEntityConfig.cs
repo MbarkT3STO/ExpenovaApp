@@ -22,7 +22,7 @@ public class ExpenseEntityConfig : IEntityTypeConfiguration<ExpenseEntity>
 		builder.ToTable(options => 
 		{
 			// The Amount column is constrained to be greater than 0
-			options.HasCheckConstraint("CK_Expenses_Amount", "amount > 0");			
+			options.HasCheckConstraint("CK_Expenses_Amount", "\"Amount\" > 0");			
 		});
 	}
 }

@@ -9,7 +9,7 @@ public class ExpenseEntity : AuditableEntity<Guid>
 	public string Description { get; set; }
 	public DateTime Date { get; set; }
 	
-	public int CategoryId { get; set; }
+	public Guid CategoryId { get; set; }
 	public CategoryEntity Category { get; set; }
 
 	public string UserId { get; set; }

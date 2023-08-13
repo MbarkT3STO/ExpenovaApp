@@ -18,5 +18,8 @@ public interface ICommandResult
 /// <typeparam name="T">The type of the value returned by the command.</typeparam>
 public interface ICommandResult<out T>: ICommandResult
 {
+	bool IsSuccess { get; }
+	bool IsFailure { get; }
+	Error? Error { get; }
 	T Value { get; }
 }

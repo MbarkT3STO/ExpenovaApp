@@ -25,8 +25,8 @@ public abstract class CommandResult : ICommandResult
 
 
 	public static SucceededCommandResult CreateSucceeded() => new();
-	public static FailedCommandResult CreateFailed() => new();
-	public static FailedCommandResult CreateFailed(Error error) => new(error);
+	public static FailedCommandResult<Unit> CreateFailed() => new();
+	public static FailedCommandResult<Unit> CreateFailed(Error error) => new(error);
 }
 
 
@@ -54,7 +54,14 @@ public abstract class CommandResult<TValue> : ICommandResult<TValue>
 		Error = error;
 	}
 
+	protected CommandResult(bool isSuccess)
+	{
+		IsSuccess = isSuccess;
+		Error = isSuccess ? null : new Error("Unknown error");
+	}
+
 
 	public static SucceededCommandResult<TValue> CreateSucceeded(TValue value) => new(value);
-	public static FailedCommandResult CreateFailed(Error error) => new(error);
+	public static FailedCommandResult<TValue> CreateFailed() => new();
+	public static FailedCommandResult<TValue> CreateFailed(Error error) => new(error);
 }
