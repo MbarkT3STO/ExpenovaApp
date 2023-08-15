@@ -34,7 +34,7 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 	public string UserId { get; init; }
 }
 
-public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand, ICommandResult<CreateCategoryCommandResultDTO>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CreateCategoryCommandResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
@@ -45,7 +45,7 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 		_mapper             = mapper;
 	}
 
-	public async Task<ICommandResult<CreateCategoryCommandResultDTO>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+	public async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
@@ -53,13 +53,13 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 			await _categoryRepository.AddAsync(category);
 			
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
-			var result      = CreateCategoryCommandResult.CreateSucceeded(resultValue);
+			var result      = new CreateCategoryCommandResult(resultValue);
 			
 			return result;
 		}
 		catch (Exception e)
 		{
-			var result = CreateCategoryCommandResult.CreateFailed(Error.FromException(e));
+			var result = new CreateCategoryCommandResult(Error.FromException(e));
 			
 			return result;
 		}

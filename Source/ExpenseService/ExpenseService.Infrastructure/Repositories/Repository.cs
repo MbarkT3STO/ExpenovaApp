@@ -6,9 +6,16 @@ namespace ExpenseService.Infrastructure.Repositories;
 public abstract class Repository
 {
 	protected readonly AppDbContext _dbContext;
+	protected readonly IMapper _mapper;
 	
 	protected Repository(AppDbContext dbContext)
 	{
 		_dbContext = dbContext;
+	}
+	
+	protected Repository(AppDbContext dbContext, IMapper mapper)
+	{
+		_dbContext = dbContext;
+		_mapper = mapper;
 	}
 }

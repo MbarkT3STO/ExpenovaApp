@@ -6,23 +6,23 @@ public record GetCategoriesQueryResultDTO
 	public string Description { get; private set; }
 }
 
-public class GetCategoriesQueryResult : QueryResult<IEnumerable<GetCategoriesQueryResultDTO>>
+public class GetCategoriesQueryResult: QueryResult<IEnumerable<GetCategoriesQueryResultDTO>>
 {
-	public GetCategoriesQueryResult(IEnumerable<GetCategoriesQueryResultDTO>? value) : base(value)
+	public GetCategoriesQueryResult(IEnumerable<GetCategoriesQueryResultDTO>? value): base(value)
 	{
 	}
 	
-	public GetCategoriesQueryResult(Error error) : base(error)
+	public GetCategoriesQueryResult(Error error): base(error)
 	{
 	}
 }
 
-public record GetCategoriesQuery : IRequest<GetCategoriesQueryResult>
+public record GetCategoriesQuery: IRequest<GetCategoriesQueryResult>
 {
 	
 }
 
-public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IQueryResult>
+public class GetCategoriesQueryHandler: IRequestHandler<GetCategoriesQuery, GetCategoriesQueryResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
@@ -30,23 +30,23 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IQu
 	public GetCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper = mapper;
+		_mapper             = mapper;
 	}
 	
-	public async Task<IQueryResult> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+	public async Task<GetCategoriesQueryResult> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var categories = await _categoryRepository.GetAsync();
+			var categories    = await _categoryRepository.GetAsync();
 			var categoriesDTO = _mapper.Map<IEnumerable<GetCategoriesQueryResultDTO>>(categories);
 			
-			var result = GetCategoriesQueryResult.CreateSucceeded(categoriesDTO);
-			
+			var result = new GetCategoriesQueryResult(categoriesDTO);
+
 			return result;
 		}
 		catch (Exception e)
 		{
-			return GetCategoriesQueryResult.CreateFailed(Error.FromException(e));
+			return new GetCategoriesQueryResult(new Error(e.Message));
 		}
 	}
 }
