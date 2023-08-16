@@ -1,5 +1,6 @@
 using System.Reflection;
 using FluentValidation;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,20 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
+// Add MassTransit
+// builder.Services.AddMassTransit(busConfig =>
+// {
+// 	busConfig.UsingRabbitMq((context, config) =>
+// 	{
+// 		config.Host("rabbitmq://localhost", hostConfig => 
+// 		{
+// 			hostConfig.Username("guest");
+// 			hostConfig.Password("guest");
+// 		});
+// 	});
+// });
+
+builder.Services.AddMassTransit(x => x.UsingRabbitMq());
 
 
 builder.Services.AddControllers();

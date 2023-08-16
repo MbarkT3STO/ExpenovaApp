@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseService.API", "Sourc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseService.Domain.Shared", "Source\ExpenseService\ExpenseService.Domain.Shared\ExpenseService.Domain.Shared.csproj", "{58325D67-6642-42C9-8A1C-98CB20D0D4CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Source\Messages\Messages.csproj", "{625004DA-8755-4A69-865D-32C97B0E96C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,8 +60,13 @@ Global
 		{039CCECD-FDEC-498C-8B4D-9FB377DC8DEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{039CCECD-FDEC-498C-8B4D-9FB377DC8DEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{039CCECD-FDEC-498C-8B4D-9FB377DC8DEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{625004DA-8755-4A69-865D-32C97B0E96C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{625004DA-8755-4A69-865D-32C97B0E96C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{625004DA-8755-4A69-865D-32C97B0E96C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{625004DA-8755-4A69-865D-32C97B0E96C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{039CCECD-FDEC-498C-8B4D-9FB377DC8DEC} = {A605E215-EE9A-4B77-A184-2174A8EB36EF}
+		{625004DA-8755-4A69-865D-32C97B0E96C6} = {A605E215-EE9A-4B77-A184-2174A8EB36EF}
 	EndGlobalSection
 EndGlobal

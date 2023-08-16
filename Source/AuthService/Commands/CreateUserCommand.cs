@@ -1,3 +1,4 @@
+using Messages.AuthServiceMessages;
 using DTOs = AuthService.Commands.CreateUserCommandResultDTOs;
 
 namespace AuthService.Commands;
@@ -55,7 +56,7 @@ public class CreateUserCommand : IRequest<CreateUserCommandResult>
 
 public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUserCommand, CreateUserCommandResult>
 {
-	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager) : base(context, mapper, userManager)
+	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IBus bus) : base(context, mapper, userManager, bus)
 	{
 	}
 	
@@ -83,6 +84,10 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 				{
 					var createdUserDTO = _mapper.Map<DTOs.CreatedUserDTO>(user);
 					var value = new CreateUserCommandResultValue(createdUserDTO);
+					
+					// Publish message to UserCreatedEventQueue
+					var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == user.Id);
+					await PublishUserCreatedMessage(user, userRole);
 					
 					return new CreateUserCommandResult(value);
 				}
@@ -117,5 +122,26 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 		var error = new Error(errorsAsString);
 		return error;
 	}
-
+	
+	/// <summary>
+	/// Publishes a message to the UserCreatedEventQueue containing the details of the newly created user.
+	/// </summary>
+	/// <param name="user">The newly created user.</param>
+	private async Task PublishUserCreatedMessage(AppUser user, AppUserRole userRole	)
+	{
+		var message = new UserCreatedMessage
+		{
+			UserId = user.Id,
+			FirstName = user.FirstName,
+			LastName = user.LastName,
+			Username = user.UserName,
+			Email = user.Email,
+			Role = userRole.RoleId
+		};
+		
+		var queueToPublishTo = new Uri("rabbitmq://localhost/AuthService.UserCreatedEventQueue");
+		var endPoint = await _bus.GetSendEndpoint(queueToPublishTo);
+		
+		await endPoint.Send(message);
+	}
 }
