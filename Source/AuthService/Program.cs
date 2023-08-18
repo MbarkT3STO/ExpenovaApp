@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using MassTransit;
+using RabbitMqSettings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +54,35 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 // 	});
 // });
 
-builder.Services.AddMassTransit(x => x.UsingRabbitMq());
+// RabbitMqOptions 
+
+// builder.Services.ConfigureRabbitMQ(builder.Configuration);
+
+// var rabbitMqOptions = builder.Configuration.GetSection("RabbitMQ:Settings").Get<RabbitMqOptions>();
+
+// builder.Services.AddMassTransit(busConfigurator => 
+// {
+// 	busConfigurator.UsingRabbitMq((context, cfg) => 
+// 	{
+// 		cfg.Host($"{rabbitMqOptions.HostName}:{rabbitMqOptions.Port}", h =>
+// 		{
+// 			h.Username(rabbitMqOptions.UserName);
+// 			h.Password(rabbitMqOptions.Password);
+// 		});
+// 	});
+// });
+
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
+
+builder.Services.AddMassTransit( x => x.AddBus( provider => Bus.Factory.CreateUsingRabbitMq( cfg =>
+{
+	cfg.Host("rabbitmq://localhost", hostConfig => 
+	{
+		hostConfig.Username("guest");
+		hostConfig.Password("guest");
+	});
+})));
+
 
 
 builder.Services.AddControllers();

@@ -1,4 +1,7 @@
+using MassTransit.Configuration;
 using Messages.AuthServiceMessages;
+using Microsoft.Extensions.Options;
+using RabbitMqSettings;
 using DTOs = AuthService.Commands.CreateUserCommandResultDTOs;
 
 namespace AuthService.Commands;
@@ -56,10 +59,13 @@ public class CreateUserCommand : IRequest<CreateUserCommandResult>
 
 public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUserCommand, CreateUserCommandResult>
 {
-	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IBus bus) : base(context, mapper, userManager, bus)
+	readonly RabbitMqOptions _rabbitMqOptions;
+	readonly AuthServiceRabbitMqEndpointsOptions _authServiceRabbitMqEndPointsOptions;
+	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOptions<AuthServiceRabbitMqEndpointsOptions> authServiceRabbitMqEndPointsOptions) : base(context, mapper, userManager, bus)
 	{
+		_rabbitMqOptions = rabbitMqOptions.Value;
+		_authServiceRabbitMqEndPointsOptions = authServiceRabbitMqEndPointsOptions.Value;
 	}
-	
 	public async Task<CreateUserCommandResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
 	{
 		try
@@ -139,7 +145,8 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 			Role = userRole.RoleId
 		};
 		
-		var queueToPublishTo = new Uri("rabbitmq://localhost/AuthService.UserCreatedEventQueue");
+		var queueName = _rabbitMqOptions.HostName + "/" + _authServiceRabbitMqEndPointsOptions.UserCreatedEventQueue;
+		var queueToPublishTo = new Uri(queueName);
 		var endPoint = await _bus.GetSendEndpoint(queueToPublishTo);
 		
 		await endPoint.Send(message);

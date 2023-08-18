@@ -9,12 +9,16 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.6.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
+    <PackageReference Include="MassTransit" Version="8.1.0" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseService.Infrastructure\ExpenseService.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Messages\Messages.csproj" />
+    <ProjectReference Include="..\..\RabbitMqSettings\RabbitMqSettings.csproj" />
   </ItemGroup>
 
 </Project>
