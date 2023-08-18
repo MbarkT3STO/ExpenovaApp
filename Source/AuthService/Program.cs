@@ -1,4 +1,5 @@
 using System.Reflection;
+using AuthService.DI;
 using FluentValidation;
 using MassTransit;
 using RabbitMqSettings;
@@ -42,20 +43,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 // Add MassTransit with RabbitMQ
-var rabbitMqOptions = builder.Configuration.GetSection("RabbitMQ:Settings").Get<RabbitMqOptions>();
-var authServiceRabbitMqEndPointsOptions = builder.Configuration.GetSection("RabbitMQ:EndPoints:AuthService").Get<AuthServiceRabbitMqEndpointsOptions>();
-var authServiceRabbitMqEndPoints = authServiceRabbitMqEndPointsOptions;
-
-builder.Services.ConfigureRabbitMQBaseOptions(builder.Configuration);
-
-builder.Services.AddMassTransit( busConfigurator => busConfigurator.AddBus( provider => Bus.Factory.CreateUsingRabbitMq( cfg =>
-{
-	cfg.Host(rabbitMqOptions.HostName, hostConfig =>
-		{
-			hostConfig.Username(rabbitMqOptions.UserName);
-			hostConfig.Password(rabbitMqOptions.Password);
-		});
-})));
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
 
 

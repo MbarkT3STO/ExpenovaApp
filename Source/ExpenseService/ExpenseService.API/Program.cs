@@ -23,14 +23,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 
+
 // Register the Application Services
 builder.Services.RegisterApplicationServices(builder.Configuration);
 
 // RabbitMQ registration
 builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
+// Register the Message Consumers
+builder.Services.RegisterMessageConsumers();
 
-builder.Services.AddScoped<UserCreatedMessageConsumer>();
 
 
 builder.Services.AddControllers();
