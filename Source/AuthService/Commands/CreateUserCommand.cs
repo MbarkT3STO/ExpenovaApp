@@ -1,3 +1,4 @@
+using AuthService.Events;
 using MassTransit.Configuration;
 using Messages.AuthServiceMessages;
 using Microsoft.Extensions.Options;
@@ -16,7 +17,7 @@ public class CreateUserCommandResultDTOs
 	}
 }
 
-public class MappingProfile : Profile
+public class MappingProfile: Profile
 {
 	public MappingProfile()
 	{
@@ -35,18 +36,18 @@ public class CreateUserCommandResultValue
 }
 
 
-public class CreateUserCommandResult : CommandResult<CreateUserCommandResultValue>
+public class CreateUserCommandResult: CommandResult<CreateUserCommandResultValue>
 {
-	public CreateUserCommandResult(CreateUserCommandResultValue value) : base(value)
+	public CreateUserCommandResult(CreateUserCommandResultValue value): base(value)
 	{
 	}
 
-	public CreateUserCommandResult(Error error) : base(error)
+	public CreateUserCommandResult(Error error): base(error)
 	{
 	}
 }
 
-public class CreateUserCommand : IRequest<CreateUserCommandResult>
+public class CreateUserCommand: IRequest<CreateUserCommandResult>
 {
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
@@ -57,15 +58,14 @@ public class CreateUserCommand : IRequest<CreateUserCommandResult>
 }
 
 
-public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUserCommand, CreateUserCommandResult>
+public class CreateUserCommandHandler: CommandHandler, IRequestHandler<CreateUserCommand, CreateUserCommandResult>
 {
 	readonly RabbitMqOptions _rabbitMqOptions;
 	readonly AuthServiceRabbitMqEndpointsOptions _authServiceRabbitMqEndPointsOptions;
-	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOptions<AuthServiceRabbitMqEndpointsOptions> authServiceRabbitMqEndPointsOptions) : base(context, mapper, userManager, bus)
+	public CreateUserCommandHandler(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IMediator mediator): base(context, mapper, mediator, userManager)
 	{
-		_rabbitMqOptions = rabbitMqOptions.Value;
-		_authServiceRabbitMqEndPointsOptions = authServiceRabbitMqEndPointsOptions.Value;
 	}
+
 	public async Task<CreateUserCommandResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
 	{
 		try
@@ -73,9 +73,9 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 			var user = new AppUser
 			{
 				FirstName = request.FirstName,
-				LastName = request.LastName,
-				UserName = request.UserName,
-				Email = request.Email,
+				LastName  = request.LastName,
+				UserName  = request.UserName,
+				Email     = request.Email,
 			};
 			
 			// Create user
@@ -88,14 +88,13 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 				
 				if (addUserToRoleResult.Succeeded)
 				{
-					var createdUserDTO = _mapper.Map<DTOs.CreatedUserDTO>(user);
-					var value = new CreateUserCommandResultValue(createdUserDTO);
+					// Publish UserCreatedEvent
+					await PublishUserCreatedEvent(user, cancellationToken);
 					
-					// Publish message to UserCreatedEventQueue
-					var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == user.Id);
-					await PublishUserCreatedMessage(user, userRole);
+					var createdUserDTO     = _mapper.Map<DTOs.CreatedUserDTO>(user);
+					var commandResultValue = new CreateUserCommandResultValue(createdUserDTO);
 					
-					return new CreateUserCommandResult(value);
+					return new CreateUserCommandResult(commandResultValue);
 				}
 				else
 				{
@@ -125,30 +124,31 @@ public class CreateUserCommandHandler : CommandHandler, IRequestHandler<CreateUs
 	private static Error GetErrorFromIdentityResult(IdentityResult identityResult)
 	{
 		var errorsAsString = identityResult.Errors.Aggregate("", (current, error) => current + error.Description + "\n");
-		var error = new Error(errorsAsString);
+		var error          = new Error(errorsAsString);
 		return error;
 	}
 	
+
 	/// <summary>
-	/// Publishes a message to the UserCreatedEventQueue containing the details of the newly created user.
+	/// Publishes a UserCreatedEvent with the given user and user role information.
 	/// </summary>
-	/// <param name="user">The newly created user.</param>
-	private async Task PublishUserCreatedMessage(AppUser user, AppUserRole userRole	)
+	/// <param name="user">The user that was created.</param>
+	/// <param name="userRole">The role of the user that was created.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	private async Task PublishUserCreatedEvent(AppUser user, CancellationToken cancellationToken)
 	{
-		var message = new UserCreatedMessage
+		var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == user.Id);
+
+		var userCreatedEvent = new UserCreatedEvent
 		{
-			UserId = user.Id,
+			UserId    = user.Id,
 			FirstName = user.FirstName,
-			LastName = user.LastName,
-			Username = user.UserName,
-			Email = user.Email,
-			Role = userRole.RoleId
+			LastName  = user.LastName,
+			UserName  = user.UserName,
+			Email     = user.Email,
+			RoleId    = userRole.RoleId
 		};
-		
-		var queueName = _rabbitMqOptions.HostName + "/" + _authServiceRabbitMqEndPointsOptions.UserCreatedEventQueue;
-		var queueToPublishTo = new Uri(queueName);
-		var endPoint = await _bus.GetSendEndpoint(queueToPublishTo);
-		
-		await endPoint.Send(message);
+
+		await _mediator.Publish(userCreatedEvent, cancellationToken);
 	}
 }

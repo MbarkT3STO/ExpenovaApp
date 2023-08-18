@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpenseService.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230817173307_Initial")]
+    [Migration("20230818173420_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -169,11 +169,19 @@ namespace ExpenseService.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnType("text");
 

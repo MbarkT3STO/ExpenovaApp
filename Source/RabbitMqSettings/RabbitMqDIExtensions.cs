@@ -6,12 +6,13 @@ namespace RabbitMqSettings;
 
 public static class RabbitMqDIExtensions
 {
+
 	/// <summary>
-	/// Configures RabbitMQ settings for the application.
+	/// Configures RabbitMQ base options.
 	/// </summary>
 	/// <param name="services">The <see cref="IServiceCollection"/> to add the configuration to.</param>
-	/// <param name="configuration">The <see cref="IConfiguration"/> instance to retrieve the configuration from.</param>
-	public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+	/// <param name="configuration">The <see cref="IConfiguration"/> instance to retrieve the configuration values from.</param>
+	public static void ConfigureRabbitMQBaseOptions(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMQ:Settings"));
 

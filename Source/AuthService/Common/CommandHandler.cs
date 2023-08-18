@@ -10,6 +10,7 @@ public abstract class CommandHandler
 	protected readonly IMapper _mapper;
 	protected readonly UserManager<AppUser> _userManager;
 	protected readonly IBus _bus;
+	protected readonly IMediator _mediator;
 	
 	protected CommandHandler(AppDbContext context)
 	{
@@ -21,6 +22,12 @@ public abstract class CommandHandler
 		_userManager = userManager;
 	}
 
+	protected CommandHandler(AppDbContext context, IMediator mediator)
+	{
+		_context = context;
+		_mediator = mediator;
+	}
+	
 	protected CommandHandler(AppDbContext context, IMapper mapper)
 	{
 		_context = context;
@@ -45,6 +52,15 @@ public abstract class CommandHandler
 	{
 		_context = context;
 		_mapper = mapper;
+		_userManager = userManager;
+	}
+
+
+	protected CommandHandler(AppDbContext context, IMapper mapper, IMediator mediator, UserManager<AppUser> userManager)
+	{
+		_context = context;
+		_mapper = mapper;
+		_mediator = mediator;
 		_userManager = userManager;
 	}
 	

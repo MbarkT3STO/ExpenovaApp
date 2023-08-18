@@ -41,46 +41,20 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 // Add FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
-// Add MassTransit
-// builder.Services.AddMassTransit(busConfig =>
-// {
-// 	busConfig.UsingRabbitMq((context, config) =>
-// 	{
-// 		config.Host("rabbitmq://localhost", hostConfig => 
-// 		{
-// 			hostConfig.Username("guest");
-// 			hostConfig.Password("guest");
-// 		});
-// 	});
-// });
+// Add MassTransit with RabbitMQ
+var rabbitMqOptions = builder.Configuration.GetSection("RabbitMQ:Settings").Get<RabbitMqOptions>();
+var authServiceRabbitMqEndPointsOptions = builder.Configuration.GetSection("RabbitMQ:EndPoints:AuthService").Get<AuthServiceRabbitMqEndpointsOptions>();
+var authServiceRabbitMqEndPoints = authServiceRabbitMqEndPointsOptions;
 
-// RabbitMqOptions 
+builder.Services.ConfigureRabbitMQBaseOptions(builder.Configuration);
 
-// builder.Services.ConfigureRabbitMQ(builder.Configuration);
-
-// var rabbitMqOptions = builder.Configuration.GetSection("RabbitMQ:Settings").Get<RabbitMqOptions>();
-
-// builder.Services.AddMassTransit(busConfigurator => 
-// {
-// 	busConfigurator.UsingRabbitMq((context, cfg) => 
-// 	{
-// 		cfg.Host($"{rabbitMqOptions.HostName}:{rabbitMqOptions.Port}", h =>
-// 		{
-// 			h.Username(rabbitMqOptions.UserName);
-// 			h.Password(rabbitMqOptions.Password);
-// 		});
-// 	});
-// });
-
-builder.Services.ConfigureRabbitMQ(builder.Configuration);
-
-builder.Services.AddMassTransit( x => x.AddBus( provider => Bus.Factory.CreateUsingRabbitMq( cfg =>
+builder.Services.AddMassTransit( busConfigurator => busConfigurator.AddBus( provider => Bus.Factory.CreateUsingRabbitMq( cfg =>
 {
-	cfg.Host("rabbitmq://localhost", hostConfig => 
-	{
-		hostConfig.Username("guest");
-		hostConfig.Password("guest");
-	});
+	cfg.Host(rabbitMqOptions.HostName, hostConfig =>
+		{
+			hostConfig.Username(rabbitMqOptions.UserName);
+			hostConfig.Password(rabbitMqOptions.Password);
+		});
 })));
 
 
