@@ -21,7 +21,7 @@ public class UserCreatedMessageConsumer : IConsumer<UserCreatedMessage>
 	{
 		var message = context.Message;
 		
-		var user = User.Create(message.UserId, message.FirstName, message.LastName, message.Email, message.Role);
+		var user = User.Create(message.UserId, message.FirstName, message.LastName, message.Email, message.RoleId);
 		
 		await _userRepository.AddAsync(user);
 	}

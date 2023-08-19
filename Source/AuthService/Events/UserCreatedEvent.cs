@@ -40,7 +40,7 @@ public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
 			LastName = notification.LastName,
 			Username = notification.UserName,
 			Email = notification.Email,
-			Role = notification.RoleId
+			RoleId = notification.RoleId
 		};
 
 		var queueName = _rabbitMqOptions.HostName + "/" + _authServiceRabbitMqEndPointsOptions.UserCreatedEventQueue;
