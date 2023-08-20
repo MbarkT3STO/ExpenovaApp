@@ -8,11 +8,11 @@ namespace EventSourcererService.Data.Entities.ExpenseService;
 /// </summary>
 public class ExpenseServiceUserEvent : Event<ExpenseServiceUserEventJsonData>
 {
-    public ExpenseServiceUserEvent(string type, DateTime timeStamp, string userId, ExpenseServiceUserEventJsonData jsonData) : base(type, timeStamp, userId, jsonData)
-    {
-    }
+	public ExpenseServiceUserEvent(string type, DateTime timeStamp, string userId, ExpenseServiceUserEventJsonData jsonData) : base(type, timeStamp, userId, jsonData)
+	{
+	}
 
-    public ExpenseServiceUserEventJsonData JsonData { get; set; }
+	public ExpenseServiceUserEventJsonData JsonData { get; set; }
 }
 
 
@@ -27,7 +27,8 @@ public class ExpenseServiceUserEventEntityConfig : IEntityTypeConfiguration<Expe
 		builder.Property(e => e.Id).ValueGeneratedOnAdd();
 
 		// Configure the Converter for JsonData property
-		builder.Property(e => e.JsonData).HasConversion(
+		builder.Property(e => e.JsonData).HasColumnType("jsonb")
+		.HasConversion(
 			value => JsonSerializer.Serialize(value, new JsonSerializerOptions { PropertyNamingPolicy = null }),
 			value => JsonSerializer.Deserialize<ExpenseServiceUserEventJsonData>(value, new JsonSerializerOptions { PropertyNamingPolicy = null })
 		);

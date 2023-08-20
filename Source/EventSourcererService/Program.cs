@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-	options.UseNpgsql(builder.Configuration.GetConnectionString("EventsDB"));
+	options.UseNpgsql(builder.Configuration.GetConnectionString("EventSourcesDB"));
 });
+
+
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
