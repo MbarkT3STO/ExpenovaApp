@@ -11,8 +11,6 @@ public class ExpenseServiceUserEvent : Event<ExpenseServiceUserEventJsonData>
 	public ExpenseServiceUserEvent(string type, DateTime timeStamp, string userId, ExpenseServiceUserEventJsonData jsonData) : base(type, timeStamp, userId, jsonData)
 	{
 	}
-
-	public ExpenseServiceUserEventJsonData JsonData { get; set; }
 }
 
 
