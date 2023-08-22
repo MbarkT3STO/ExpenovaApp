@@ -1,6 +1,7 @@
 using EventSourcererService.MessageConsumers.AuthService;
 using MassTransit;
 using RabbitMqSettings;
+using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace EventSourcererService.DI;
 
@@ -26,7 +27,7 @@ public static class RabbitMQRegistrar
 				hostConfig.Password(rabbitMqOptions.Password);
 			});
 
-			cfg.ReceiveEndpoint(authServiceRabbitMqEndPoints.UserCreatedEventQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(provider));
+			cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(provider));
 
 		})));
 

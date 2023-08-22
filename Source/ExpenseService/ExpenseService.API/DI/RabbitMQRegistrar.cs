@@ -1,6 +1,7 @@
 using ExpenseService.Application.MessageConsumers;
 using MassTransit;
 using RabbitMqSettings;
+using RabbitMqSettings.QueueRoutes;
 
 namespace ExpenseService.API.DI;
 
@@ -26,7 +27,7 @@ public static class RabbitMQRegistrar
 				hostConfig.Password(rabbitMqOptions.Password);
 			});
 
-			cfg.ReceiveEndpoint(authServiceRabbitMqEndPoints.UserCreatedEventQueue, ep => ep.Consumer<UserCreatedMessageConsumer>(provider));
+			cfg.ReceiveEndpoint(ExpenseServiceQueues.User.UserCreatedQueue, ep => ep.Consumer<UserCreatedMessageConsumer>(provider));
 
 		})));
 
