@@ -2,8 +2,10 @@ namespace ExpenseService.Application.Category.Queries;
 
 public record GetCategoriesQueryResultDTO
 {
+	public Guid Id { get; private set; }
 	public string Name { get; private set; }
 	public string Description { get; private set; }
+	public string UserId { get; private set; }
 }
 
 public class GetCategoriesQueryResult: QueryResult<IEnumerable<GetCategoriesQueryResultDTO>>
@@ -16,6 +18,17 @@ public class GetCategoriesQueryResult: QueryResult<IEnumerable<GetCategoriesQuer
 	{
 	}
 }
+
+public class GetCategoriesQueryResultMappingProfile: Profile
+{
+	public GetCategoriesQueryResultMappingProfile()
+	{
+		CreateMap<Domain.Entities.Category, GetCategoriesQueryResultDTO>();
+	}
+}
+
+
+
 
 public record GetCategoriesQuery: IRequest<GetCategoriesQueryResult>
 {

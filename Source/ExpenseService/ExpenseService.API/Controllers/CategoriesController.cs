@@ -34,6 +34,20 @@ public class CategoriesController: ControllerBase
 	}
 	
 	
+	[HttpGet("{id}")]
+	public async Task<IActionResult> Get(Guid id)
+	{
+		var queryResult = await _mediator.Send(new GetCategoryByIdQuery(id));
+
+		if(queryResult.IsFailure)
+		{
+			return BadRequest(queryResult.Error);
+		}
+		
+		return Ok(queryResult.Value);
+	}
+	
+	
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command)
 	{

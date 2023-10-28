@@ -48,14 +48,22 @@ public class CategoryRepository : Repository, ICategoryRepository
 		return domainCategories;
 	}
 
-	public Category GetById(int id)
+	public Category GetById(Guid id)
 	{
-		throw new NotImplementedException();
+		var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
+		
+		var domainCategory = _mapper.Map<Category>(category);
+		
+		return domainCategory;
 	}
 
-	public Task<Category> GetByIdAsync(int id)
+	public async Task<Category> GetByIdAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+		
+		var domainCategory = _mapper.Map<Category>(category);
+		
+		return domainCategory;
 	}
 
 	public Task<IQueryable<Category>> GetCategoriesByUserIdAsync(int userId)
