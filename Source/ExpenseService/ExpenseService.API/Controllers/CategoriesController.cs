@@ -61,4 +61,17 @@ public class CategoriesController: ControllerBase
 		return Ok(commandResult.Value);
 	}
 	
+	
+	[HttpPut("{id}")]
+	public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCategoryCommand command)
+	{
+		var commandResult = await _mediator.Send(command);
+		
+		if(commandResult.IsFailure)
+		{
+			return BadRequest(commandResult.Error.Message);
+		}
+		
+		return Ok(commandResult.Value);
+	}
 }

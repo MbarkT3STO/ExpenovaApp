@@ -73,11 +73,33 @@ public class CategoryRepository : Repository, ICategoryRepository
 
 	public void Update(Category entity)
 	{
-		throw new NotImplementedException();
+		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+		
+		_dbContext.Categories.Update(categoryEntity);
+		
+		_dbContext.SaveChanges();
 	}
 
-	public Task UpdateAsync(Category entity)
+	public async Task UpdateAsync(Category entity)
 	{
-		throw new NotImplementedException();
+		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == entity.Id);
+		
+		_mapper.Map(entity, categoryEntity);
+		
+		_dbContext.Categories.Update(categoryEntity);
+		
+		await _dbContext.SaveChangesAsync();
 	}
+
+
+	public async Task UpdateAsync(Category entity, CancellationToken cancellationToken)
+	{
+		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+		
+		_dbContext.Categories.Update(categoryEntity);
+		
+		await _dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+
 }
