@@ -7,5 +7,13 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// </summary>
 	/// <param name="userId">The ID of the user whose categories should be retrieved.</param>
 	/// <returns>A collection of categories associated with the specified user ID.</returns>
-	Task<IQueryable<Category>> GetCategoriesByUserIdAsync(int userId);
+	Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId);
+	
+	/// <summary>
+	/// Retrieves a collection of categories associated with the specified user ID.
+	/// </summary>
+	/// <param name="userId">The ID of the user whose categories should be retrieved.</param>
+	/// <param name="cancellationToken">A cancellation token.</param>	
+	/// <returns>A collection of categories associated with the specified user ID.</returns>
+	Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId, CancellationToken cancellationToken);
 }

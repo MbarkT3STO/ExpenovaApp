@@ -5,13 +5,13 @@ public class UserRepository : Repository, IUserRepository
 	public UserRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
 	{
 	}
-	
+
 	public void Add(User entity)
 	{
 		var userEntity = _mapper.Map<UserEntity>(entity);
-		
+
 		_dbContext.Users.Add(userEntity);
-		
+
 		_dbContext.SaveChanges();
 	}
 
@@ -53,6 +53,34 @@ public class UserRepository : Repository, IUserRepository
 	public Task<User> GetByIdAsync(string id)
 	{
 		throw new NotImplementedException();
+	}
+
+	public bool IsExist(string id)
+	{
+		var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+
+		return user != null;
+	}
+
+	public async Task<bool> IsExistAsync(string id)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+		return user != null;
+	}
+
+	public async Task<bool> IsExistAsync(string id, CancellationToken cancellationToken)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
+		return user != null;
+	}
+
+	public async Task<bool> IsUserExistsAsync(string id, CancellationToken cancellationToken)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
+		return user != null;
 	}
 
 	public void Update(User entity)

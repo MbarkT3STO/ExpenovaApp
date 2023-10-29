@@ -66,10 +66,25 @@ public class CategoryRepository : Repository, ICategoryRepository
 		return domainCategory;
 	}
 
-	public Task<IQueryable<Category>> GetCategoriesByUserIdAsync(int userId)
+
+	public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId)
 	{
-		throw new NotImplementedException();
+		var categories = await _dbContext.Categories.Where(c => c.UserId == userId).ToListAsync();
+		
+		var domainCategories = _mapper.Map<IEnumerable<Category>>(categories);
+		
+		return domainCategories;
 	}
+
+	public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId, CancellationToken cancellationToken)
+	{
+		var categories = await _dbContext.Categories.Where(c => c.UserId == userId).ToListAsync(cancellationToken);
+		
+		var domainCategories = _mapper.Map<IEnumerable<Category>>(categories);
+		
+		return domainCategories;
+	}
+	
 
 	public void Update(Category entity)
 	{

@@ -17,7 +17,7 @@ public class CategoriesController: ControllerBase
 	public CategoriesController(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
-		_mapper = mapper;
+		_mapper   = mapper;
 	}
 	
 	[HttpGet]
@@ -73,5 +73,20 @@ public class CategoriesController: ControllerBase
 		}
 		
 		return Ok(commandResult.Value);
+	}
+	
+	
+	[HttpGet("GetCategoriesByUserId/{userId}")]
+	public async Task<IActionResult> GetCategoriesByUserId(string userId)
+	{
+		var query       = new GetCategoriesByUserIdQuery(userId);
+		var queryResult = await _mediator.Send(query);
+
+		if(queryResult.IsFailure)
+		{
+			return BadRequest(queryResult.Error);
+		}
+		
+		return Ok(queryResult.Value);
 	}
 }
