@@ -26,20 +26,11 @@ public record CategoryCreatedEventData
 	}
 }
 
-public class CategoryCreatedEvent: IDomainEvent<CategoryCreatedEventData>
+public class CategoryCreatedEvent : DomainEvent<CategoryCreatedEventData>
 {
-	public IDomainEventDetails EventDetails { get; set; }
-
-	public CategoryCreatedEventData EventData { get; set; }
-	
-	private CategoryCreatedEvent()
+	public CategoryCreatedEvent(IDomainEventDetails eventDetails, CategoryCreatedEventData eventData) : base(eventDetails, eventData)
 	{
-	}
 
-	public CategoryCreatedEvent(IDomainEventDetails eventDetails, CategoryCreatedEventData eventData)
-	{
-		EventDetails = eventDetails;
-		EventData    = eventData;
 	}
 	
 	/// <summary>

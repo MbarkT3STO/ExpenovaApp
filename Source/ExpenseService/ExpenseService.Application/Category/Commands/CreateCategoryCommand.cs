@@ -70,6 +70,10 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 	}
 	
 	
+	/// <summary>
+	/// Publishes a CategoryCreatedEvent using the mediator.
+	/// </summary>
+	/// <param name="category">The category entity to be used in the event data.</param>
 	public async Task PublishCategoryCreatedEvent(Domain.Entities.Category category)
 	{
 		var eventDetails         = new DomainEventDetails(nameof(CategoryCreatedEvent), category.UserId);
