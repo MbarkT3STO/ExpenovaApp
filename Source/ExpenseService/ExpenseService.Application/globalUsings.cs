@@ -5,6 +5,7 @@ global using System.Threading.Tasks;
 
 global using AutoMapper;
 global using MediatR;
+global using MassTransit;
 
 
 global using ExpenseService.Application.Common;
@@ -13,3 +14,5 @@ global using ExpenseService.Domain.Shared.Common;
 
 global using ExpenseService.Infrastructure.Repositories;
 global using ExpenseService.Infrastructure.Data;
+
+global using ExpenseService.Domain.Events;
