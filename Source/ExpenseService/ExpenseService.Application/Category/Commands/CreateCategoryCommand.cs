@@ -1,3 +1,5 @@
+using ExpenseService.Domain.Events;
+
 namespace ExpenseService.Application.Category.Commands;
 
 public class CreateCategoryCommandResultDTO
@@ -34,15 +36,17 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 	public string UserId { get; init; }
 }
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CreateCategoryCommandResult>
+public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand, CreateCategoryCommandResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
+	private readonly IMediator _mediator;
 
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper)
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
 	{
 		_categoryRepository = categoryRepository;
 		_mapper             = mapper;
+		_mediator           = mediator;
 	}
 
 	public async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -63,5 +67,16 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 			
 			return result;
 		}
+	}
+	
+	
+	public async Task PublishCategoryCreatedEvent(Domain.Entities.Category category)
+	{
+		var eventDetails         = new DomainEventDetails(nameof(CategoryCreatedEvent), category.UserId);
+		var eventData            = new CategoryCreatedEventData(category.Id, category.Name, category.Description, category.UserId);
+		var categoryCreatedEvent = CategoryCreatedEvent.Create(eventDetails, eventData);
+		
+		
+		await _mediator.Publish(categoryCreatedEvent);
 	}
 }
