@@ -1,6 +1,6 @@
 namespace EventSourcererService.Data.Entities.JsonDataTypes;
 
-public class ExpenseServiceUserEventJsonData : AuditableJsonEntity<string>
+public class ExpenseServiceUserEventJsonData: AuditableJsonEntity<string>
 {
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
@@ -12,13 +12,13 @@ public class ExpenseServiceUserEventJsonData : AuditableJsonEntity<string>
 
 
 	public ExpenseServiceUserEventJsonData(string id, string firstName, string lastName, string userName, string email, string roleId, DateTime createdAt)
+		: base(id, createdAt)
 	{
-		Id = id;
 		FirstName = firstName;
-		LastName = lastName;
-		UserName = userName;
-		Email = email;
-		RoleId = roleId;
+		LastName  = lastName;
+		UserName  = userName;
+		Email     = email;
+		RoleId    = roleId;
 		CreatedAt = createdAt;
 	}
 

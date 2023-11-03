@@ -18,7 +18,9 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 			Id          = notification.EventData.Id,
 			Name        = notification.EventData.Name,
 			Description = notification.EventData.Description,
-			UserId      = notification.EventData.UserId
+			UserId      = notification.EventData.UserId,
+			CreatedAt   = notification.EventDetails.OccurredOn,
+			CreatedBy   = notification.EventDetails.OccurredBy
 		};
 
 		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryEventSourcererQueue;

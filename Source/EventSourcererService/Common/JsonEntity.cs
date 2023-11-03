@@ -7,4 +7,9 @@ namespace EventSourcererService.Common;
 public abstract class JsonEntity<T>
 {
 	public T Id { get; set; }
+	
+	protected JsonEntity(T id)
+	{
+		Id = id;
+	}
 }

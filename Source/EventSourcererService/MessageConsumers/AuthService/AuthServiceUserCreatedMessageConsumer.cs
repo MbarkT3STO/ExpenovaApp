@@ -10,7 +10,7 @@ public class AuthServiceUserCreatedMessageConsumer: BaseConsumer, IConsumer<User
 
 	public async Task Consume(ConsumeContext<UserCreatedMessage> context)
 	{
-		var message = context.Message;
+		var message   = context.Message;
 		var eventData = new ExpenseServiceUserEventJsonData(
 				message.UserId,
 				message.FirstName,
@@ -23,7 +23,7 @@ public class AuthServiceUserCreatedMessageConsumer: BaseConsumer, IConsumer<User
 
 		var userEvent = new ExpenseServiceUserEvent("Create", DateTime.UtcNow, message.UserId, eventData);
 
-		
+
 		await _dbContext.ExpenseService_UserEvents.AddAsync(userEvent);
 		await _dbContext.SaveChangesAsync();
 	}

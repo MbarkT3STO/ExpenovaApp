@@ -59,6 +59,8 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
 			var result      = new CreateCategoryCommandResult(resultValue);
 			
+			await PublishCategoryCreatedEvent(category);
+			
 			return result;
 		}
 		catch (Exception e)
