@@ -11,10 +11,13 @@ public class ExpenseEntityConfig : IEntityTypeConfiguration<ExpenseEntity>
 		builder.Property(e => e.Amount).IsRequired();
 		builder.Property(e => e.Description).IsRequired();
 		builder.Property(e => e.Date).IsRequired();
-		builder.Property(e => e.CreatedBy).IsRequired();
-		builder.Property(e => e.CreatedDate).IsRequired();
+		
+		builder.Property(e => e.CreatedBy).IsRequired(true);
+		builder.Property(e => e.CreatedAt).IsRequired(true);
+		
 		builder.Property(e => e.LastUpdatedBy).IsRequired(false);
-		builder.Property(e => e.LastUpdatedDate).IsRequired(false);
+		builder.Property(e => e.LastUpdatedAt).IsRequired(false);
+		
 		
 		builder.HasOne(e => e.Category).WithMany(c => c.Expenses).HasForeignKey(e => e.CategoryId);
 		builder.HasOne(e => e.User).WithMany(u => u.Expenses).HasForeignKey(e => e.UserId);

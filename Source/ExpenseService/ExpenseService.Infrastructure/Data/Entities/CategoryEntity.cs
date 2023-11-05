@@ -1,10 +1,12 @@
 namespace ExpenseService.Infrastructure.Data.Entities;
 
-public class CategoryEntity
+/// <summary>
+/// Represents a category entity in the database.
+/// </summary>
+public class CategoryEntity : AuditableEntity<Guid>
 {
-	public Guid Id { get; set; }
 	public string Name { get; set; }
-	
+	public string Description { get; set; }
 	public string UserId { get; set; }
 	public UserEntity User { get; set; }
 	

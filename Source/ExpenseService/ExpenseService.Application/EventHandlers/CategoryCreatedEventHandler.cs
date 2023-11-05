@@ -1,4 +1,5 @@
 using Messages.ExpenseServiceMessages.Category;
+using Microsoft.Extensions.Options;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
@@ -10,6 +11,13 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly ExpenseServiceRabbitMqEndpointOptions.Category _categoryRabbitMqEndpointOptions;
+	
+	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOptions<ExpenseServiceRabbitMqEndpointOptions.Category> categoryRabbitMqEndpointOptions)
+	{
+		_bus                          = bus;
+		_rabbitMqOptions              = rabbitMqOptions.Value;
+		_categoryRabbitMqEndpointOptions = categoryRabbitMqEndpointOptions.Value;
+	}
 
 	public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
 	{

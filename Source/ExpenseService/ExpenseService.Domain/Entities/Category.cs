@@ -9,6 +9,7 @@ public class Category: AuditableEntity<Guid>
 	protected Category() { }
 	public Category( string name, string description, string userId)
 	{
+		Id          = Guid.NewGuid();
 		Name        = name;
 		Description = description;
 		UserId      = userId;
