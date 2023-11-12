@@ -1,4 +1,5 @@
 using EventSourcererService.MessageConsumers.AuthService;
+using EventSourcererService.MessageConsumers.ExpenseService.Category;
 using MassTransit;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
@@ -28,6 +29,8 @@ public static class RabbitMQRegistrar
 			});
 
 			cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(provider));
+			cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryCreatedMessageConsumer>(provider));
+			
 		})));
 
 		services.ConfigureRabbitMQBaseOptions(configuration);

@@ -18,7 +18,7 @@ public class Expense: AuditableAggregateRoot<Guid>
 		Category    = category;
 		User        = user;
 		
-		CreatedDate = DateTime.UtcNow;
+		CreatedAt = DateTime.UtcNow;
 		CreatedBy   = user.Id;
 	}
 }

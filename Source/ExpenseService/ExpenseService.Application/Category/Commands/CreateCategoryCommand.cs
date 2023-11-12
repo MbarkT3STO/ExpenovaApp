@@ -1,3 +1,4 @@
+using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Events;
 
 namespace ExpenseService.Application.Category.Commands;
@@ -54,6 +55,9 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 		try
 		{
 			var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
+			
+			category.WriteCreatedAudit(createdBy: request.UserId);
+			
 			await _categoryRepository.AddAsync(category);
 			
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);

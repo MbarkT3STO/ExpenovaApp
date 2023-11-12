@@ -10,9 +10,11 @@ namespace ExpenseService.Domain.Shared.Interfaces;
 /// </summary>
 public interface IAuditableEntity
 {
-	DateTime CreatedDate { get; set; }
+	DateTime CreatedAt { get; set; }
 	string CreatedBy { get; set; }
-	DateTime? LastUpdatedDate { get; set; }
+	DateTime? LastUpdatedAt { get; set; }
 	string LastUpdatedBy { get; set; }
 	bool IsDeleted { get; set; }
+	DateTime? DeletedAt { get; set; }
+	string DeletedBy { get; set; }
 }
