@@ -1,25 +1,25 @@
 using Messages.ExpenseServiceMessages.Category;
 using RabbitMqSettings;
-using RabbitMqSettings.QueueRoutes;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace ExpenseService.Application.EventHandlers;
 
-public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEvent>
+public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEvent>
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-
-    public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
+	
+	
+	public async Task Handle(CategoryUpdatedEvent notification, CancellationToken cancellationToken)
 	{
-		var message = new CategoryCreatedMessage
+		var message = new CategoryUpdatedMessage
 		{
-			Id          = notification.EventData.Id,
-			Name        = notification.EventData.Name,
-			Description = notification.EventData.Description,
-			UserId      = notification.EventData.UserId,
-			CreatedAt   = notification.EventDetails.OccurredOn,
-			CreatedBy   = notification.EventDetails.OccurredBy
+			Id             = notification.EventData.Id,
+			NewName        = notification.EventData.NewName,
+			NewDescription = notification.EventData.NewDescription,
+			UserId         = notification.EventData.UserId,
+			UpdatedAt      = notification.EventDetails.OccurredOn,
+			UpdatedBy      = notification.EventDetails.OccurredBy
 		};
 
 		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryEventSourcererQueue;
@@ -29,4 +29,3 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 		categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
 	}
 }
-

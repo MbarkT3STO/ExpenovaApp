@@ -26,13 +26,17 @@ public record CategoryCreatedEventData
 	}
 }
 
+
+/// <summary>
+/// Represents the event raised when a new category is created.
+/// </summary>
 public class CategoryCreatedEvent : DomainEvent<CategoryCreatedEventData>
 {
 	public CategoryCreatedEvent(IDomainEventDetails eventDetails, CategoryCreatedEventData eventData) : base(eventDetails, eventData)
 	{
 
 	}
-	
+
 	/// <summary>
 	/// Creates a new instance of the CategoryCreatedEvent.
 	/// </summary>

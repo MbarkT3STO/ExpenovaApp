@@ -28,7 +28,6 @@ public static class RabbitMQRegistrar
 			});
 
 			cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(provider));
-
 		})));
 
 		services.ConfigureRabbitMQBaseOptions(configuration);

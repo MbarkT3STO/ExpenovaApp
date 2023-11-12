@@ -49,11 +49,13 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
+	private readonly IMediator _mediator;
 	
-	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper)
+	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
 	{
 		_categoryRepository = categoryRepository;
 		_mapper             = mapper;
+		_mediator           = mediator;
 	}
 	
 	public async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -75,6 +77,8 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 			var resultDTO = _mapper.Map<UpdateCategoryCommandResultDTO>(category);
 			var result    = new UpdateCategoryCommandResult(resultDTO);
 			
+			await PublishCategoryUpdatedEvent(category);
+			
 			return result;
 		}
 		catch (Exception e)
@@ -84,5 +88,21 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 			
 			return new UpdateCategoryCommandResult(error);
 		}
+	}
+	
+	
+	
+	/// <summary>
+	/// Publishes a CategoryUpdatedEvent for the given category.
+	/// </summary>
+	/// <param name="category">The category to publish the event for.</param>
+	/// <returns>A task that represents the asynchronous operation.</returns>
+	private async Task PublishCategoryUpdatedEvent(Domain.Entities.Category category)
+	{
+		var categoryUpdatedEventDetails = new DomainEventDetails(nameof(CategoryUpdatedEvent), category.UserId);
+		var categoryUpdatedEventData   = new CategoryUpdatedEventData(category.Id, category.Name, category.Description, category.UserId);
+		var categoryUpdatedEvent       = CategoryUpdatedEvent.Create(categoryUpdatedEventDetails, categoryUpdatedEventData);
+		
+		await _mediator.Publish(categoryUpdatedEvent);
 	}
 }

@@ -13,7 +13,7 @@ public class ExpenseServiceCategoryCreatedMessageConsumer : BaseConsumer, IConsu
 	{
 		var message = context.Message;
 		
-		var eventData = new ExpenseServiceCategoryEventJsonData(message.Id, message.Name, message.UserId, message.CreatedAt, message.CreatedBy);
+		var eventData = new ExpenseServiceCategoryEventJsonData(message.Id, message.Name, message.Description, message.UserId, message.CreatedAt, message.CreatedBy);
 		
 		var categoryEvent = new ExpenseServiceCategoryEvent("Create", DateTime.UtcNow, message.UserId, eventData);
 		
