@@ -1,4 +1,5 @@
 using Messages.ExpenseServiceMessages.Category;
+using Microsoft.Extensions.Options;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
@@ -8,6 +9,13 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
+	
+	
+	public CategoryUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions)
+	{
+		_bus             = bus;
+		_rabbitMqOptions = rabbitMqOptions.Value;
+	}
 	
 	
 	public async Task Handle(CategoryUpdatedEvent notification, CancellationToken cancellationToken)

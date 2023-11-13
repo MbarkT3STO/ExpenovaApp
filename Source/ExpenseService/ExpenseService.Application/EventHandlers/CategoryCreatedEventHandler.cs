@@ -10,9 +10,15 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	private readonly ExpenseServiceRabbitMqEndpointOptions.Category _categoryRabbitMqEndpointOptions;
+	
+	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions)
+	{
+		_bus             = bus;
+		_rabbitMqOptions = rabbitMqOptions.Value;
+	}	
+	
 
-    public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
+	public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
 	{
 		var message = new CategoryCreatedMessage
 		{
