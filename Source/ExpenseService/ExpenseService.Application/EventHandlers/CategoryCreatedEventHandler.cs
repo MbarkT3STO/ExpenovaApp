@@ -30,7 +30,7 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 			CreatedBy   = notification.EventDetails.OccurredBy
 		};
 
-		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryEventSourcererQueue;
+		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue;
 		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
 		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
 		
