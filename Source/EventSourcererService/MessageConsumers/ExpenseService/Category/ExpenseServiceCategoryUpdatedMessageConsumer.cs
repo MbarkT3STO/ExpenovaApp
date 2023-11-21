@@ -7,7 +7,7 @@ public class ExpenseServiceCategoryUpdatedMessageConsumer : BaseConsumer, IConsu
 {
     public ExpenseServiceCategoryUpdatedMessageConsumer(AppDbContext dbContext) : base(dbContext)
     {
-    };
+    }
 
     public async Task Consume(ConsumeContext<CategoryUpdatedMessage> context)
     {
