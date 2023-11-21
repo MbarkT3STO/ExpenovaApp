@@ -12,7 +12,7 @@ public class SucceededCommandResult : CommandResult
 /// Represents a successful command result with value.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class SucceededCommandResult<TValue> : CommandResult<TValue>
+public class SucceededCommandResult<TValue> : CommandResult<TValue, SucceededCommandResult<TValue>>
 {
 	public SucceededCommandResult(TValue value) : base(value) { }
 }

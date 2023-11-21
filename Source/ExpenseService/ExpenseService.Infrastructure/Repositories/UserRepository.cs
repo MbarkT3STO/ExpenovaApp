@@ -30,7 +30,12 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public void Dispose()
+    public Task DeleteAsync(User entity, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Dispose()
 	{
 		GC.SuppressFinalize(this);
 	}
@@ -55,7 +60,12 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public bool IsExist(string id)
+    public Task<User> GetByIdAsync(string id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsExist(string id)
 	{
 		var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
 

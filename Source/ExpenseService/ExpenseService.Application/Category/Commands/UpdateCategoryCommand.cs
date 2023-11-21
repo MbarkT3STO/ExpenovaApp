@@ -8,7 +8,7 @@ public record UpdateCategoryCommandResultDTO
 	public string UserId { get; private set; }
 }
 
-public class UpdateCategoryCommandResult: CommandResult<UpdateCategoryCommandResultDTO>
+public class UpdateCategoryCommandResult: CommandResult<UpdateCategoryCommandResultDTO, UpdateCategoryCommandResult>
 {
 	public UpdateCategoryCommandResult(UpdateCategoryCommandResultDTO? value): base(value)
 	{
@@ -76,7 +76,7 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 			await _categoryRepository.UpdateAsync(category);
 			
 			var resultDTO = _mapper.Map<UpdateCategoryCommandResultDTO>(category);
-			var result    = new UpdateCategoryCommandResult(resultDTO);
+			var result    = UpdateCategoryCommandResult.Succeeded(resultDTO);
 			
 			await PublishCategoryUpdatedEvent(category);
 			
@@ -85,7 +85,7 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 		catch (Exception e)
 		{
 			var domainException = new DomainException(e.Message, e);
-			var error = new Error(domainException.Message);
+			var error           = new Error(domainException.Message);
 			
 			return new UpdateCategoryCommandResult(error);
 		}
@@ -101,8 +101,8 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 	private async Task PublishCategoryUpdatedEvent(Domain.Entities.Category category)
 	{
 		var categoryUpdatedEventDetails = new DomainEventDetails(nameof(CategoryUpdatedEvent), category.UserId);
-		var categoryUpdatedEventData   = new CategoryUpdatedEventData(category.Id, category.Name, category.Description, category.UserId);
-		var categoryUpdatedEvent       = CategoryUpdatedEvent.Create(categoryUpdatedEventDetails, categoryUpdatedEventData);
+		var categoryUpdatedEventData    = new CategoryUpdatedEventData(category.Id, category.Name, category.Description, category.UserId);
+		var categoryUpdatedEvent        = CategoryUpdatedEvent.Create(categoryUpdatedEventDetails, categoryUpdatedEventData);
 		
 		await _mediator.Publish(categoryUpdatedEvent);
 	}

@@ -15,7 +15,7 @@ public class DeleteCategoryCommandResultDTO
 /// <summary>
 /// Represents the result of a delete category command.
 /// </summary>
-public class DeleteCategoryCommandResult: CommandResult<DeleteCategoryCommandResultDTO>
+public class DeleteCategoryCommandResult: CommandResult<DeleteCategoryCommandResultDTO, DeleteCategoryCommandResult>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DeleteCategoryCommandResult"/> class with a value.

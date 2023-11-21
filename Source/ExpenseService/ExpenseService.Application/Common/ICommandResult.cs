@@ -16,7 +16,7 @@ public interface ICommandResult
 /// Represents the result of a command operation.
 /// </summary>
 /// <typeparam name="T">The type of the value returned by the command.</typeparam>
-public interface ICommandResult<out T>: ICommandResult
+public interface ICommandResult<out T>
 {
 	bool IsSuccess { get; }
 	bool IsFailure { get; }

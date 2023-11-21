@@ -19,7 +19,7 @@ public class MappingProfile: Profile
 	}
 }
 
-public class CreateCategoryCommandResult: CommandResult<CreateCategoryCommandResultDTO>
+public class CreateCategoryCommandResult: CommandResult<CreateCategoryCommandResultDTO, CreateCategoryCommandResult>
 {
 	public CreateCategoryCommandResult(CreateCategoryCommandResultDTO data): base(data)
 	{

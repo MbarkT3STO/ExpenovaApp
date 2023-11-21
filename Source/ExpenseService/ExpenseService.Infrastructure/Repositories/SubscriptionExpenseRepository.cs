@@ -1,3 +1,4 @@
+
 namespace ExpenseService.Infrastructure.Repositories;
 
 public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRepository
@@ -26,6 +27,11 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
         throw new NotImplementedException();
     }
 
+    public Task DeleteAsync(SubscriptionExpense entity, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Dispose()
     {
         throw new NotImplementedException();
@@ -47,6 +53,11 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
     }
 
     public Task<SubscriptionExpense> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<SubscriptionExpense> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
