@@ -67,6 +67,7 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 			if (category == null)
 			{
 				var error = new Error($"Category with ID {request.Id} not found.");
+				return new UpdateCategoryCommandResult(error);
 			}
 
 			category.UpdateName(request.NewName);

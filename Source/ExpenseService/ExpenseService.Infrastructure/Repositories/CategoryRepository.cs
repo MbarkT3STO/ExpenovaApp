@@ -24,9 +24,20 @@ public class CategoryRepository : Repository, ICategoryRepository
 		throw new NotImplementedException();
 	}
 
-	public Task DeleteAsync(Category entity)
+	public async Task DeleteAsync(Category entity)
 	{
-		throw new NotImplementedException();
+		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+		
+		_dbContext.Categories.Remove(categoryEntity);
+		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task DeleteAsync(Category entity, CancellationToken cancellationToken)
+	{
+		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+		
+		_dbContext.Categories.Remove(categoryEntity);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
 	public void Dispose()
@@ -60,6 +71,15 @@ public class CategoryRepository : Repository, ICategoryRepository
 	public async Task<Category> GetByIdAsync(Guid id)
 	{
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+		
+		var domainCategory = _mapper.Map<Category>(category);
+		
+		return domainCategory;
+	}
+	
+	public async Task<Category> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+	{
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 		
 		var domainCategory = _mapper.Map<Category>(category);
 		
