@@ -65,10 +65,8 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 			var category = await _categoryRepository.GetByIdAsync(request.Id);
 			
 			if (category == null)
-			{
-				var error = new Error($"Category with ID {request.Id} not found.");
-				return new UpdateCategoryCommandResult(error);
-			}
+				return UpdateCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
+			
 
 			category.UpdateName(request.NewName);
 			category.UpdateDescription(request.NewDescription);
@@ -84,10 +82,7 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 		}
 		catch (Exception e)
 		{
-			var domainException = new DomainException(e.Message, e);
-			var error           = new Error(domainException.Message);
-			
-			return new UpdateCategoryCommandResult(error);
+			return UpdateCategoryCommandResult.Failed(e.Message);
 		}
 	}
 	
