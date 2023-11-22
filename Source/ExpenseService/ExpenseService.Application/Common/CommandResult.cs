@@ -75,5 +75,12 @@ public abstract class CommandResult<TValue, TCommandResult> : ICommandResult<TVa
 	/// <returns>A failed command result with the specified error.</returns>
 	public static TCommandResult Failed(Error error) => Activator.CreateInstance(typeof(TCommandResult), error) as TCommandResult;
 	
+	/// <summary>
+	/// Creates a failed command result with the specified error message.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <returns>A failed command result with the specified error message.</returns>
+	public static TCommandResult Failed(string errorMessage) => Failed(new Error(errorMessage));
+	
 	
 }
