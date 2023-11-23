@@ -37,20 +37,16 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 	public string UserId { get; init; }
 }
 
-public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand, CreateCategoryCommandResult>
+public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IMapper _mapper;
-	private readonly IMediator _mediator;
-
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
+	
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper             = mapper;
-		_mediator           = mediator;
 	}
 
-	public async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
