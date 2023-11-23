@@ -1,3 +1,5 @@
+using ExpenseService.Application.Extensions;
+
 namespace ExpenseService.Application.Category.Commands;
 
 public record UpdateCategoryCommandResultDTO
@@ -70,6 +72,8 @@ public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand
 
 			category.UpdateName(request.NewName);
 			category.UpdateDescription(request.NewDescription);
+			
+			category.WriteUpdatedAudit(updatedBy: category.UserId, updatedAt: DateTime.UtcNow);
 			
 			await _categoryRepository.UpdateAsync(category);
 			

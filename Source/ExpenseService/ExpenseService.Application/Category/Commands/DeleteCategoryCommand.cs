@@ -1,3 +1,5 @@
+using ExpenseService.Application.Extensions;
+
 namespace ExpenseService.Application.Category.Commands;
 
 /// <summary>
@@ -91,20 +93,21 @@ public class DeleteCategoryCommandHandler: IRequestHandler<DeleteCategoryCommand
 			
 			if (category == null)
 			{
-				var error = new Error($"Category with ID {request.Id} not found.");
-				return new DeleteCategoryCommandResult(error);
+				return DeleteCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
 			}
+			
+			category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
 			
 			await _categoryRepository.DeleteAsync(category, cancellationToken);
 			
-			var categoryDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
+			var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
 			
-			return new DeleteCategoryCommandResult(categoryDTO);
+			return DeleteCategoryCommandResult.Succeeded(resultDTO);
 		}
 		catch (Exception e)
 		{
 			var error = new Error(e.Message);
-			return new DeleteCategoryCommandResult(error);
+			return DeleteCategoryCommandResult.Failed(error);
 		}
 		
 	}

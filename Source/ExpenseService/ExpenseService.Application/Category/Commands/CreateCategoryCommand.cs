@@ -61,7 +61,7 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 			await _categoryRepository.AddAsync(category);
 			
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
-			var result      = new CreateCategoryCommandResult(resultValue);
+			var result      = CreateCategoryCommandResult.Succeeded(resultValue);
 			
 			await PublishCategoryCreatedEvent(category);
 			
@@ -69,7 +69,7 @@ public class CreateCategoryCommandHandler: IRequestHandler<CreateCategoryCommand
 		}
 		catch (Exception e)
 		{
-			var result = new CreateCategoryCommandResult(Error.FromException(e));
+			var result = CreateCategoryCommandResult.Failed(e.Message);
 			
 			return result;
 		}
