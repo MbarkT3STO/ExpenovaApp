@@ -49,13 +49,3 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult, TCommandResul
 		throw new NotImplementedException();
 	}
 }
-
-
-
-/// <summary>
-/// Represents a base class for command handlers.
-/// </summary>
-/// <typeparam name="TCommand">The type of the command.</typeparam>
-/// <typeparam name="TCommandResult">The type of the command result.</typeparam>
-/// <typeparam name="TCommandResultValue">The type of the command result value.</typeparam>
-/// <typeparam name="TRepository">The type of the repository.</typeparam>

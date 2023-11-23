@@ -72,17 +72,13 @@ public class DeleteCategoryCommand : IRequest<DeleteCategoryCommandResult>
 }
 
 
-public class DeleteCategoryCommandHandler: IRequestHandler<DeleteCategoryCommand, DeleteCategoryCommandResult>
+public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IMapper _mapper;
-	private readonly IMediator _mediator;
 	
-	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
+	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper             = mapper;
-		_mediator           = mediator;
 	}
 	
 	public async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)

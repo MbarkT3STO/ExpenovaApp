@@ -47,17 +47,13 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 }
 
 
-public class UpdateCategoryCommandHandler: IRequestHandler<UpdateCategoryCommand, UpdateCategoryCommandResult>
+public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IMapper _mapper;
-	private readonly IMediator _mediator;
 	
-	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator)
+	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper             = mapper;
-		_mediator           = mediator;
 	}
 	
 	public async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
