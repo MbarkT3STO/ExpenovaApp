@@ -26,7 +26,7 @@ public class DeleteCategoryCommandResult: CommandResult<DeleteCategoryCommandRes
 	public DeleteCategoryCommandResult(DeleteCategoryCommandResultDTO? value): base(value)
 	{
 	}
-	
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DeleteCategoryCommandResult"/> class with an error.
 	/// </summary>
@@ -54,7 +54,7 @@ public class DeleteCategoryCommandResultMappingProfile: Profile
 /// <summary>
 /// Represents a command to delete a category.
 /// </summary>
-public class DeleteCategoryCommand : IRequest<DeleteCategoryCommandResult>
+public class DeleteCategoryCommand: IRequest<DeleteCategoryCommandResult>
 {
 	/// <summary>
 	/// Gets the ID of the category to be deleted.
@@ -75,29 +75,31 @@ public class DeleteCategoryCommand : IRequest<DeleteCategoryCommandResult>
 public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	
-	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
+
+	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
 	}
-	
-	public async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+
+	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var category = await _categoryRepository.GetByIdAsync(request.Id);
-			
+
 			if (category == null)
 			{
 				return DeleteCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
 			}
-			
+
 			category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
-			
+
 			await _categoryRepository.DeleteAsync(category, cancellationToken);
-			
+
 			var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
 			
+			await PublishCategoryDeletedEvent(category);
+
 			return DeleteCategoryCommandResult.Succeeded(resultDTO);
 		}
 		catch (Exception e)
@@ -105,6 +107,22 @@ public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryComm
 			var error = new Error(e.Message);
 			return DeleteCategoryCommandResult.Failed(error);
 		}
+
+	}
+
+
+
+	/// <summary>
+	/// Publishes a <see cref="CategoryDeletedEvent"/> for the given category.
+	/// </summary>
+	/// <param name="category">The category to publish the event for.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	private async Task PublishCategoryDeletedEvent(Domain.Entities.Category category)
+	{
+		var categoryDeletedEventDetails = new DomainEventDetails(nameof(CategoryDeletedEvent), category.UserId);
+		var categoryDeletedEventData    = new CategoryDeletedEventData(category.Id, category.Name, category.Description, category.UserId);
+		var categoryDeletedEvent        = CategoryDeletedEvent.Create(categoryDeletedEventDetails, categoryDeletedEventData);
 		
+		await _mediator.Publish(categoryDeletedEvent);
 	}
 }

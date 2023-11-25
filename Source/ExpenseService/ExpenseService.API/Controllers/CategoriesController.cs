@@ -89,4 +89,18 @@ public class CategoriesController: ControllerBase
 		
 		return Ok(queryResult.Value);
 	}
+	
+	[HttpDelete("Delete/{id}")]
+	public async Task<IActionResult> Delete(Guid id)
+	{
+		var commandResult = await _mediator.Send(new DeleteCategoryCommand(id));
+		
+		if(commandResult.IsFailure)
+		{
+			return BadRequest(commandResult.Error.Message);
+		}
+		
+		return Ok(commandResult.Value);
+	}
+	
 }

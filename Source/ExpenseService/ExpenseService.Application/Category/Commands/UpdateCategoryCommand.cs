@@ -56,7 +56,7 @@ public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryComm
 		_categoryRepository = categoryRepository;
 	}
 	
-	public async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{

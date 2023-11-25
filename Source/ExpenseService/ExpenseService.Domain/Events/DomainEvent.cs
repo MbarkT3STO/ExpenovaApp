@@ -12,7 +12,7 @@ namespace ExpenseService.Domain.Events
 		public T EventData { get; set; }
 		
 		
-		private DomainEvent()
+		private protected DomainEvent()
 		{
 		}
 		
@@ -26,6 +26,6 @@ namespace ExpenseService.Domain.Events
 			EventDetails = eventDetails;
 			EventData    = eventData;
 		}
-
+		
 	}
 }

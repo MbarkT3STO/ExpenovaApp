@@ -15,5 +15,6 @@ public static class MessageConsumersRegistrar
 		
 		services.AddScoped<ExpenseServiceCategoryCreatedMessageConsumer>();
 		services.AddScoped<ExpenseServiceCategoryUpdatedMessageConsumer>();
+		services.AddScoped<ExpenseServiceCategoryDeletedMessageConsumer>();
 	}
 }

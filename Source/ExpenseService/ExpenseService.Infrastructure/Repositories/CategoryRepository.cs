@@ -32,12 +32,30 @@ public class CategoryRepository : Repository, ICategoryRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
+	// public async Task DeleteAsync(Category entity, CancellationToken cancellationToken)
+	// {
+	// 	_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		
+	// 	var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+
+	// 	categoryEntity.IsDeleted = true;
+	// 	_dbContext.Entry(categoryEntity).State = EntityState.Modified;
+
+	// 	await _dbContext.SaveChangesAsync(cancellationToken);
+	// }
+	
 	public async Task DeleteAsync(Category entity, CancellationToken cancellationToken)
 	{
-		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
-		
-		_dbContext.Categories.Remove(categoryEntity);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == entity.Id, cancellationToken);
+
+		if (categoryEntity != null)
+		{
+			categoryEntity.IsDeleted = true;
+			categoryEntity.DeletedAt = entity.DeletedAt;
+			categoryEntity.DeletedBy = entity.DeletedBy;
+			
+			await _dbContext.SaveChangesAsync(cancellationToken);
+		}
 	}
 
 	public void Dispose()
@@ -46,6 +64,7 @@ public class CategoryRepository : Repository, ICategoryRepository
 	}
 
 	public IQueryable<Category> Get()
+
 	{
 		throw new NotImplementedException();
 	}
@@ -79,6 +98,9 @@ public class CategoryRepository : Repository, ICategoryRepository
 	
 	public async Task<Category> GetByIdAsync(Guid id, CancellationToken cancellationToken)
 	{
+		// Stop tracking the entity so that the entity is not cached in the DbContext.		
+		// _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 		
 		var domainCategory = _mapper.Map<Category>(category);
