@@ -2,5 +2,9 @@
     "dotnet.defaultSolution": "Expenova.sln",
     "cSpell.words": [
         "Sourcerer"
-    ]
+    ],
+    "files.exclude": {
+        "**/bin": true,
+        "**/obj": true
+    }
 }
