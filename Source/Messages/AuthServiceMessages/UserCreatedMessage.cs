@@ -3,7 +3,7 @@ namespace Messages.AuthServiceMessages;
 /// <summary>
 /// Represents a message that is sent when a new user is created.
 /// </summary>
-public class UserCreatedMessage
+public class UserCreatedMessage : BaseEventMessage
 {
 	public string UserId { get; set; }
 	public string Email { get; set; }

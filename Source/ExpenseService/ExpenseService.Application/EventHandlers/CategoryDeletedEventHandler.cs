@@ -25,6 +25,7 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 		
 		var message = new CategoryDeletedMessage
 		{
+			EventId     = eventDetails.EventId,
 			Id          = eventData.Id,
 			Name        = eventData.Name,
 			Description = eventData.Description,
@@ -36,11 +37,11 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 			DeletedAt   = eventDetails.OccurredOn,
 			DeletedBy   = eventDetails.OccurredBy
 		};
-		
+
 		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue;
 		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
 		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
-		
+
 		await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
 	}
 

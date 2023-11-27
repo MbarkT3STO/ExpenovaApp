@@ -22,6 +22,7 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 	{
 		var message = new CategoryUpdatedMessage
 		{
+			EventId        = notification.EventDetails.EventId,
 			Id             = notification.EventData.Id,
 			NewName        = notification.EventData.NewName,
 			NewDescription = notification.EventData.NewDescription,
@@ -34,6 +35,6 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
 		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
 
-        await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
+		await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
 	}
 }

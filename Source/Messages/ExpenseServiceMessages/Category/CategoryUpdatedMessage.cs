@@ -3,7 +3,7 @@ namespace Messages.ExpenseServiceMessages.Category;
 /// <summary>
 /// Represents a message that is sent via RabbitMQ when a category is updated.
 /// </summary>
-public class CategoryUpdatedMessage
+public class CategoryUpdatedMessage : BaseEventMessage
 {
 	public Guid Id { get; set; }
 	public string NewName { get; set; }

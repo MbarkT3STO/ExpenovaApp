@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventSourcererService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230820105005_Initial")]
-    partial class Initial
+    [Migration("20231127155224_Initiial")]
+    partial class Initiial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace EventSourcererService.Migrations
 
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceCategoryEvent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("JsonData")
                         .IsRequired()
@@ -55,11 +53,9 @@ namespace EventSourcererService.Migrations
 
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceExpenseEvent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("JsonData")
                         .IsRequired()
@@ -83,11 +79,9 @@ namespace EventSourcererService.Migrations
 
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceSubscriptionExpenseEvent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("JsonData")
                         .IsRequired()
@@ -111,11 +105,9 @@ namespace EventSourcererService.Migrations
 
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceUserEvent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("JsonData")
                         .IsRequired()

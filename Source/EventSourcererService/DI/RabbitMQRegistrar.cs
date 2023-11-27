@@ -19,22 +19,23 @@ public static class RabbitMQRegistrar
 		var authServiceRabbitMqEndPointsOptions = configuration.GetSection("RabbitMQ:EndPoints:AuthService").Get<AuthServiceRabbitMqEndpointsOptions>();
 		var authServiceRabbitMqEndPoints = authServiceRabbitMqEndPointsOptions;
 
-
-		services.AddMassTransit(busConfigurator => busConfigurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+		services.AddMassTransit(busConfigurator =>
 		{
-			cfg.Host(rabbitMqOptions.HostName, hostConfig =>
+			busConfigurator.UsingRabbitMq((context, cfg) =>
 			{
-				hostConfig.Username(rabbitMqOptions.UserName);
-				hostConfig.Password(rabbitMqOptions.Password);
-			});
+				cfg.Host(rabbitMqOptions.HostName, hostConfig =>
+				{
+					hostConfig.Username(rabbitMqOptions.UserName);
+					hostConfig.Password(rabbitMqOptions.Password);
+				});
 
-			cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(provider));
-			
-			cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryCreatedMessageConsumer>(provider));
-			cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryUpdatedMessageConsumer>(provider));
-			cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryDeletedMessageConsumer>(provider));
-			
-		})));
+				cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(context));
+				
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryCreatedMessageConsumer>(context));
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryUpdatedMessageConsumer>(context));
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryDeletedMessageConsumer>(context));
+			});
+		});
 
 		services.ConfigureRabbitMQBaseOptions(configuration);
 	}

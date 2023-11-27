@@ -8,7 +8,11 @@ namespace EventSourcererService.Data.Entities.ExpenseService;
 /// </summary>
 public class ExpenseServiceUserEvent : Event<ExpenseServiceUserEventJsonData>
 {
-	public ExpenseServiceUserEvent(string type, DateTime timeStamp, string userId, ExpenseServiceUserEventJsonData jsonData) : base(type, timeStamp, userId, jsonData)
+	public ExpenseServiceUserEvent()
+	{
+	}
+
+	public ExpenseServiceUserEvent(Guid eventId, string type, DateTime timeStamp, string userId, ExpenseServiceUserEventJsonData jsonData) : base(eventId, type, timeStamp, userId, jsonData)
 	{
 	}
 }

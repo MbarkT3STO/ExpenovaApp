@@ -21,7 +21,7 @@ public class AuthServiceUserCreatedMessageConsumer: BaseConsumer, IConsumer<User
 				message.CreatedAt
 			);
 
-		var userEvent = new ExpenseServiceUserEvent("Create", DateTime.UtcNow, message.UserId, eventData);
+		var userEvent = new ExpenseServiceUserEvent(message.EventId, "Create", DateTime.UtcNow, message.UserId, eventData);
 
 
 		await _dbContext.ExpenseService_UserEvents.AddAsync(userEvent);

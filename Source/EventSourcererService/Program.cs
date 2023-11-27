@@ -1,4 +1,6 @@
 using EventSourcererService.DI;
+using EventSourcererService.Services;
+using RabbitMqSettings.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,9 @@ builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
 // Register the Message Consumers
 builder.Services.RegisterMessageConsumers();
+
+// Register the Message Deduplication Service
+builder.Services.AddScoped<IDeduplicationService, DatabaseMessageDeduplicationService<ExpenseServiceCategoryEvent>>();
 
 
 

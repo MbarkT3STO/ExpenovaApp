@@ -15,7 +15,7 @@ public class ExpenseServiceCategoryCreatedMessageConsumer : BaseConsumer, IConsu
 		
 		var eventData = new ExpenseServiceCategoryEventJsonData(message.Id, message.Name, message.Description, message.UserId, message.CreatedAt, message.CreatedBy);
 		
-		var categoryEvent = new ExpenseServiceCategoryEvent("Create", DateTime.UtcNow, message.UserId, eventData);
+		var categoryEvent = new ExpenseServiceCategoryEvent(message.EventId, "Create", DateTime.UtcNow, message.UserId, eventData);
 		
 		await _dbContext.ExpenseService_CategoryEvents.AddAsync(categoryEvent);
 		await _dbContext.SaveChangesAsync();

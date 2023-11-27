@@ -37,6 +37,7 @@ public class UserCreatedEventHandler: INotificationHandler<UserCreatedEvent>
 	{
 		var message = new UserCreatedMessage
 		{
+			EventId   = Guid.NewGuid(),
 			UserId    = notification.UserId,
 			FirstName = notification.FirstName,
 			LastName  = notification.LastName,

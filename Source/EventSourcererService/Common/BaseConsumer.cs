@@ -1,4 +1,5 @@
 using MassTransit;
+using RabbitMqSettings.Interfaces;
 
 namespace EventSourcererService.Common;
 
@@ -22,10 +23,13 @@ public abstract class BaseConsumer
 /// <typeparam name="TMessage">The type of the message.</typeparam>
 public abstract class BaseConsumer<TMessage> : BaseConsumer, IConsumer<TMessage> where TMessage : class
 {
-	protected BaseConsumer(AppDbContext dbContext) : base(dbContext)
+	protected readonly IDeduplicationService _deduplicationService;
+	
+	protected BaseConsumer(AppDbContext dbContext, IDeduplicationService deduplicationService) : base(dbContext)
 	{
+		_deduplicationService = deduplicationService;
 	}
-
+	
 	/// <summary>
 	/// Consumes a message of type TMessage.
 	/// </summary>

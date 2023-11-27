@@ -1,6 +1,6 @@
 namespace Messages.ExpenseServiceMessages.Category;
 
-public class CategoryCreatedMessage
+public class CategoryCreatedMessage : BaseEventMessage
 {
 	public Guid Id { get; set; }
 	public string Name { get; set; }
