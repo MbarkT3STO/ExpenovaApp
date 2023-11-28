@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpenseService.Infrastructure.Data.EntityConfigs;
@@ -29,17 +30,17 @@ public class CategoryEntityConfig : IEntityTypeConfiguration<CategoryEntity>
 			.OnDelete(DeleteBehavior.Cascade);
 			
 		
-		builder.HasQueryFilter( e => OnlyNonDeletedCategoriesQueryFilter(e));
+		builder.HasQueryFilter( OnlyNonDeletedCategoriesQueryFilter() );
 	}
 	
 	
+
 	/// <summary>
-	/// Determines if a category entity is not deleted.
+	/// Returns an expression that filters out only non-deleted categories.
 	/// </summary>
-	/// <param name="categoryEntity">The category entity to check.</param>
-	/// <returns><c>true</c> if the category entity is not deleted; otherwise, <c>false</c>.</returns>
-	private static bool OnlyNonDeletedCategoriesQueryFilter(CategoryEntity categoryEntity)
+	/// <returns>An expression that represents the filter condition.</returns>
+	private static Expression<Func<CategoryEntity, bool>> OnlyNonDeletedCategoriesQueryFilter()
 	{
-		return !categoryEntity.IsDeleted;
+		return categoryEntity => categoryEntity.IsDeleted == false;
 	}
 }
