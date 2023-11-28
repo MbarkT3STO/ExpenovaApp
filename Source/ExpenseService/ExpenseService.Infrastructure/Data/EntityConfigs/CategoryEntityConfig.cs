@@ -27,5 +27,19 @@ public class CategoryEntityConfig : IEntityTypeConfiguration<CategoryEntity>
 			.WithMany(u => u.Categories)
 			.HasForeignKey(c => c.UserId)
 			.OnDelete(DeleteBehavior.Cascade);
+			
+		
+		builder.HasQueryFilter( e => OnlyNonDeletedCategoriesQueryFilter(e));
+	}
+	
+	
+	/// <summary>
+	/// Determines if a category entity is not deleted.
+	/// </summary>
+	/// <param name="categoryEntity">The category entity to check.</param>
+	/// <returns><c>true</c> if the category entity is not deleted; otherwise, <c>false</c>.</returns>
+	private static bool OnlyNonDeletedCategoriesQueryFilter(CategoryEntity categoryEntity)
+	{
+		return !categoryEntity.IsDeleted;
 	}
 }
