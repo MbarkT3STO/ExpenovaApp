@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace ExpenseService.Domain.Specifications;
+namespace ExpenseService.Domain.Specifications.ExpenseSpecifications;
 
 public class ValidExpenseSpecification : Specification<Expense>
 {

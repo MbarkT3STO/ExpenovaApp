@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using ExpenseService.Domain.Shared.Interfaces;
 
 namespace ExpenseService.Domain.Specifications;
 
@@ -13,9 +14,16 @@ public abstract class Specification<T> : ISpecification<T> where T : class
 
 
 	/// <inheritdoc cref="ISpecification{T}.IsSatisfiedBy"/>
-	public bool IsSatisfiedBy(T entity)
+	public virtual bool IsSatisfiedBy(T entity)
 	{
 		var predicate = ToExpression().Compile();
 		return predicate(entity);
+	}
+	
+	
+	/// <inheritdoc cref="ISpecification{T}.And"/>
+	public virtual ISpecification<T> And(ISpecification<T> other)
+	{
+		return new AndSpecification<T>(this, other);
 	}
 }
