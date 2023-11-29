@@ -11,6 +11,8 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryDescriptionSpecification : Specification<Category>
 {
+    protected override string UnSatisfiedSpecificationErrorMessage => "Category description is invalid.";
+
     public override Expression<Func<Category, bool>> ToExpression()
     {
         return category => !string.IsNullOrWhiteSpace(category.Description)

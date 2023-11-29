@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using ExpenseService.Domain.Shared.Common;
 
 namespace ExpenseService.Domain.Shared.Interfaces;
 
@@ -29,4 +30,11 @@ public interface ISpecification<T> where T: class
 	/// <param name="other">The specification to combine with the current specification.</param>
 	/// <returns>A new specification that represents the combination of the current specification and the other specification.</returns>
 	ISpecification<T> And(ISpecification<T> other);
+	
+	
+	/// <summary>
+	/// Gets the error associated with the specification.
+	/// </summary>
+	/// <returns>The error.</returns>
+	Error GetError();
 }

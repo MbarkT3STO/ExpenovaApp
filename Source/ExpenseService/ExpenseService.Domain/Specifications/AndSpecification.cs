@@ -11,9 +11,10 @@ public class AndSpecification<T>: Specification<T> where T: class
 {
 	private readonly ISpecification<T> _left;
 	private readonly ISpecification<T> _right;
-	
-	
-	public AndSpecification( ISpecification<T> left, ISpecification<T> right )
+
+    protected override string UnSatisfiedSpecificationErrorMessage => $"{_left.GetError().Message} AND {_right.GetError().Message}";
+
+    public AndSpecification( ISpecification<T> left, ISpecification<T> right )
 	{
 		_left  = left;
 		_right = right;

@@ -11,9 +11,10 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryNameSpecification : Specification<Category>
 {
+    protected override string UnSatisfiedSpecificationErrorMessage => "Category name is invalid.";
+
     public override Expression<Func<Category, bool>> ToExpression()
     {
-        return category => !string.IsNullOrWhiteSpace(category.Name)
-                           && category.Name.Length <= 50;
+        return category => !string.IsNullOrWhiteSpace(category.Name) && category.Name.Length <= 50;
     }
 }

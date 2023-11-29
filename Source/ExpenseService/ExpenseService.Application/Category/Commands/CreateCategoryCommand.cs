@@ -1,5 +1,6 @@
 using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Events;
+using ExpenseService.Domain.Specifications.CategorySpecifications;
 
 namespace ExpenseService.Application.Category.Commands;
 
@@ -53,6 +54,17 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
 			
 			category.WriteCreatedAudit(createdBy: request.UserId);
+			
+			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
+			var isValidCategoryForCreate              = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
+			
+			// if (!isValidCategoryForCreate)
+			// {
+			// 	var errors = isValidCategoryForCreateSpecification.GetErrors();
+			// 	var result = CreateCategoryCommandResult.Failed(errors);
+				
+			// 	return result;
+			// }
 			
 			await _categoryRepository.AddAsync(category);
 			
