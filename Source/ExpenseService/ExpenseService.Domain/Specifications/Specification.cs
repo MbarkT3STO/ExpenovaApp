@@ -32,9 +32,12 @@ public abstract class Specification<T> : ISpecification<T> where T : class
 	{
 		return new AndSpecification<T>(this, other);
 	}
-	
-	
-	/// <inheritdoc cref="ISpecification{T}.GetErrors"/>
+
+
+	/// <summary>
+	/// Gets the error associated with the specification.
+	/// </summary>
+	/// <returns>The error.</returns>
 	public virtual Error GetError()
 	{
 		var error = new Error(UnSatisfiedSpecificationErrorMessage);
