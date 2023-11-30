@@ -6,55 +6,48 @@ namespace ExpenseService.Domain.Specifications;
 
 public class CompositeSpecification<T>: ICompositeSpecification<T> where T: class
 {
-	protected virtual string UnSatisfiedSpecificationErrorMessage { get; }
-	public readonly Expression<Func<T, bool>> CompositeSpecificationExpression;
-	private IList<ISpecification<T>> _innerSpecifications;
-
-	private CompositeSpecification(Expression<Func<T, bool>> expression)
+	private protected readonly string _unSatisfiedSpecificationErrorMessage;
+	
+	protected CompositeSpecification()
 	{
-		CompositeSpecificationExpression = expression;
+		
 	}
+
 
 	public ICompositeSpecification<T> And(ISpecification<T> other)
 	{
-		var leftExpression  = this.ToExpression();
-		var rightExpression = other.ToExpression();
-
-		var andExpression = Expression.AndAlso(leftExpression.Body, rightExpression.Body);
-
-		var compositeSpecificationExpression = Expression.Lambda<Func<T, bool>>(andExpression, leftExpression.Parameters.Single());
-		var compositeSpecification           = new CompositeSpecification<T>(compositeSpecificationExpression);
-
-		return compositeSpecification;
+		return new AndSpecification<T>(this, other);
 	}
 
-	public ICompositeSpecification<T> Or(ISpecification<T> other)
-	{
-		throw new NotImplementedException();
-	}
-
-	public ICompositeSpecification<T> Not(ISpecification<T> other)
-	{
-		throw new NotImplementedException();
-	}
-
-	public bool IsSatisfiedBy(T entity)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Expression<Func<T, bool>> ToExpression()
-	{
-		throw new NotImplementedException();
-	}
 
 	ISpecification<T> ISpecification<T>.And(ISpecification<T> other)
 	{
-		throw new NotImplementedException();
+		return And(other);
 	}
 
-	public Error GetError()
+
+	public ICompositeSpecification<T> Or(ISpecification<T> other)
 	{
-		throw new NotImplementedException();
+		return new OrSpecification<T>(this, other);
+	}
+
+	public virtual bool IsSatisfiedBy(T entity)
+	{
+		var predicate = ToExpression().Compile();
+		var result    = predicate(entity);
+
+		return result;
+	}
+
+	public virtual Expression<Func<T, bool>> ToExpression()
+	{
+		throw new NotImplementedException();	
+	}
+
+	public virtual Error GetError()
+	{
+		var error = new Error(_unSatisfiedSpecificationErrorMessage);
+
+		return error;
 	}
 }

@@ -19,11 +19,4 @@ public interface ICompositeSpecification<T>: ISpecification<T> where T: class
 	/// <param name="other">The other specification to combine with.</param>
 	/// <returns>A new composite specification representing the logical OR operation.</returns>
 	ICompositeSpecification<T> Or(ISpecification<T> other);
-
-	/// <summary>
-	/// Negates the current specification using the logical NOT operator.
-	/// </summary>
-	/// <param name="other">The specification to negate.</param>
-	/// <returns>A new composite specification representing the logical NOT operation.</returns>
-	ICompositeSpecification<T> Not(ISpecification<T> other);
 }

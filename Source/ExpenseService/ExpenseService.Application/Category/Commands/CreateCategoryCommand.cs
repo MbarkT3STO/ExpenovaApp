@@ -42,7 +42,7 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 {
 	private readonly ICategoryRepository _categoryRepository;
 	
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
 	}
@@ -56,15 +56,13 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			category.WriteCreatedAudit(createdBy: request.UserId);
 			
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			var isValidCategoryForCreate              = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
+			var IsSatisfied = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
 			
-			// if (!isValidCategoryForCreate)
-			// {
-			// 	var errors = isValidCategoryForCreateSpecification.GetErrors();
-			// 	var result = CreateCategoryCommandResult.Failed(errors);
-				
-			// 	return result;
-			// }
+			if (!IsSatisfied)
+			{
+				var error = isValidCategoryForCreateSpecification.GetError();
+				return CreateCategoryCommandResult.Failed(error);
+			}
 			
 			await _categoryRepository.AddAsync(category);
 			
