@@ -58,14 +58,16 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			
 			
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
+			// var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
 
 			
-			if (!satisfactionResult.IsSatisfied)
-			{
-				var error = satisfactionResult.Errors.First();
-				return CreateCategoryCommandResult.Failed(error);
-			}
+			// if (!satisfactionResult.IsSatisfied)
+			// {
+			// 	var error = satisfactionResult.Errors.First();
+			// 	return CreateCategoryCommandResult.Failed(error);
+			// }
+			
+			await ValidateSpecificationsAsync(category, isValidCategoryForCreateSpecification);
 			
 			await _categoryRepository.AddAsync(category);
 			
