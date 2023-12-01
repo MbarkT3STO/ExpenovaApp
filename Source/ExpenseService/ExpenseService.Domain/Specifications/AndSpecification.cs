@@ -21,7 +21,7 @@ public class AndSpecification<T>: CompositeSpecification<T> where T: class
 	}
 	
 
-	public override Expression<Func<T, bool>> ToExpression()
+	public  Expression<Func<T, bool>> ToExpression()
 	{
 		var leftExpression  = _left.ToExpression();
 		var rightExpression = _right.ToExpression();
@@ -32,14 +32,4 @@ public class AndSpecification<T>: CompositeSpecification<T> where T: class
 	}
 	
 	
-	public override Error GetError()
-	{
-		var leftError  = _left.GetError();
-		var rightError = _right.GetError();
-		
-		var errorMessage = $"{leftError.Message} AND {rightError.Message}";
-		var error        = new Error( errorMessage );
-		
-		return error;
-	}
 }

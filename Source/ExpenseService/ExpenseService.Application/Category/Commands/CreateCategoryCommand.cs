@@ -1,5 +1,6 @@
 using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Events;
+using ExpenseService.Domain.Specifications;
 using ExpenseService.Domain.Specifications.CategorySpecifications;
 
 namespace ExpenseService.Application.Category.Commands;
@@ -55,12 +56,20 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			
 			category.WriteCreatedAudit(createdBy: request.UserId);
 			
-			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			var IsSatisfied = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
+			// var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
+			// var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
 			
-			if (!IsSatisfied)
+			var categorySpecifications = new CompositeSpecification<Domain.Entities.Category>();
+			
+			categorySpecifications.AddSpecification(new IsValidCategoryNameSpecification());
+			categorySpecifications.AddSpecification(new IsValidCategoryDescriptionSpecification());
+			categorySpecifications.AddSpecification(new IsValidCategoryCreationAuditSpecification());
+			
+			var satisfactionResult = categorySpecifications.IsSatisfiedBy(category);
+			
+			if (!satisfactionResult.IsSatisfied)
 			{
-				var error = isValidCategoryForCreateSpecification.GetError();
+				var error = satisfactionResult.Errors.First();
 				return CreateCategoryCommandResult.Failed(error);
 			}
 			

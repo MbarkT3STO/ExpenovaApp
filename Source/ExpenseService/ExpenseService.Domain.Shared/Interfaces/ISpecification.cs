@@ -10,11 +10,10 @@ namespace ExpenseService.Domain.Shared.Interfaces;
 public interface ISpecification<T> where T: class
 {
 	/// <summary>
-	/// Determines whether the specified entity satisfies the specification.
+	/// Determines if the specification is satisfied by the specified entity.
 	/// </summary>
-	/// <param name="entity">The entity to be checked.</param>
-	/// <returns><c>true</c> if the entity satisfies the specification; otherwise, <c>false</c>.</returns>
-	bool IsSatisfiedBy(T entity);
+	/// <typeparam name="T">The type of entity being evaluated.</typeparam>
+	SatisfactionResult IsSatisfiedBy(T entity);
 
 
 	/// <summary>
@@ -30,11 +29,4 @@ public interface ISpecification<T> where T: class
 	/// <param name="other">The specification to combine with the current specification.</param>
 	/// <returns>A new specification that represents the combination of the current specification and the other specification.</returns>
 	ISpecification<T> And(ISpecification<T> other);
-	
-	
-	/// <summary>
-	/// Gets the error associated with the specification.
-	/// </summary>
-	/// <returns>The error.</returns>
-	Error GetError();
 }

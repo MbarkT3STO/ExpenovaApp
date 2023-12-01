@@ -4,12 +4,9 @@ namespace ExpenseService.Domain.Specifications.ExpenseSpecifications;
 
 public class ValidExpenseSpecification : Specification<Expense>
 {
-    protected override string UnSatisfiedSpecificationErrorMessage => "Expense is invalid.";
-
-    public override Expression<Func<Expense, bool>> ToExpression()
+	protected override void ConfigureConditions()
 	{
-		return expense => expense.Amount > 0
-		&& expense.Date > DateTime.MinValue 
-		&& !string.IsNullOrEmpty(expense.Description);
+		AddCondition( expense => expense.Description != null, "Invalid description." );
+		AddCondition( expense => expense.Amount > 0, "Amount must be greater than 0." );
 	}
 }

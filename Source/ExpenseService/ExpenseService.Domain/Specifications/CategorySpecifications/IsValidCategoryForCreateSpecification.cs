@@ -8,31 +8,31 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryForCreateSpecification: CompositeSpecification<Category>
 {
-	IsValidCategoryNameSpecification          _isValidCategoryNameSpecification          = new();
-	IsValidCategoryDescriptionSpecification   _isValidCategoryDescriptionSpecification   = new();
-	IsValidCategoryCreationAuditSpecification _isValidCategoryCreationAuditSpecification = new();
+	readonly IsValidCategoryNameSpecification          _isValidCategoryNameSpecification          = new();
+	readonly IsValidCategoryDescriptionSpecification   _isValidCategoryDescriptionSpecification   = new();
+	readonly IsValidCategoryCreationAuditSpecification _isValidCategoryCreationAuditSpecification = new();
 
-
-    /// <inheritdoc cref="CompositeSpecification{T}.ToExpression"/>
-    public override Expression<Func<Category, bool>> ToExpression()
-	{
-		var isValidCategoryForCreateSpecification = _isValidCategoryNameSpecification.And(_isValidCategoryDescriptionSpecification).And(_isValidCategoryCreationAuditSpecification);
-
-		var expression = isValidCategoryForCreateSpecification.ToExpression();
+	// protected override void ConfigureConditions()
+	// {
+	// 	var isValidCategoryNameConditions		  = _isValidCategoryNameSpecification.GetConditions();
+	// 	var isValidCategoryDescriptionConditions = _isValidCategoryDescriptionSpecification.GetConditions();
+	// 	var isValidCategoryCreationAuditConditions = _isValidCategoryCreationAuditSpecification.GetConditions();
 		
-		return expression;
-	}
+	// 	var combinedConditions = isValidCategoryNameConditions
+	// 		.Concat(isValidCategoryDescriptionConditions)
+	// 		.Concat(isValidCategoryCreationAuditConditions);
 
-
-	/// <inheritdoc cref="CompositeSpecification{T}.GetError"/>
-	public override Error GetError()
+		
+	// 	foreach (var (condition, errorMessage) in combinedConditions)
+	// 	{
+	// 		AddCondition(condition, errorMessage);
+	// 	}
+	// }
+	
+	public override void ConfigureSpecifications()
 	{
-		var isValidCategoryNameSpecification          = new IsValidCategoryNameSpecification();
-		var isValidCategoryDescriptionSpecification   = new IsValidCategoryDescriptionSpecification();
-		var isValidCategoryCreationAuditSpecification = new IsValidCategoryCreationAuditSpecification();
-
-		var isValidCategoryForCreateSpecification = isValidCategoryNameSpecification.And(isValidCategoryDescriptionSpecification).And(isValidCategoryCreationAuditSpecification);
-
-		return isValidCategoryForCreateSpecification.GetError();
+		AddSpecification(_isValidCategoryNameSpecification);
+		AddSpecification(_isValidCategoryDescriptionSpecification);
+		AddSpecification(_isValidCategoryCreationAuditSpecification);
 	}
 }

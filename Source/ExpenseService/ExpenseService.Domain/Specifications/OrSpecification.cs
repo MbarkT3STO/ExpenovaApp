@@ -26,7 +26,7 @@ public class OrSpecification<T> : CompositeSpecification<T> where T : class
 	}
 
 	/// <inheritdoc/>
-	public override Expression<Func<T, bool>> ToExpression()
+	public Expression<Func<T, bool>> ToExpression()
 	{
 		var leftExpression = _left.ToExpression();
 		var rightExpression = _right.ToExpression();
@@ -36,15 +36,5 @@ public class OrSpecification<T> : CompositeSpecification<T> where T : class
 		return Expression.Lambda<Func<T, bool>>(orExpression, leftExpression.Parameters.Single());
 	}
 
-	/// <inheritdoc/>
-	public override Error GetError()
-	{
-		var leftError = _left.GetError();
-		var rightError = _right.GetError();
 
-		var errorMessage = $"{leftError.Message} OR {rightError.Message}";
-		var error = new Error(errorMessage);
-
-		return error;
-	}
 }

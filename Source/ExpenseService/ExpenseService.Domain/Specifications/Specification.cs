@@ -8,40 +8,72 @@ namespace ExpenseService.Domain.Specifications;
 /// Base class for creating specifications.
 /// </summary>
 /// <typeparam name="T">The type of entity that the specification can be applied to.</typeparam>
-public abstract class Specification<T> : ISpecification<T> where T : class
+public abstract class Specification<T> where T: class
 {
-	protected abstract string UnSatisfiedSpecificationErrorMessage { get; }
-	
-	
-	/// <inheritdoc cref="ISpecification{T}.ToExpression"/>
-	public abstract Expression<Func<T, bool>> ToExpression();
+	private readonly List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> conditions;
+
+	protected Specification()
+	{
+		conditions = new List<(Expression<Func<T, bool>>, string)>();
+		ConfigureConditions();
+	}
+
+	/// <summary>
+	/// Adds a condition to the specification with a corresponding error message.
+	/// </summary>
+	/// <param name="condition">The condition to add.</param>
+	/// <param name="errorMessage">The error message for the condition when false.</param>
+	protected void AddCondition(Expression<Func<T, bool>> condition, string errorMessage)
+	{
+		conditions.Add((condition, errorMessage));
+	}
+
 
 
 	/// <inheritdoc cref="ISpecification{T}.IsSatisfiedBy"/>
-	public virtual bool IsSatisfiedBy(T entity)
+	public virtual SatisfactionResult IsSatisfiedBy(T entity)
 	{
-		var predicate = ToExpression().Compile();
-		var result    = predicate(entity);
+		foreach (var (condition, errorMessage) in conditions)
+		{
+			var predicate = condition.Compile();
+			if (!predicate(entity))
+			{
+				var error = new Error(errorMessage);
+				return SatisfactionResult.NotSatisfied(error);
+			}
+		}
 
-		return result;
+		return SatisfactionResult.Satisfied();
+	}
+
+
+
+	/// <inheritdoc cref="ISpecification{T}.ToExpression"/>
+	public virtual Expression<Func<T, bool>> ToExpression()
+	{
+		if (!conditions.Any())
+		{
+			throw new InvalidOperationException("Specification must have at least one condition.");
+		}
+
+		var combinedExpression = conditions
+			.Select(condition => condition.Condition.Body)
+			.Aggregate(Expression.AndAlso);
+
+		return Expression.Lambda<Func<T, bool>>(combinedExpression, conditions.First().Condition.Parameters);
 	}
 	
 	
-	/// <inheritdoc cref="ISpecification{T}.And"/>
-	public virtual ISpecification<T> And(ISpecification<T> other)
-	{
-		return new AndSpecification<T>(this, other);
-	}
-
-
 	/// <summary>
-	/// Gets the error associated with the specification.
+	/// Configures the conditions for the specification.
 	/// </summary>
-	/// <returns>The error.</returns>
-	public virtual Error GetError()
+	protected abstract void ConfigureConditions();
+	
+	
+	public List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> GetConditions()
 	{
-		var error = new Error(UnSatisfiedSpecificationErrorMessage);
-
-		return error;
+		return conditions;
 	}
+
 }
+
