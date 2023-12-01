@@ -20,13 +20,5 @@ public interface ISpecification<T> where T: class
 	/// Converts the specification to an expression tree.
 	/// </summary>
 	/// <returns>An expression tree representing the specification.</returns>
-	Expression<Func<T, bool>> ToExpression();
-	
-	
-	/// <summary>
-	/// Combines the current specification with another specification using the logical AND operator.
-	/// </summary>
-	/// <param name="other">The specification to combine with the current specification.</param>
-	/// <returns>A new specification that represents the combination of the current specification and the other specification.</returns>
-	ISpecification<T> And(ISpecification<T> other);
+	Expression<Func<T, bool>> ToExpression();	
 }

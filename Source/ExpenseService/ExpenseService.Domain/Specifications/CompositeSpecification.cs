@@ -10,13 +10,18 @@ namespace ExpenseService.Domain.Specifications;
 /// <typeparam name="T">The type of entity that the specification can be applied to.</typeparam>
 public class CompositeSpecification<T>: ICompositeSpecification<T> where T: class
 {
-    public List<ISpecification<T>> Specifications { get;}
+	public List<ISpecification<T>> Specifications { get;} = new();
+	
+	protected CompositeSpecification()
+	{
+		ConfigureSpecifications();
+	}
 
-    /// <summary>
-    /// Adds a specification to the list of aggregated specifications.
-    /// </summary>
-    /// <param name="specification">The specification to add.</param>
-    public void AddSpecification(ISpecification<T> specification)
+	/// <summary>
+	/// Adds a specification to the list of aggregated specifications.
+	/// </summary>
+	/// <param name="specification">The specification to add.</param>
+	public void AddSpecification(ISpecification<T> specification)
 	{
 		Specifications.Add(specification);
 	}
@@ -60,8 +65,8 @@ public class CompositeSpecification<T>: ICompositeSpecification<T> where T: clas
 		return SatisfactionResult.Satisfied();
 	}
 
-    public void ConfigureSpecifications()
-    {
-        throw new NotImplementedException();
-    }
+	public virtual void ConfigureSpecifications()
+	{
+		throw new NotImplementedException();
+	}
 }

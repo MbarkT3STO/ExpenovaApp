@@ -56,16 +56,10 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			
 			category.WriteCreatedAudit(createdBy: request.UserId);
 			
-			// var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			// var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
 			
-			var categorySpecifications = new CompositeSpecification<Domain.Entities.Category>();
-			
-			categorySpecifications.AddSpecification(new IsValidCategoryNameSpecification());
-			categorySpecifications.AddSpecification(new IsValidCategoryDescriptionSpecification());
-			categorySpecifications.AddSpecification(new IsValidCategoryCreationAuditSpecification());
-			
-			var satisfactionResult = categorySpecifications.IsSatisfiedBy(category);
+			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
+			var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
+
 			
 			if (!satisfactionResult.IsSatisfied)
 			{

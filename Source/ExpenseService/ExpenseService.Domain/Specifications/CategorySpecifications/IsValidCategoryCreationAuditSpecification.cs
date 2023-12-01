@@ -9,8 +9,8 @@ public class IsValidCategoryCreationAuditSpecification: Specification<Category>
 {
 	protected override void ConfigureConditions()
 	{
-		AddCondition(category => !string.IsNullOrEmpty(category.CreatedBy) == false, "Category creation audit is invalid.");
-		AddCondition(category => !string.IsNullOrWhiteSpace(category.CreatedBy) == false, "Category creation audit is invalid.");
+		AddCondition(category => !string.IsNullOrEmpty(category.CreatedBy), "Category creation audit is invalid.");
+		AddCondition(category => !string.IsNullOrWhiteSpace(category.CreatedBy), "Category creation audit is invalid.");
 		AddCondition(category => category.CreatedAt != default, "Category creation audit is invalid.");
 	}
 }

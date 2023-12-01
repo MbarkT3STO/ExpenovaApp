@@ -1,4 +1,6 @@
 
+using ExpenseService.Domain.Shared.Interfaces;
+
 namespace ExpenseService.Application.Common;
 
 /// <summary>
@@ -36,14 +38,27 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult, TCommandResul
 {
 	private protected readonly IMediator _mediator;
 	private protected readonly IMapper _mapper;
-	
-	
+
+
 	protected BaseCommandHandler(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
-		_mapper   = mapper;
+		_mapper = mapper;
 	}
-	
-	
+
+
 	public abstract Task<TCommandResult> Handle(TCommand request, CancellationToken cancellationToken);
+
+
+	public virtual CommandResult<TCommandResult> ApplySpecification<TEntity>(ISpecification<TEntity> specification, TEntity entity) where TEntity : class
+	{
+		var satisfactionResult = specification.IsSatisfiedBy(entity);
+
+		if (!satisfactionResult.IsSatisfied)
+		{
+			var error = satisfactionResult.Errors.First();
+			return CommandResult<TCommandResult>.Failed(error);
+		}
+
+	}
 }

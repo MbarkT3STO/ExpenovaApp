@@ -8,7 +8,7 @@ namespace ExpenseService.Domain.Specifications;
 /// Base class for creating specifications.
 /// </summary>
 /// <typeparam name="T">The type of entity that the specification can be applied to.</typeparam>
-public abstract class Specification<T> where T: class
+public abstract class Specification<T> : ISpecification<T> where T : class
 {
 	private readonly List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> conditions;
 
