@@ -1,7 +1,3 @@
-using System.Linq.Expressions;
-using ExpenseService.Domain.Shared.Common;
-using ExpenseService.Domain.Shared.Interfaces;
-
 namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 
 /// <summary>

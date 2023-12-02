@@ -1,3 +1,4 @@
+using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Events;
 using ExpenseService.Domain.Specifications;
@@ -42,32 +43,28 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
+	readonly UserService _userService;
+
 	
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
+		_userService        = userService;
 	}
 
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
+			await CheckIfUserExists(request.UserId);
 			
+			var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
 			category.WriteCreatedAudit(createdBy: request.UserId);
 			
 			
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			// var satisfactionResult                    = isValidCategoryForCreateSpecification.IsSatisfiedBy(category);
-
-			
-			// if (!satisfactionResult.IsSatisfied)
-			// {
-			// 	var error = satisfactionResult.Errors.First();
-			// 	return CreateCategoryCommandResult.Failed(error);
-			// }
-			
 			await ValidateSpecificationsAsync(category, isValidCategoryForCreateSpecification);
+			
 			
 			await _categoryRepository.AddAsync(category);
 			
@@ -99,5 +96,20 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 		
 		
 		await _mediator.Publish(categoryCreatedEvent);
+	}
+	
+	/// <summary>
+	/// Checks if a user exists.
+	/// </summary>
+	/// <param name="userId">The ID of the user to check.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	private async Task CheckIfUserExists(string userId)
+	{
+		var userExists = await _userService.IsUserExistsAsync(userId);
+		
+		if (!userExists)
+		{
+			throw new Exception("User does not exist.");
+		}
 	}
 }
