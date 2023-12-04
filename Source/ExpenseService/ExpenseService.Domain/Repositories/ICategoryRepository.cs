@@ -16,4 +16,12 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// <param name="cancellationToken">A cancellation token.</param>	
 	/// <returns>A collection of categories associated with the specified user ID.</returns>
 	Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId, CancellationToken cancellationToken);
+	
+	/// <summary>
+	/// Retrieves a category by its name and user ID asynchronously.
+	/// </summary>
+	/// <param name="name">The name of the category.</param>
+	/// <param name="userId">The ID of the user.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the category.</returns>
+	Task<Category> GetByNameAsync(string name, string userId);
 }

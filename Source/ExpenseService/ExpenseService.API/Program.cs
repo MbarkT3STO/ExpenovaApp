@@ -27,6 +27,11 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.
 // Register the Application Services
 builder.Services.RegisterApplicationServices(builder.Configuration);
 
+// Register the Specifications
+builder.Services.RegisterSpecifications();
+
+
+
 // RabbitMQ registration
 builder.Services.ConfigureRabbitMQ(builder.Configuration);
 

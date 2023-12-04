@@ -1,5 +1,6 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
+using ExpenseService.Domain.Entities;
 using ExpenseService.Domain.Events;
 using ExpenseService.Domain.Specifications;
 using ExpenseService.Domain.Specifications.CategorySpecifications;
@@ -58,12 +59,11 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 		{
 			await CheckIfUserExists(request.UserId);
 			
-			var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
-			category.WriteCreatedAudit(createdBy: request.UserId);
+			var category = CreateAndAuditCategory(request);
 			
 			
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			await ValidateSpecificationsAsync(category, isValidCategoryForCreateSpecification);
+			category.Validate(isValidCategoryForCreateSpecification);
 			
 			
 			await _categoryRepository.AddAsync(category);
@@ -81,6 +81,21 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 			
 			return result;
 		}
+	}
+	
+	
+	
+	/// <summary>
+	/// Creates a new category based on the provided command and performs an audit trail for the creation.
+	/// </summary>
+	/// <param name="request">The command containing the category details.</param>
+	/// <returns>The newly created category.</returns>
+	private static Domain.Entities.Category CreateAndAuditCategory(CreateCategoryCommand request)
+	{
+		var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
+		category.WriteCreatedAudit(createdBy: request.UserId);
+		
+		return category;
 	}
 	
 	
@@ -103,6 +118,7 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 	/// </summary>
 	/// <param name="userId">The ID of the user to check.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
+	/// <exception cref="Exception">Thrown if the user does not exist.</exception>
 	private async Task CheckIfUserExists(string userId)
 	{
 		var userExists = await _userService.IsUserExistsAsync(userId);

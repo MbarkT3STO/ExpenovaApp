@@ -108,8 +108,16 @@ public class CategoryRepository : Repository, ICategoryRepository
 		return domainCategory;
 	}
 
+    public async Task<Category> GetByNameAsync(string name, string userId)
+    {
+        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Name == name && c.UserId == userId);
 
-	public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId)
+		var domainCategory = _mapper.Map<Category>(category);
+
+		return domainCategory;
+    }
+
+    public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId)
 	{
 		var categories = await _dbContext.Categories.Where(c => c.UserId == userId).ToListAsync();
 		

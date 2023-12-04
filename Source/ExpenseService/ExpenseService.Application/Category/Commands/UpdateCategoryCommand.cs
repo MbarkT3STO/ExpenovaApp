@@ -1,3 +1,4 @@
+using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
 
 namespace ExpenseService.Application.Category.Commands;
@@ -50,10 +51,12 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
 	private readonly ICategoryRepository _categoryRepository;
+	private readonly CategoryService _categoryService;
 	
-	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator) : base(mediator, mapper)
+	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
+		_categoryService    = categoryService;
 	}
 	
 	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -64,12 +67,14 @@ public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryComm
 			
 			if (category == null)
 				return UpdateCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
-			
 
 			category.UpdateName(request.NewName);
 			category.UpdateDescription(request.NewDescription);
 			
 			category.WriteUpdatedAudit(updatedBy: category.UserId, updatedAt: DateTime.UtcNow);
+			
+			var isValidCategoryForUpdateSpecification = new IsValidCategoryForUpdateSpecification();
+			category.Validate(isValidCategoryForUpdateSpecification);
 			
 			await _categoryRepository.UpdateAsync(category);
 			

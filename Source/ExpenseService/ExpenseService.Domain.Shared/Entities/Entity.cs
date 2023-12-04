@@ -1,3 +1,5 @@
+using ExpenseService.Domain.Shared.Common;
+
 namespace ExpenseService.Domain.Shared.Entities;
 
 /// <summary>

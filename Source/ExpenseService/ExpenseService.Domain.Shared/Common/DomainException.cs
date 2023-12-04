@@ -12,4 +12,12 @@ public class DomainException : Exception
 	public DomainException(string message, Exception innerException) : base(message, innerException)
 	{
 	}
+	
+	public DomainException(Error error) : base(error.Message)
+	{
+	}
+	
+	public DomainException(IEnumerable<Error> errors) : base(string.Join("\n", errors.Select(error => error.Message)))
+	{
+	}
 }

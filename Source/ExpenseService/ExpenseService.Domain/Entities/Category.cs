@@ -1,3 +1,6 @@
+using ExpenseService.Domain.Shared.Common;
+using ExpenseService.Domain.Shared.Interfaces;
+
 namespace ExpenseService.Domain.Entities;
 
 public class Category: AuditableEntity<Guid>
@@ -32,5 +35,37 @@ public class Category: AuditableEntity<Guid>
 	public void UpdateDescription(string newDescription)
 	{
 		Description = newDescription;
+	}
+	
+	
+	/// <summary>
+	/// Validates the category entity against the given specification.
+	/// Throws a DomainException if the specification is not satisfied.
+	/// </summary>
+	/// <param name="specification">The specification to validate against.</param>
+	public void Validate(ISpecification<Category> specification)
+	{
+		var satisfactionResult = specification.IsSatisfiedBy(this);
+		
+		if (!satisfactionResult.IsSatisfied)
+		{
+			throw new DomainException(satisfactionResult.Errors);
+		}
+	}
+
+
+	/// <summary>
+	/// Validates the category entity against the given specification.
+	/// Throws a DomainException if the specification is not satisfied.
+	/// </summary>
+	/// <param name="specification">The specification to validate against.</param>
+	public void Validate(ICompositeSpecification<Category> specification)
+	{
+		var satisfactionResult = specification.IsSatisfiedBy(this);
+		
+		if (!satisfactionResult.IsSatisfied)
+		{
+			throw new DomainException(satisfactionResult.Errors);
+		}
 	}
 }

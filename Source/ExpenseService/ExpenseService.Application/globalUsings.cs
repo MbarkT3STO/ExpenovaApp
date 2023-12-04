@@ -1,4 +1,5 @@
 global using System;
+
 global using System.Collections.Generic;
 global using System.Linq;
 global using System.Threading.Tasks;
@@ -16,3 +17,6 @@ global using ExpenseService.Infrastructure.Repositories;
 global using ExpenseService.Infrastructure.Data;
 
 global using ExpenseService.Domain.Events;
+
+global using ExpenseService.Domain.Specifications.CategorySpecifications;
+global using ExpenseService.Domain.Specifications.CategorySpecifications.Composite;
