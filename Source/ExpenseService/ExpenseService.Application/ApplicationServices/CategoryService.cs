@@ -1,5 +1,3 @@
-using ExpenseService.Domain.Specifications.CategorySpecifications;
-
 namespace ExpenseService.Application.ApplicationServices;
 
 public class CategoryService
@@ -23,5 +21,17 @@ public class CategoryService
 		var category = await _categoryRepository.GetByNameAsync(name, userId);
 
 		return category == null;
+	}
+	
+	/// <summary>
+	/// Checks if a category with the specified ID exists.
+	/// </summary>
+	/// <param name="categoryId">The ID of the category to check.</param>
+	/// <returns>True if the category exists; otherwise, false.</returns>
+	public async Task<bool> IsExistAsync(Guid categoryId)
+	{
+		var category = await _categoryRepository.GetByIdAsync(categoryId);
+
+		return category != null;
 	}
 }

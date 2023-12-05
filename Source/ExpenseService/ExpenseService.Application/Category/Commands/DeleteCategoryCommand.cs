@@ -1,3 +1,5 @@
+using ExpenseService.Application.ApplicationServices;
+using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
 
 namespace ExpenseService.Application.Category.Commands;
@@ -72,33 +74,23 @@ public class DeleteCategoryCommand: IRequest<DeleteCategoryCommandResult>
 }
 
 
-public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
+public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
 {
-	private readonly ICategoryRepository _categoryRepository;
-
-	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
-		_categoryRepository = categoryRepository;
 	}
-
+	
 	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var category = await _categoryRepository.GetByIdAsync(request.Id);
+			var category = await GetCategoryIfExistOrThrowException(request.Id);
 
-			if (category == null)
-			{
-				return DeleteCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
-			}
+			await DeleteCategoryAsync(category);
 
-			category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
-
-			await _categoryRepository.DeleteAsync(category, cancellationToken);
+			await PublishCategoryDeletedEvent(category);
 
 			var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
-			
-			await PublishCategoryDeletedEvent(category);
 
 			return DeleteCategoryCommandResult.Succeeded(resultDTO);
 		}
@@ -107,9 +99,20 @@ public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryComm
 			var error = new Error(e.Message);
 			return DeleteCategoryCommandResult.Failed(error);
 		}
-
 	}
-
+	
+	
+	/// <summary>
+	/// Deletes the specified category.
+	/// </summary>
+	/// <param name="category">The category to delete.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	private async Task DeleteCategoryAsync(Domain.Entities.Category category)
+	{
+		category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
+		
+		await _categoryRepository.DeleteAsync(category);
+	}
 
 
 	/// <summary>

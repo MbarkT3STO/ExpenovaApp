@@ -47,7 +47,10 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult, TCommandResul
 	}
 
 
-	public abstract Task<TCommandResult> Handle(TCommand request, CancellationToken cancellationToken);
+	public virtual Task<TCommandResult> Handle(TCommand request, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
 	
 
 	/// <summary>

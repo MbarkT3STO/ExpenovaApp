@@ -1,4 +1,5 @@
 using ExpenseService.Application.ApplicationServices;
+using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
 
 namespace ExpenseService.Application.Category.Commands;
@@ -16,7 +17,7 @@ public class UpdateCategoryCommandResult: CommandResult<UpdateCategoryCommandRes
 	public UpdateCategoryCommandResult(UpdateCategoryCommandResultDTO? value): base(value)
 	{
 	}
-	
+
 	public UpdateCategoryCommandResult(Error error): base(error)
 	{
 	}
@@ -48,41 +49,29 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 }
 
 
-public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
+public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
-	private readonly ICategoryRepository _categoryRepository;
-	private readonly CategoryService _categoryService;
-	
-	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	readonly CategoryService _categoryService;
+
+
+	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
-		_categoryRepository = categoryRepository;
-		_categoryService    = categoryService;
+		_categoryService = categoryService;
 	}
-	
+
 	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var category = await _categoryRepository.GetByIdAsync(request.Id);
-			
-			if (category == null)
-				return UpdateCategoryCommandResult.Failed($"Category with ID {request.Id} not found.");
+			var category = await GetCategoryIfExistOrThrowException(request.Id);
 
-			category.UpdateName(request.NewName);
-			category.UpdateDescription(request.NewDescription);
-			
-			category.WriteUpdatedAudit(updatedBy: category.UserId, updatedAt: DateTime.UtcNow);
-			
-			var isValidCategoryForUpdateSpecification = new IsValidCategoryForUpdateSpecification();
-			category.Validate(isValidCategoryForUpdateSpecification);
-			
-			await _categoryRepository.UpdateAsync(category);
-			
+			await CheckIfUserExistsOrThrowException(category.UserId);
+			await UpdateAndAuditCategoryAsync(category, request);
+			await PublishCategoryUpdatedEvent(category);
+
 			var resultDTO = _mapper.Map<UpdateCategoryCommandResultDTO>(category);
 			var result    = UpdateCategoryCommandResult.Succeeded(resultDTO);
-			
-			await PublishCategoryUpdatedEvent(category);
-			
+
 			return result;
 		}
 		catch (Exception e)
@@ -90,9 +79,27 @@ public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryComm
 			return UpdateCategoryCommandResult.Failed(e.Message);
 		}
 	}
-	
-	
-	
+
+
+	/// <summary>
+	/// Updates the specified category and performs an audit by writing an updated audit entry.
+	/// </summary>
+	/// <param name="category">The category to be updated.</param>
+	/// <param name="request">The update category command.</param>
+	private async Task UpdateAndAuditCategoryAsync(Domain.Entities.Category category, UpdateCategoryCommand request)
+	{
+		category.UpdateName(request.NewName);
+		category.UpdateDescription(request.NewDescription);
+
+		category.WriteUpdatedAudit(updatedBy: category.UserId, updatedAt: DateTime.UtcNow);
+
+		var isValidCategoryForUpdateSpecification = new IsValidCategoryForUpdateSpecification();
+		category.Validate(isValidCategoryForUpdateSpecification);
+		
+		await _categoryRepository.UpdateAsync(category);
+	}
+
+
 	/// <summary>
 	/// Publishes a CategoryUpdatedEvent for the given category.
 	/// </summary>
@@ -103,7 +110,7 @@ public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryComm
 		var categoryUpdatedEventDetails = new DomainEventDetails(nameof(CategoryUpdatedEvent), category.UserId);
 		var categoryUpdatedEventData    = new CategoryUpdatedEventData(category.Id, category.Name, category.Description, category.UserId);
 		var categoryUpdatedEvent        = CategoryUpdatedEvent.Create(categoryUpdatedEventDetails, categoryUpdatedEventData);
-		
+
 		await _mediator.Publish(categoryUpdatedEvent);
 	}
 }

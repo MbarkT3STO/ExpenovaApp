@@ -1,4 +1,5 @@
 using ExpenseService.Application.ApplicationServices;
+using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Entities;
 using ExpenseService.Domain.Events;
@@ -41,38 +42,29 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 	public string UserId { get; init; }
 }
 
-public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
+public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
-	private readonly ICategoryRepository _categoryRepository;
-	readonly UserService _userService;
-
-	
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
-		_categoryRepository = categoryRepository;
-		_userService        = userService;
 	}
-
+	
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			await CheckIfUserExists(request.UserId);
+			await CheckIfUserExistsOrThrowException(request.UserId);
 			
-			var category = CreateAndAuditCategory(request);
-			
-			
+			var category                              = CreateAndAuditCategory(request);
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
+			
 			category.Validate(isValidCategoryForCreateSpecification);
 			
-			
 			await _categoryRepository.AddAsync(category);
-			
+			await PublishCategoryCreatedEvent(category);
+
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
 			var result      = CreateCategoryCommandResult.Succeeded(resultValue);
-			
-			await PublishCategoryCreatedEvent(category);
-			
+
 			return result;
 		}
 		catch (Exception e)
@@ -111,21 +103,5 @@ public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryComm
 		
 		
 		await _mediator.Publish(categoryCreatedEvent);
-	}
-	
-	/// <summary>
-	/// Checks if a user exists.
-	/// </summary>
-	/// <param name="userId">The ID of the user to check.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	/// <exception cref="Exception">Thrown if the user does not exist.</exception>
-	private async Task CheckIfUserExists(string userId)
-	{
-		var userExists = await _userService.IsUserExistsAsync(userId);
-		
-		if (!userExists)
-		{
-			throw new Exception("User does not exist.");
-		}
 	}
 }

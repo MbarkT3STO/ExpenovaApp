@@ -9,6 +9,8 @@ public class IsValidCategoryForUpdateSpecification : CompositeSpecification<Cate
 	readonly IsValidCategoryUpdateAuditSpecification _isValidCategoryUpdateAuditSpecification = new();
 	public override void ConfigureSpecifications()
 	{
-		throw new NotImplementedException();
+		AddSpecification(_isValidCategoryNameSpecification);
+		AddSpecification(_isValidCategoryDescriptionSpecification);
+		AddSpecification(_isValidCategoryUpdateAuditSpecification);
 	}
 }
