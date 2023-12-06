@@ -59,9 +59,11 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 			
 			category.Validate(isValidCategoryForCreateSpecification);
 			
+
 			await _categoryRepository.AddAsync(category);
 			await PublishCategoryCreatedEvent(category);
-
+			
+			
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
 			var result      = CreateCategoryCommandResult.Succeeded(resultValue);
 

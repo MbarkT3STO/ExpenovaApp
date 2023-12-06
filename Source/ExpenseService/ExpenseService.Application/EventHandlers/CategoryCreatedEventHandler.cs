@@ -1,5 +1,7 @@
+using ExpenseService.Infrastructure.Data.Entities;
 using Messages.ExpenseServiceMessages.Category;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
@@ -10,12 +12,14 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
+	private readonly AppDbContext _dbContext;
 	
-	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions)
+	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-	}	
+		_dbContext       = dbContext;
+	}
 	
 
 	public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
@@ -31,11 +35,12 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 			CreatedBy   = notification.EventDetails.OccurredBy
 		};
 
-		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue;
-		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
-		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
+		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue;
 		
-		categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
+		var outboxEvent                     = new OutboxMessage(nameof(CategoryCreatedEvent), JsonConvert.SerializeObject(message), categoryEventSourcererQueueName );
+		
+		_dbContext.OutboxMessages.Add(outboxEvent);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 }
 

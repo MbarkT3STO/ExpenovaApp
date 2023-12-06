@@ -38,6 +38,9 @@ builder.Services.ConfigureRabbitMQ(builder.Configuration);
 // Register the Message Consumers
 builder.Services.RegisterMessageConsumers();
 
+// Register the Hosted Services
+builder.Services.RegisterHostedServices();
+
 
 
 builder.Services.AddControllers();

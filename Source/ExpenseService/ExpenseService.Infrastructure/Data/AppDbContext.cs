@@ -13,4 +13,6 @@ public class AppDbContext: DbContext
 	public DbSet<CategoryEntity> Categories { get; set; }
 	public DbSet<ExpenseEntity> Expenses { get; set; }
 	public DbSet<SubscriptionExpenseEntity> SubscriptionExpenses { get; set; }
+	
+	public DbSet<OutboxMessage> OutboxMessages { get; set; }
 }

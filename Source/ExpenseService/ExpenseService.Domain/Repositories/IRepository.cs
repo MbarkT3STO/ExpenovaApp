@@ -1,3 +1,5 @@
+using ExpenseService.Domain.Events;
+
 namespace ExpenseService.Domain.Repositories;
 
 /// <summary>
@@ -36,6 +38,7 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// <returns>A task that represents the asynchronous operation. The task result contains the entity with the specified identifier.</returns>
 	Task<TEntity> GetByIdAsync(TKey id, CancellationToken cancellationToken);
 
+
 	/// <summary>
 	/// Adds a new entity.
 	/// </summary>
@@ -46,7 +49,8 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// </summary>
 	/// <param name="entity">The entity to add.</param>
 	Task AddAsync(TEntity entity);
-
+	
+	
 	/// <summary>
 	/// Updates the specified entity.
 	/// </summary>

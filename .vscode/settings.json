@@ -6,5 +6,37 @@
     "files.exclude": {
         "**/bin": true,
         "**/obj": true
-    }
+    },
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "ExpenseServiceDB",
+            "database": "ExpenseServiceDB",
+            "username": "postgres"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "EventSourcesDB",
+            "database": "EventSourcesDB",
+            "username": "postgres",
+            "password": "123456"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "AuthServiceDB",
+            "database": "AuthServiceDB",
+            "username": "postgres",
+            "password": "123456"
+        }
+    ]
 }

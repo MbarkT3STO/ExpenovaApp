@@ -1,7 +1,25 @@
+using ExpenseService.Domain.Events;
+
 namespace ExpenseService.Domain.Repositories;
 
 public interface ICategoryRepository : IRepository<Category, Guid>
 {
+	/// <summary>
+	/// Represents an asynchronous operation that can return a result.
+	/// </summary>
+	/// <typeparam name="TResult">The type of the result produced by the task.</typeparam>
+	void Add(Category entity, CategoryCreatedEvent categoryCreatedEvent);
+
+	/// <summary>
+	/// Adds an entity asynchronously to the repository.
+	/// </summary>
+	/// <param name="entity">The entity to add.</param>
+	/// <param name="categoryCreatedEvent">The category created event.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	Task AddAsync(Category entity, CategoryCreatedEvent categoryCreatedEvent);
+	
+	
+	
 	/// <summary>
 	/// Retrieves a collection of categories associated with the specified user ID.
 	/// </summary>

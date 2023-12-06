@@ -1,23 +1,62 @@
+
+using ExpenseService.Domain.Events;
+using Newtonsoft.Json;
+
 namespace ExpenseService.Infrastructure.Repositories;
 
-public class CategoryRepository : Repository, ICategoryRepository
+public class CategoryRepository: Repository, ICategoryRepository
 {
-	public CategoryRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+	public CategoryRepository(AppDbContext dbContext, IMapper mapper): base(dbContext, mapper)
 	{
 	}
 
 	public void Add(Category entity)
 	{
 		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+
 		_dbContext.Categories.Add(categoryEntity);
-		
+		_dbContext.SaveChanges();
+
 		_dbContext.SaveChanges();
 	}
 
 	public Task AddAsync(Category entity)
 	{
-		return Task.Run(()=> Add(entity));
+		return Task.Run(() => Add(entity));
 	}
+
+
+	public void Add(Category entity, CategoryCreatedEvent categoryCreatedEvent)
+	{
+		var transaction = _dbContext.Database.BeginTransaction();
+
+		try
+		{
+			var categoryEntity = _mapper.Map<CategoryEntity>(entity);
+
+			_dbContext.Categories.Add(categoryEntity);
+			_dbContext.SaveChanges();
+
+			var eventAsJson = JsonConvert.SerializeObject(categoryCreatedEvent);
+			// var outboxEvent = new OutboxMessage(nameof(CategoryCreatedEvent), eventAsJson);
+			
+			// _dbContext.OutboxMessages.Add(outboxEvent);
+			// _dbContext.SaveChanges();
+
+			_dbContext.Database.CommitTransaction();
+		}
+		catch (Exception)
+		{
+			transaction.Rollback();
+			throw;
+		}
+	}
+
+	public Task AddAsync(Category entity, CategoryCreatedEvent categoryCreatedEvent)
+	{
+		return Task.Run(() => Add(entity, categoryCreatedEvent));
+	}
+
 
 	public void Delete(Category entity)
 	{
@@ -27,7 +66,7 @@ public class CategoryRepository : Repository, ICategoryRepository
 	public async Task DeleteAsync(Category entity)
 	{
 		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
-		
+
 		_dbContext.Categories.Remove(categoryEntity);
 		await _dbContext.SaveChangesAsync();
 	}
@@ -35,7 +74,7 @@ public class CategoryRepository : Repository, ICategoryRepository
 	// public async Task DeleteAsync(Category entity, CancellationToken cancellationToken)
 	// {
 	// 	_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-		
+
 	// 	var categoryEntity = _mapper.Map<CategoryEntity>(entity);
 
 	// 	categoryEntity.IsDeleted = true;
@@ -43,7 +82,7 @@ public class CategoryRepository : Repository, ICategoryRepository
 
 	// 	await _dbContext.SaveChangesAsync(cancellationToken);
 	// }
-	
+
 	public async Task DeleteAsync(Category entity, CancellationToken cancellationToken)
 	{
 		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == entity.Id, cancellationToken);
@@ -53,7 +92,7 @@ public class CategoryRepository : Repository, ICategoryRepository
 			categoryEntity.IsDeleted = true;
 			categoryEntity.DeletedAt = entity.DeletedAt;
 			categoryEntity.DeletedBy = entity.DeletedBy;
-			
+
 			await _dbContext.SaveChangesAsync(cancellationToken);
 		}
 	}
@@ -72,87 +111,87 @@ public class CategoryRepository : Repository, ICategoryRepository
 	public async Task<IEnumerable<Category>> GetAsync()
 	{
 		var categories = await _dbContext.Categories.ToListAsync();
-		
+
 		var domainCategories = _mapper.Map<IEnumerable<Category>>(categories);
-		
+
 		return domainCategories;
 	}
 
 	public Category GetById(Guid id)
 	{
 		var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
-		
+
 		var domainCategory = _mapper.Map<Category>(category);
-		
+
 		return domainCategory;
 	}
 
 	public async Task<Category> GetByIdAsync(Guid id)
 	{
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
-		
+
 		var domainCategory = _mapper.Map<Category>(category);
-		
+
 		return domainCategory;
 	}
-	
+
 	public async Task<Category> GetByIdAsync(Guid id, CancellationToken cancellationToken)
 	{
 		// Stop tracking the entity so that the entity is not cached in the DbContext.		
 		// _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-		
+
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-		
+
 		var domainCategory = _mapper.Map<Category>(category);
-		
+
 		return domainCategory;
 	}
 
-    public async Task<Category> GetByNameAsync(string name, string userId)
-    {
-        var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Name == name && c.UserId == userId);
+	public async Task<Category> GetByNameAsync(string name, string userId)
+	{
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Name == name && c.UserId == userId);
 
 		var domainCategory = _mapper.Map<Category>(category);
 
 		return domainCategory;
-    }
+	}
 
-    public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId)
+	public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId)
 	{
 		var categories = await _dbContext.Categories.Where(c => c.UserId == userId).ToListAsync();
-		
+
 		var domainCategories = _mapper.Map<IEnumerable<Category>>(categories);
-		
+
 		return domainCategories;
 	}
 
 	public async Task<IEnumerable<Category>> GetCategoriesByUserIdAsync(string userId, CancellationToken cancellationToken)
 	{
 		var categories = await _dbContext.Categories.Where(c => c.UserId == userId).ToListAsync(cancellationToken);
-		
+
 		var domainCategories = _mapper.Map<IEnumerable<Category>>(categories);
-		
+
 		return domainCategories;
 	}
-	
+
 
 	public void Update(Category entity)
 	{
 		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
-		
+
 		_dbContext.Categories.Update(categoryEntity);
-		
+
 		_dbContext.SaveChanges();
 	}
 
 	public async Task UpdateAsync(Category entity)
 	{
 		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == entity.Id);
-		
+
 		_mapper.Map(entity, categoryEntity);
-		
+
 		_dbContext.Categories.Update(categoryEntity);
-		
+
 		await _dbContext.SaveChangesAsync();
 	}
 
@@ -160,9 +199,9 @@ public class CategoryRepository : Repository, ICategoryRepository
 	public async Task UpdateAsync(Category entity, CancellationToken cancellationToken)
 	{
 		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
-		
+
 		_dbContext.Categories.Update(categoryEntity);
-		
+
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
