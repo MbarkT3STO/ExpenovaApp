@@ -39,7 +39,7 @@ public class CategoryRepository: Repository, ICategoryRepository
 
 			var eventAsJson = JsonConvert.SerializeObject(categoryCreatedEvent);
 			// var outboxEvent = new OutboxMessage(nameof(CategoryCreatedEvent), eventAsJson);
-			
+
 			// _dbContext.OutboxMessages.Add(outboxEvent);
 			// _dbContext.SaveChanges();
 
@@ -137,7 +137,7 @@ public class CategoryRepository: Repository, ICategoryRepository
 
 	public async Task<Category> GetByIdAsync(Guid id, CancellationToken cancellationToken)
 	{
-		// Stop tracking the entity so that the entity is not cached in the DbContext.		
+		// Stop tracking the entity so that the entity is not cached in the DbContext.
 		// _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
