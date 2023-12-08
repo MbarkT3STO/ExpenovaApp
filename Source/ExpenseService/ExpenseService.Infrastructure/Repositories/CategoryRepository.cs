@@ -16,8 +16,6 @@ public class CategoryRepository: Repository, ICategoryRepository
 
 		_dbContext.Categories.Add(categoryEntity);
 		_dbContext.SaveChanges();
-
-		_dbContext.SaveChanges();
 	}
 
 	public Task AddAsync(Category entity)

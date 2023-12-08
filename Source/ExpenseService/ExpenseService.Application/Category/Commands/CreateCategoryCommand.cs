@@ -1,10 +1,6 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
-using ExpenseService.Domain.Entities;
-using ExpenseService.Domain.Events;
-using ExpenseService.Domain.Specifications;
-using ExpenseService.Domain.Specifications.CategorySpecifications;
 
 namespace ExpenseService.Application.Category.Commands;
 
@@ -29,7 +25,7 @@ public class CreateCategoryCommandResult: CommandResult<CreateCategoryCommandRes
 	public CreateCategoryCommandResult(CreateCategoryCommandResultDTO data): base(data)
 	{
 	}
-	
+
 	public CreateCategoryCommandResult(Error error): base(error)
 	{
 	}
@@ -47,23 +43,23 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 	}
-	
+
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			await CheckIfUserExistsOrThrowException(request.UserId);
-			
+
 			var category                              = CreateAndAuditCategory(request);
 			var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
-			
+
 			category.Validate(isValidCategoryForCreateSpecification);
-			
+
 
 			await _categoryRepository.AddAsync(category);
 			await PublishCategoryCreatedEvent(category);
-			
-			
+
+
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
 			var result      = CreateCategoryCommandResult.Succeeded(resultValue);
 
@@ -72,13 +68,13 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 		catch (Exception e)
 		{
 			var result = CreateCategoryCommandResult.Failed(e.Message);
-			
+
 			return result;
 		}
 	}
-	
-	
-	
+
+
+
 	/// <summary>
 	/// Creates a new category based on the provided command and performs an audit trail for the creation.
 	/// </summary>
@@ -88,11 +84,11 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 	{
 		var category = new Domain.Entities.Category(request.Name, request.Description, request.UserId);
 		category.WriteCreatedAudit(createdBy: request.UserId);
-		
+
 		return category;
 	}
-	
-	
+
+
 	/// <summary>
 	/// Publishes a CategoryCreatedEvent using the mediator.
 	/// </summary>
@@ -102,8 +98,8 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 		var eventDetails         = new DomainEventDetails(nameof(CategoryCreatedEvent), category.UserId);
 		var eventData            = new CategoryCreatedEventData(category.Id, category.Name, category.Description, category.UserId);
 		var categoryCreatedEvent = CategoryCreatedEvent.Create(eventDetails, eventData);
-		
-		
+
+
 		await _mediator.Publish(categoryCreatedEvent);
 	}
 }

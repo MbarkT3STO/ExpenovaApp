@@ -79,7 +79,7 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 	}
-	
+
 	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
 		try
@@ -100,8 +100,8 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 			return DeleteCategoryCommandResult.Failed(error);
 		}
 	}
-	
-	
+
+
 	/// <summary>
 	/// Deletes the specified category.
 	/// </summary>
@@ -110,7 +110,7 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	private async Task DeleteCategoryAsync(Domain.Entities.Category category)
 	{
 		category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
-		
+
 		await _categoryRepository.DeleteAsync(category);
 	}
 
@@ -125,7 +125,7 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 		var categoryDeletedEventDetails = new DomainEventDetails(nameof(CategoryDeletedEvent), category.UserId);
 		var categoryDeletedEventData    = new CategoryDeletedEventData(category.Id, category.Name, category.Description, category.UserId);
 		var categoryDeletedEvent        = CategoryDeletedEvent.Create(categoryDeletedEventDetails, categoryDeletedEventData);
-		
+
 		await _mediator.Publish(categoryDeletedEvent);
 	}
 }
