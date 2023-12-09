@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpenseService.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231206090707_OutboxMessageQueAdded")]
-    partial class OutboxMessageQueAdded
+    [Migration("20231209124118_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
