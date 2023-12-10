@@ -19,9 +19,9 @@ public class OutboxProcessorService: BackgroundService
 		_serviceScopeFactory = serviceScopeFactory;
 
 		var scope      = _serviceScopeFactory.CreateScope();
-		    _mediator  = scope.ServiceProvider.GetRequiredService<IMediator>();
-		    _dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-		    _bus       = scope.ServiceProvider.GetRequiredService<IBus>();
+			_mediator  = scope.ServiceProvider.GetRequiredService<IMediator>();
+			_dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+			_bus       = scope.ServiceProvider.GetRequiredService<IBus>();
 	}
 
 
@@ -44,8 +44,13 @@ public class OutboxProcessorService: BackgroundService
 
 		try
 		{
+			var deserializationSettings = new JsonSerializerSettings()
+			{
+				TypeNameHandling = TypeNameHandling.All
+			};
+
 			var eventName     = outboxMessage.EventName;
-			var eventMessage  = JsonConvert.DeserializeObject(outboxMessage.Data);
+			var eventMessage  = JsonConvert.DeserializeObject(outboxMessage.Data, deserializationSettings);
 			var messageQueue  = new Uri(outboxMessage.QueueName);
 			var queueEndPoint = await _bus.GetSendEndpoint(messageQueue);
 
@@ -81,14 +86,14 @@ public class OutboxProcessorService: BackgroundService
 
 	// 	// switch (eventName)
 	// 	// {
-	// 	// 	case nameof(CategoryCreatedEvent): 
+	// 	// 	case nameof(CategoryCreatedEvent):
 	// 	// 		{
 	// 	// 			var categoryCreatedEvent = JsonConvert.DeserializeObject(outboxMessage.Data);
 
 	// 	// 			return categoryCreatedEvent;
 	// 	// 		}
 
-	// 	// 	default: 
+	// 	// 	default:
 	// 	// 		throw new Exception("Event type not supported [From Outbox Event Processor]");
 	// 	// }
 	// }

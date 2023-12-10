@@ -13,14 +13,14 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly AppDbContext _dbContext;
-	
+
 	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_dbContext       = dbContext;
 	}
-	
+
 
 	public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
 	{
@@ -36,9 +36,14 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 		};
 
 		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue;
-		
-		var outboxEvent                     = new OutboxMessage(nameof(CategoryCreatedEvent), JsonConvert.SerializeObject(message), categoryEventSourcererQueueName );
-		
+
+		var jsonSerializerSettings = new JsonSerializerSettings
+		{
+			TypeNameHandling = TypeNameHandling.All
+		};
+		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
+		var outboxEvent       = new OutboxMessage(nameof(CategoryCreatedEvent), serializedMessage, categoryEventSourcererQueueName );
+
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
