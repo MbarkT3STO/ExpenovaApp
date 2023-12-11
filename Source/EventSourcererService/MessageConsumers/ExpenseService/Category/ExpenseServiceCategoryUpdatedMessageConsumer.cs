@@ -12,15 +12,15 @@ public class ExpenseServiceCategoryUpdatedMessageConsumer : BaseConsumer<Categor
 	public override async Task Consume(ConsumeContext<CategoryUpdatedMessage> context)
 	{
 		var message = context.Message;
-		
+
 		var hasProcessed = await _deduplicationService.HasProcessed(message.EventId);
-		
+
 		if (hasProcessed) return;
-		
+
 		await _deduplicationService.ProcessMessage(() => ProcessMessage(message));
 	}
-	
-	
+
+
 	/// <summary>
 	/// Processes the CategoryUpdatedMessage asynchronously.
 	/// </summary>
