@@ -48,6 +48,8 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 	{
 		try
 		{
+			Log.Information("CreateCategoryCommandHandler.Handle - Start Creating a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
+
 			await CheckIfUserExistsOrThrowException(request.UserId);
 
 			var category                              = CreateAndAuditCategory(request);
@@ -63,11 +65,15 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 			var resultValue = _mapper.Map<CreateCategoryCommandResultDTO>(category);
 			var result      = CreateCategoryCommandResult.Succeeded(resultValue);
 
+			Log.Information("CreateCategoryCommandHandler.Handle - End Creating a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
+
 			return result;
 		}
 		catch (Exception e)
 		{
 			var result = CreateCategoryCommandResult.Failed(e.Message);
+
+			Log.Error(e, "CreateCategoryCommandHandler.Handle - Failed to create a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
 
 			return result;
 		}

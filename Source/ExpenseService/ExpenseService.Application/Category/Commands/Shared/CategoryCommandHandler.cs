@@ -13,7 +13,7 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 	protected readonly ICategoryRepository _categoryRepository;
 	readonly CategoryService _categoryService;
 	protected readonly UserService _userService;
-	
+
 
 	protected CategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
@@ -21,8 +21,8 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 		_categoryService    = categoryService;
 		_userService        = userService;
 	}
-	
-	
+
+
 
 	/// <summary>
 	/// Retrieves a category by its ID.
@@ -34,7 +34,7 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 	protected async Task<Domain.Entities.Category> GetCategoryIfExistOrThrowException(Guid categoryId)
 	{
 		var category = await _categoryRepository.GetByIdAsync(categoryId);
-		
+
 		if (category == null)
 		{
 			throw new Exception($"Category with ID {categoryId} not found.");
@@ -42,7 +42,7 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 
 		return category;
 	}
-	
+
 
 
 	/// <summary>
@@ -54,14 +54,14 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 	protected async Task CheckIfUserExistsOrThrowException(string userId)
 	{
 		var userExists = await _userService.IsUserExistsAsync(userId);
-		
+
 		if (!userExists)
 		{
 			throw new Exception($"User with ID {userId} not found.");
 		}
 	}
-	
-	
+
+
 	/// <summary>
 	/// Checks if a category exists based on the provided category ID.
 	/// </summary>

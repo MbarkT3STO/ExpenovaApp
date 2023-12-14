@@ -20,3 +20,5 @@ global using ExpenseService.Domain.Events;
 
 global using ExpenseService.Domain.Specifications.CategorySpecifications;
 global using ExpenseService.Domain.Specifications.CategorySpecifications.Composite;
+
+global using Serilog;

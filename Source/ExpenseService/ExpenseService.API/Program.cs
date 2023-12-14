@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using RabbitMqSettings;
 using ExpenseService.Application.DI;
 using ExpenseService.API.DI;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 // var serviceProvider = builder.Services.BuildServiceProvider();
@@ -41,6 +42,12 @@ builder.Services.RegisterMessageConsumers();
 // Register the Hosted Services
 builder.Services.RegisterHostedServices();
 
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+.WriteTo.Console()
+.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+.CreateLogger();
 
 
 builder.Services.AddControllers();
