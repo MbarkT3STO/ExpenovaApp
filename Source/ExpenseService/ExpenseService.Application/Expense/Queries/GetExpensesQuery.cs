@@ -16,11 +16,11 @@ public class GetExpensesQueryResult : QueryResult<IEnumerable<GetExpensesQueryRe
 	public GetExpensesQueryResult(IEnumerable<GetExpensesQueryResultDTO> data) : base(data)
 	{
 	}
-	
+
 	public GetExpensesQueryResult(Error error) : base(error)
 	{
 	}
-	
+
 	// public static implicit operator GetExpensesQueryResult(SucceededQuery<IEnumerable<GetExpensesQueryResultDTO>> queryResult)
 	// {
 	// 	return new(queryResult.Value);
@@ -29,7 +29,7 @@ public class GetExpensesQueryResult : QueryResult<IEnumerable<GetExpensesQueryRe
 
 public record GetExpensesQuery : IRequest<GetExpensesQueryResult>
 {
-	
+
 }
 
 public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, IQueryResult>
@@ -47,9 +47,9 @@ public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, IQueryR
 	{
 		var expenses = await _expenseRepository.GetAsync();
 		var expensesDTO = _mapper.Map<IReadOnlyCollection<GetExpensesQueryResultDTO>>(expenses);
-		
-		var result = GetExpensesQueryResult.CreateSucceeded(expensesDTO);
-		
+
+		var result = GetExpensesQueryResult.Succeeded(expensesDTO);
+
 		return result;
 	}
 }
