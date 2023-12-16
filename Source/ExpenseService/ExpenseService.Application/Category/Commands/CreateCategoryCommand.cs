@@ -46,8 +46,8 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		try
-		{
+		// try
+		// {
 			Log.Information("CreateCategoryCommandHandler.Handle - Start Creating a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
 
 			await CheckIfUserExistsOrThrowException(request.UserId);
@@ -68,15 +68,15 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 			Log.Information("CreateCategoryCommandHandler.Handle - End Creating a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
 
 			return result;
-		}
-		catch (Exception e)
-		{
-			var result = CreateCategoryCommandResult.Failed(e.Message);
+		// }
+		// catch (Exception e)
+		// {
+		// 	var result = CreateCategoryCommandResult.Failed(e.Message);
 
-			Log.Error(e, "CreateCategoryCommandHandler.Handle - Failed to create a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
+		// 	Log.Error(e, "CreateCategoryCommandHandler.Handle - Failed to create a new category with name: {Name}, description: {Description}, and user id: {UserId}", request.Name, request.Description, request.UserId);
 
-			return result;
-		}
+		// 	return result;
+		// }
 	}
 
 

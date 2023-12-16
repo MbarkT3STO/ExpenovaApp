@@ -10,6 +10,7 @@ using RabbitMqSettings;
 using ExpenseService.Application.DI;
 using ExpenseService.API.DI;
 using Serilog;
+using ExpenseService.Application.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 // var serviceProvider = builder.Services.BuildServiceProvider();
@@ -48,6 +49,9 @@ Log.Logger = new LoggerConfiguration()
 .WriteTo.Console()
 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
 .CreateLogger();
+
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
 
 
 builder.Services.AddControllers();
