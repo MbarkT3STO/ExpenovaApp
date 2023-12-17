@@ -11,6 +11,7 @@ using ExpenseService.Application.DI;
 using ExpenseService.API.DI;
 using Serilog;
 using ExpenseService.Application.Behaviors;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 // var serviceProvider = builder.Services.BuildServiceProvider();
@@ -43,12 +44,22 @@ builder.Services.RegisterMessageConsumers();
 // Register the Hosted Services
 builder.Services.RegisterHostedServices();
 
+// Register the ILogger
+builder.Services.AddLogging(loggingBuilder =>
+{
+	loggingBuilder.AddSerilog(dispose: true);
+
+	loggingBuilder.AddFilter("Microsoft", LogLevel.Information);
+});
+
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-.WriteTo.Console()
-.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-.CreateLogger();
+	.MinimumLevel.Information()
+	.MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+	.Enrich.FromLogContext()
+	.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+	.CreateLogger();
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
@@ -67,6 +78,8 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+// app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

@@ -24,8 +24,6 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 
 	public async Task Handle(CategoryCreatedEvent notification, CancellationToken cancellationToken)
 	{
-		Log.Information("CategoryCreatedEventHandler.Handle - Start");
-
 		var message = new CategoryCreatedMessage
 		{
 			EventId     = notification.EventDetails.EventId,
@@ -48,8 +46,6 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);
-
-		Log.Information("CategoryCreatedEventHandler.Handle - End");
 	}
 }
 
