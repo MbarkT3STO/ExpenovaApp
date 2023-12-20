@@ -8,6 +8,15 @@ namespace ExpenseService.Application.Behaviors;
 public class ExceptionHandlingBehavior<TRequest, TResponse>: IPipelineBehavior<TRequest, TResponse>
 {
 	private readonly ILogger<ExceptionHandlingBehavior<TRequest, TResponse>> _logger;
+	private readonly Dictionary<Type, Func<Exception, TResponse>> _responseTypeToFailedResultMap = new()
+	{
+		{ typeof(CreateCategoryCommandResult), exception => (TResponse)(object) CreateCategoryCommandResult.Failed(new Error(exception.Message)) },
+		{ typeof(UpdateCategoryCommandResult), exception => (TResponse)(object) UpdateCategoryCommandResult.Failed(new Error(exception.Message)) },
+		{ typeof(DeleteCategoryCommandResult), exception => (TResponse)(object) DeleteCategoryCommandResult.Failed(new Error(exception.Message)) },
+		{ typeof(GetCategoryByIdQueryResult), exception => (TResponse)(object) GetCategoryByIdQueryResult.Failed(new Error(exception.Message)) },
+		{ typeof(GetCategoriesQueryResult), exception => (TResponse)(object) GetCategoriesQueryResult.Failed(new Error(exception.Message)) },
+		{ typeof(GetExpensesQueryResult), exception => (TResponse)(object) GetExpensesQueryResult.Failed(new Error(exception.Message)) }
+	};
 
 	public ExceptionHandlingBehavior(ILogger<ExceptionHandlingBehavior<TRequest, TResponse>> logger)
 	{
@@ -35,40 +44,16 @@ public class ExceptionHandlingBehavior<TRequest, TResponse>: IPipelineBehavior<T
 	/// Creates a failed result with the specified exception.
 	/// </summary>
 	/// <typeparam name="TResponse">The type of the response.</typeparam>
-	private static TResponse CreateFailedResult(Exception exception)
+	private TResponse CreateFailedResult(Exception exception)
 	{
-		if (IsTResponseOfType(typeof(CreateCategoryCommandResult)))
+		var isExistingResponseType = _responseTypeToFailedResultMap.TryGetValue(typeof(TResponse), out var createFailedResult);
+
+		if (isExistingResponseType)
 		{
-			var failedResult = CreateCategoryCommandResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
-		}
-		else if (IsTResponseOfType(typeof(UpdateCategoryCommandResult)))
-		{
-			var failedResult = UpdateCategoryCommandResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
-		}
-		else if (IsTResponseOfType(typeof(DeleteCategoryCommandResult)))
-		{
-			var failedResult = DeleteCategoryCommandResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
-		}
-		else if (IsTResponseOfType(typeof(GetCategoryByIdQueryResult)))
-		{
-			var failedResult = GetCategoryByIdQueryResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
-		}
-		else if (IsTResponseOfType(typeof(GetCategoriesQueryResult)))
-		{
-			var failedResult = GetCategoriesQueryResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
-		}
-		else if (IsTResponseOfType(typeof(GetExpensesQueryResult)))
-		{
-			var failedResult = GetExpensesQueryResult.Failed(new Error(exception.Message));
-			return (TResponse)(object)failedResult;
+			return createFailedResult(exception);
 		}
 
-		return default;
+		throw new InvalidOperationException($"The type {typeof(TResponse).Name} is not supported by the Exception Handling Behavior.");
 	}
 
 
