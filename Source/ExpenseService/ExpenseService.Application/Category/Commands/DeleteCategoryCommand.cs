@@ -82,23 +82,15 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 
 	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
-		try
-		{
-			var category = await GetCategoryIfExistOrThrowException(request.Id);
+		var category = await GetCategoryIfExistOrThrowException(request.Id);
 
-			await DeleteCategoryAsync(category);
+		await DeleteCategoryAsync(category);
 
-			await PublishCategoryDeletedEvent(category);
+		await PublishCategoryDeletedEvent(category);
 
-			var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
+		var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
 
-			return DeleteCategoryCommandResult.Succeeded(resultDTO);
-		}
-		catch (Exception e)
-		{
-			var error = new Error(e.Message);
-			return DeleteCategoryCommandResult.Failed(error);
-		}
+		return DeleteCategoryCommandResult.Succeeded(resultDTO);
 	}
 
 

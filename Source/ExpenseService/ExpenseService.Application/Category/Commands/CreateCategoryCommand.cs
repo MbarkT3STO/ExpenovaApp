@@ -1,7 +1,6 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace ExpenseService.Application.Category.Commands;
 
@@ -41,10 +40,8 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 
 public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
-	private readonly ILogger<CreateCategoryCommandHandler> _logger;
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator, ILogger<CreateCategoryCommandHandler> logger): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator) : base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
-		_logger = logger;
 	}
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{

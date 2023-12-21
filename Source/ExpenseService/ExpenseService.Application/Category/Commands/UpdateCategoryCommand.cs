@@ -61,23 +61,16 @@ public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategory
 
 	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		try
-		{
-			var category = await GetCategoryIfExistOrThrowException(request.Id);
+		var category = await GetCategoryIfExistOrThrowException(request.Id);
 
-			await CheckIfUserExistsOrThrowException(category.UserId);
-			await UpdateAndAuditCategoryAsync(category, request);
-			await PublishCategoryUpdatedEvent(category);
+		await CheckIfUserExistsOrThrowException(category.UserId);
+		await UpdateAndAuditCategoryAsync(category, request);
+		await PublishCategoryUpdatedEvent(category);
 
-			var resultDTO = _mapper.Map<UpdateCategoryCommandResultDTO>(category);
-			var result    = UpdateCategoryCommandResult.Succeeded(resultDTO);
+		var resultDTO = _mapper.Map<UpdateCategoryCommandResultDTO>(category);
+		var result    = UpdateCategoryCommandResult.Succeeded(resultDTO);
 
-			return result;
-		}
-		catch (Exception e)
-		{
-			return UpdateCategoryCommandResult.Failed(e.Message);
-		}
+		return result;
 	}
 
 
@@ -95,7 +88,7 @@ public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategory
 
 		var isValidCategoryForUpdateSpecification = new IsValidCategoryForUpdateSpecification();
 		category.Validate(isValidCategoryForUpdateSpecification);
-		
+
 		await _categoryRepository.UpdateAsync(category);
 	}
 

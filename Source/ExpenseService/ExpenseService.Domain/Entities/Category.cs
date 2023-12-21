@@ -1,5 +1,4 @@
 using ExpenseService.Domain.Shared.Common;
-using ExpenseService.Domain.Shared.Interfaces;
 
 namespace ExpenseService.Domain.Entities;
 
@@ -8,7 +7,7 @@ public class Category: AuditableEntity<Guid>
 	public string Name { get; private set; }
 	public string Description { get; private set; }
 	public string UserId { get; private set; }
-	
+
 	protected Category() { }
 	public Category( string name, string description, string userId)
 	{
@@ -17,8 +16,8 @@ public class Category: AuditableEntity<Guid>
 		Description = description;
 		UserId      = userId;
 	}
-	
-	
+
+
 	/// <summary>
 	/// Updates the name of the category.
 	/// </summary>
@@ -27,7 +26,7 @@ public class Category: AuditableEntity<Guid>
 	{
 		Name = newName;
 	}
-	
+
 	/// <summary>
 	/// Updates the description of the category.
 	/// </summary>
@@ -36,36 +35,36 @@ public class Category: AuditableEntity<Guid>
 	{
 		Description = newDescription;
 	}
-	
-	
+
+
 	/// <summary>
 	/// Validates the category entity against the given specification.
-	/// Throws a DomainException if the specification is not satisfied.
+	/// Throws a SpecificationException if the specification is not satisfied.
 	/// </summary>
 	/// <param name="specification">The specification to validate against.</param>
 	public void Validate(ISpecification<Category> specification)
 	{
 		var satisfactionResult = specification.IsSatisfiedBy(this);
-		
+
 		if (!satisfactionResult.IsSatisfied)
 		{
-			throw new DomainException(satisfactionResult.Errors);
+			throw new SpecificationException(satisfactionResult.Errors);
 		}
 	}
 
 
 	/// <summary>
 	/// Validates the category entity against the given specification.
-	/// Throws a DomainException if the specification is not satisfied.
+	/// Throws a SpecificationException if the specification is not satisfied.
 	/// </summary>
 	/// <param name="specification">The specification to validate against.</param>
 	public void Validate(ICompositeSpecification<Category> specification)
 	{
 		var satisfactionResult = specification.IsSatisfiedBy(this);
-		
+
 		if (!satisfactionResult.IsSatisfied)
 		{
-			throw new DomainException(satisfactionResult.Errors);
+			throw new SpecificationException(satisfactionResult.Errors);
 		}
 	}
 }
