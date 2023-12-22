@@ -16,10 +16,11 @@ public abstract class CompositeSpecification<T>: ICompositeSpecification<T> wher
 	/// This means that the base class will call <see cref="ConfigureSpecifications"/> to configure the specifications.
 	/// </summary>
 	protected bool ShouldConfigureSpecificationsFromTheBase { get; set; } = true;
-	public List<ISpecification<T>> Specifications { get;} = new();
+	public    List<ISpecification<T>> Specifications { get; }             = new();
 
-	protected CompositeSpecification()
+	protected CompositeSpecification(bool shouldConfigureSpecificationsFromTheBase = true)
 	{
+		ShouldConfigureSpecificationsFromTheBase = shouldConfigureSpecificationsFromTheBase;
 		if (ShouldConfigureSpecificationsFromTheBase)
 		{
 			ConfigureSpecifications();
