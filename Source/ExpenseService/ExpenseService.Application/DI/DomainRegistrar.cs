@@ -30,6 +30,14 @@ public static class DomainRegistrar
 		services.AddTransient<IsUniqueCategoryNameSpecification>();
 
 		services.AddTransient<IsValidCategoryForCreateSpecification>();
+
+		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryNameSpecification>();
+		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryDescriptionSpecification>();
+		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryCreationAuditSpecification>();
+		services.AddTransient<ISpecification<Domain.Entities.Category>, IsUniqueCategoryNameSpecification>();
+
+		services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForCreateSpecification>();
+
 		#endregion
 	}
 }

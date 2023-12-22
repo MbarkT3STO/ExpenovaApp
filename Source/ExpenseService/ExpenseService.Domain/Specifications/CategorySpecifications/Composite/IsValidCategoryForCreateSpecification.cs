@@ -5,19 +5,26 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryForCreateSpecification: CompositeSpecification<Category>
 {
+
 	readonly IsValidCategoryNameSpecification _isValidCategoryNameSpecification;
 	readonly IsValidCategoryDescriptionSpecification _isValidCategoryDescriptionSpecification;
 	readonly IsValidCategoryCreationAuditSpecification _isValidCategoryCreationAuditSpecification;
 	readonly IsUniqueCategoryNameSpecification _isUniqueCategoryNameSpecification;
 
 
-	public IsValidCategoryForCreateSpecification(IsValidCategoryNameSpecification isValidCategoryNameSpecification, IsValidCategoryDescriptionSpecification isValidCategoryDescriptionSpecification, IsValidCategoryCreationAuditSpecification isValidCategoryCreationAuditSpecification, IsUniqueCategoryNameSpecification isUniqueCategoryNameSpecification) : base()
+	public IsValidCategoryForCreateSpecification(IsValidCategoryNameSpecification isValidCategoryNameSpecification, IsValidCategoryDescriptionSpecification isValidCategoryDescriptionSpecification, IsValidCategoryCreationAuditSpecification isValidCategoryCreationAuditSpecification, IsUniqueCategoryNameSpecification isUniqueCategoryNameSpecification)
 	{
+		ShouldConfigureSpecificationsFromTheBase = false;
+
 		_isValidCategoryNameSpecification          = isValidCategoryNameSpecification;
 		_isValidCategoryDescriptionSpecification   = isValidCategoryDescriptionSpecification;
 		_isValidCategoryCreationAuditSpecification = isValidCategoryCreationAuditSpecification;
 		_isUniqueCategoryNameSpecification         = isUniqueCategoryNameSpecification;
+
+		ConfigureSpecifications();
 	}
+
+
 
 	public override void ConfigureSpecifications()
 	{

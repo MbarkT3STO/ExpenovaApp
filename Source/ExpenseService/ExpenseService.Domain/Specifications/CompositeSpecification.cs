@@ -8,13 +8,22 @@ namespace ExpenseService.Domain.Specifications;
 /// Composite specification that aggregates multiple specifications.
 /// </summary>
 /// <typeparam name="T">The type of entity that the specification can be applied to.</typeparam>
-public class CompositeSpecification<T>: ICompositeSpecification<T> where T: class
+public abstract class CompositeSpecification<T>: ICompositeSpecification<T> where T: class
 {
+	/// <summary>
+	/// Indicates whether the specifications should be configured from the base class.
+	/// <br/>
+	/// This means that the base class will call <see cref="ConfigureSpecifications"/> to configure the specifications.
+	/// </summary>
+	protected bool ShouldConfigureSpecificationsFromTheBase { get; set; } = true;
 	public List<ISpecification<T>> Specifications { get;} = new();
-	
+
 	protected CompositeSpecification()
 	{
-		ConfigureSpecifications();
+		if (ShouldConfigureSpecificationsFromTheBase)
+		{
+			ConfigureSpecifications();
+		}
 	}
 
 	/// <summary>

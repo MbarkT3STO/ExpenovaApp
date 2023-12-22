@@ -11,9 +11,13 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryNameSpecification : Specification<Category>
 {
-    protected override void ConfigureConditions()
+    public IsValidCategoryNameSpecification() : base()
     {
-        AddCondition(category => !string.IsNullOrWhiteSpace(category.Name), "Category name cannot be empty.");
-        AddCondition(category => category.Name.Length <= 50, "Category name cannot be longer than 50 characters.");
     }
+
+    protected override void ConfigureConditions()
+	{
+		AddCondition(category => !string.IsNullOrWhiteSpace(category.Name), "Category name cannot be empty.");
+		AddCondition(category => category.Name.Length <= 50, "Category name cannot be longer than 50 characters.");
+	}
 }

@@ -62,14 +62,14 @@ public abstract class Specification<T> : ISpecification<T> where T : class
 
 		return Expression.Lambda<Func<T, bool>>(combinedExpression, conditions.First().Condition.Parameters);
 	}
-	
-	
+
+
 	/// <summary>
 	/// Configures the conditions for the specification.
 	/// </summary>
 	protected abstract void ConfigureConditions();
-	
-	
+
+
 	public List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> GetConditions()
 	{
 		return conditions;
