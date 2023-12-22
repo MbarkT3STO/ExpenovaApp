@@ -1,12 +1,4 @@
-using ExpenseService.Application.MessageConsumers;
-using ExpenseService.Domain.Repositories;
-using ExpenseService.Infrastructure.Data;
-using ExpenseService.Infrastructure.Repositories;
-using MassTransit;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using RabbitMqSettings;
 using ExpenseService.Application.DI;
 using ExpenseService.API.DI;
 using Serilog;
@@ -27,11 +19,17 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.
 
 
 
+
+// Register Domain Services
+builder.Services.RegisterDomainServices();
+
+// Register the Domain Specifications
+builder.Services.RegisterSpecifications();
+
 // Register the Application Services
 builder.Services.RegisterApplicationServices(builder.Configuration);
 
-// Register the Specifications
-builder.Services.RegisterSpecifications();
+
 
 
 

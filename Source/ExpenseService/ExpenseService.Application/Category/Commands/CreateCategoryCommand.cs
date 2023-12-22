@@ -40,17 +40,20 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 
 public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
-	public CreateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator) : base(categoryRepository, categoryService, userService, mapper, mediator)
+	readonly IsValidCategoryForCreateSpecification _isValidCategoryForCreateSpecification;
+
+	public CreateCategoryCommandHandler(IMapper mapper, IMediator mediator, CategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForCreateSpecification isValidCategoryForCreateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
+		_isValidCategoryForCreateSpecification = isValidCategoryForCreateSpecification;
 	}
+
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
 		await CheckIfUserExistsOrThrowException(request.UserId);
 
-		var category                              = CreateAndAuditCategory(request);
-		var isValidCategoryForCreateSpecification = new IsValidCategoryForCreateSpecification();
+		var category = CreateAndAuditCategory(request);
 
-		category.Validate(isValidCategoryForCreateSpecification);
+		category.Validate(_isValidCategoryForCreateSpecification);
 
 		await _categoryRepository.AddAsync(category);
 		await PublishCategoryCreatedEvent(category);

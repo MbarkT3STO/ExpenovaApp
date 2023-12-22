@@ -33,30 +33,30 @@ public static class ApplicationRegistrar
 		services.AddTransient(typeof(IExpenseRepository), typeof(ExpenseRepository));
 		services.AddTransient(typeof(ISubscriptionExpenseRepository), typeof(SubscriptionExpenseRepository));
 		services.AddTransient(typeof(IUserRepository), typeof(UserRepository));
-		
-		
+
+
 		// Register Application Services (Services that are used by the Application Layer)
 		services.AddTransient<UserService>();
 		services.AddTransient<CategoryService>();
-		
-		
+
+
 	}
 
 
-	/// <summary>
-	/// Registers the specifications and composite specifications for the application.
-	/// </summary>
-	/// <param name="services">The service collection to register the specifications with.</param>
-	public static void RegisterSpecifications(this IServiceCollection services)
-	{
-		// Specifications
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryNameSpecification>();
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryDescriptionSpecification>();
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryCreationAuditSpecification>();
+	// /// <summary>
+	// /// Registers the specifications and composite specifications for the application.
+	// /// </summary>
+	// /// <param name="services">The service collection to register the specifications with.</param>
+	// public static void RegisterSpecifications(this IServiceCollection services)
+	// {
+	// 	// Specifications
+	// 	services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryNameSpecification>();
+	// 	services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryDescriptionSpecification>();
+	// 	services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryCreationAuditSpecification>();
 
 
-		// Composite Specifications
-		services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForCreateSpecification>();
-	}
-	
+	// 	// Composite Specifications
+	// 	services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForCreateSpecification>();
+	// }
+
 }

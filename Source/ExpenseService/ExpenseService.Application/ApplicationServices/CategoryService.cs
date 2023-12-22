@@ -18,11 +18,11 @@ public class CategoryService
 	/// <returns>True if the category name is unique, false otherwise.</returns>
 	public async Task<bool> IsCategoryNameUniqueAsync(string name, string userId)
 	{
-		var category = await _categoryRepository.GetByNameAsync(name, userId);
+		var category = await _categoryRepository.GetByNameAndUserIdAsync(name, userId);
 
 		return category == null;
 	}
-	
+
 	/// <summary>
 	/// Checks if a category with the specified ID exists.
 	/// </summary>

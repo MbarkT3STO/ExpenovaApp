@@ -145,7 +145,7 @@ public class CategoryRepository: Repository, ICategoryRepository
 		return domainCategory;
 	}
 
-	public async Task<Category> GetByNameAsync(string name, string userId)
+	public async Task<Category> GetByNameAndUserIdAsync(string name, string userId)
 	{
 		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Name == name && c.UserId == userId);
 
