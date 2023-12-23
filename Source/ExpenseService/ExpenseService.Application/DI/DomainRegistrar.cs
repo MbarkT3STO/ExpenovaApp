@@ -26,18 +26,15 @@ public static class DomainRegistrar
 		#region Category Specifications
 		services.AddTransient<IsValidCategoryNameSpecification>();
 		services.AddTransient<IsValidCategoryDescriptionSpecification>();
-		services.AddTransient<IsValidCategoryCreationAuditSpecification>();
 		services.AddTransient<IsUniqueCategoryNameSpecification>();
 
+		services.AddTransient<IsValidCategoryCreationAuditSpecification>();
+		services.AddTransient<IsValidCategoryUpdateAuditSpecification>();
+
 		services.AddTransient<IsValidCategoryForCreateSpecification>();
+		services.AddTransient<IsValidCategoryForUpdateSpecification>();
 
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryNameSpecification>();
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryDescriptionSpecification>();
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsValidCategoryCreationAuditSpecification>();
-		services.AddTransient<ISpecification<Domain.Entities.Category>, IsUniqueCategoryNameSpecification>();
-
-		services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForCreateSpecification>();
-
+		// services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForUpdateSpecification>();
 		#endregion
 	}
 }

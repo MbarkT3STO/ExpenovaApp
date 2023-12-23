@@ -18,6 +18,10 @@ public abstract class CompositeSpecification<T>: ICompositeSpecification<T> wher
 	protected bool ShouldConfigureSpecificationsFromTheBase { get; set; } = true;
 	public    List<ISpecification<T>> Specifications { get; }             = new();
 
+	/// <summary>
+	/// Creates a new instance of <see cref="CompositeSpecification{T}"/>.
+	/// </summary>
+	/// <param name="shouldConfigureSpecificationsFromTheBase">Indicates whether the specifications should be configured from the base class's constructor.</param>
 	protected CompositeSpecification(bool shouldConfigureSpecificationsFromTheBase = true)
 	{
 		ShouldConfigureSpecificationsFromTheBase = shouldConfigureSpecificationsFromTheBase;

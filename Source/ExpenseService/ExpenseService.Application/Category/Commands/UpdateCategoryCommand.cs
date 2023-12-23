@@ -1,6 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseService.Application.Category.Commands;
 
@@ -52,11 +53,13 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
 	readonly CategoryService _categoryService;
+	readonly IsValidCategoryForUpdateSpecification _isValidCategoryForUpdateSpecification;
 
 
-	public UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, CategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
-		_categoryService = categoryService;
+		_categoryService                       = categoryService;
+		_isValidCategoryForUpdateSpecification = isValidCategoryForUpdateSpecification;
 	}
 
 	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -86,8 +89,7 @@ public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategory
 
 		category.WriteUpdatedAudit(updatedBy: category.UserId, updatedAt: DateTime.UtcNow);
 
-		var isValidCategoryForUpdateSpecification = new IsValidCategoryForUpdateSpecification();
-		category.Validate(isValidCategoryForUpdateSpecification);
+		category.Validate(_isValidCategoryForUpdateSpecification);
 
 		await _categoryRepository.UpdateAsync(category);
 	}

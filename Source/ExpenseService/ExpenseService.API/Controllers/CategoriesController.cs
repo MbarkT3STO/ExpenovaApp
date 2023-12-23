@@ -13,13 +13,13 @@ public class CategoriesController: ControllerBase
 {
 	private readonly IMediator _mediator;
 	private readonly IMapper _mapper;
-	
+
 	public CategoriesController(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
 		_mapper   = mapper;
 	}
-	
+
 	[HttpGet]
 	public async Task<IActionResult> Get()
 	{
@@ -29,11 +29,11 @@ public class CategoriesController: ControllerBase
 		{
 			return BadRequest(queryResult.Error);
 		}
-		
+
 		return Ok(queryResult.Value);
 	}
-	
-	
+
+
 	[HttpGet("{id}")]
 	public async Task<IActionResult> Get(Guid id)
 	{
@@ -43,39 +43,39 @@ public class CategoriesController: ControllerBase
 		{
 			return BadRequest(queryResult.Error);
 		}
-		
+
 		return Ok(queryResult.Value);
 	}
-	
-	
+
+
 	[HttpPost]
 	public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
-		
+
 		if(commandResult.IsFailure)
 		{
 			return BadRequest(commandResult.Error.Message);
 		}
-		
+
 		return Ok(commandResult.Value);
 	}
-	
-	
+
+
 	[HttpPut("{id}")]
 	public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCategoryCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
-		
+
 		if(commandResult.IsFailure)
 		{
 			return BadRequest(commandResult.Error.Message);
 		}
-		
+
 		return Ok(commandResult.Value);
 	}
-	
-	
+
+
 	[HttpGet("GetCategoriesByUserId/{userId}")]
 	public async Task<IActionResult> GetCategoriesByUserId(string userId)
 	{
@@ -86,21 +86,21 @@ public class CategoriesController: ControllerBase
 		{
 			return BadRequest(queryResult.Error);
 		}
-		
+
 		return Ok(queryResult.Value);
 	}
-	
+
 	[HttpDelete("Delete/{id}")]
 	public async Task<IActionResult> Delete(Guid id)
 	{
 		var commandResult = await _mediator.Send(new DeleteCategoryCommand(id));
-		
+
 		if(commandResult.IsFailure)
 		{
 			return BadRequest(commandResult.Error.Message);
 		}
-		
+
 		return Ok(commandResult.Value);
 	}
-	
+
 }
