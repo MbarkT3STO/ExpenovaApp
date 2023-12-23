@@ -30,9 +30,11 @@ public static class DomainRegistrar
 
 		services.AddTransient<IsValidCategoryCreationAuditSpecification>();
 		services.AddTransient<IsValidCategoryUpdateAuditSpecification>();
+		services.AddTransient<IsValidCategoryDeleteAuditSpecification>();
 
 		services.AddTransient<IsValidCategoryForCreateSpecification>();
 		services.AddTransient<IsValidCategoryForUpdateSpecification>();
+		services.AddTransient<IsValidCategoryForDeleteSpecification>();
 
 		// services.AddTransient<ICompositeSpecification<Domain.Entities.Category>, IsValidCategoryForUpdateSpecification>();
 		#endregion

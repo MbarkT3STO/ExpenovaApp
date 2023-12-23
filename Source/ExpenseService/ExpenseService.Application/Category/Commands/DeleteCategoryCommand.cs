@@ -76,8 +76,11 @@ public class DeleteCategoryCommand: IRequest<DeleteCategoryCommandResult>
 
 public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
 {
-	public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(categoryRepository, categoryService, userService, mapper, mediator)
+	readonly IsValidCategoryForDeleteSpecification _isValidCategoryForDeleteSpecification;
+
+	public DeleteCategoryCommandHandler(IMapper mapper, IMediator mediator, CategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForDeleteSpecification isValidCategoryForDeleteSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
+		_isValidCategoryForDeleteSpecification = isValidCategoryForDeleteSpecification;
 	}
 
 	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
@@ -102,6 +105,8 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	private async Task DeleteCategoryAsync(Domain.Entities.Category category)
 	{
 		category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
+
+		category.Validate(_isValidCategoryForDeleteSpecification);
 
 		await _categoryRepository.DeleteAsync(category);
 	}
