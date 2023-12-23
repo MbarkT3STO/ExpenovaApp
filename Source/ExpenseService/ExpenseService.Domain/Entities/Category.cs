@@ -38,6 +38,15 @@ public class Category: AuditableEntity<Guid>
 
 
 	/// <summary>
+	/// Marks the category as deleted.
+	/// </summary>
+	public void MarkAsDeleted()
+	{
+		IsDeleted = true;
+	}
+
+
+	/// <summary>
 	/// Validates the category entity against the given specification.
 	/// Throws a SpecificationException if the specification is not satisfied.
 	/// </summary>

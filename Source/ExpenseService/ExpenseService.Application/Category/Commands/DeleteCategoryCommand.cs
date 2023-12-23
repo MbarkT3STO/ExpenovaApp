@@ -87,9 +87,9 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	{
 		var category = await GetCategoryIfExistOrThrowException(request.Id);
 
-		await DeleteCategoryAsync(category);
+		await DeleteCategoryAsync(category, cancellationToken);
 
-		await PublishCategoryDeletedEvent(category);
+		await PublishCategoryDeletedEvent(category, cancellationToken);
 
 		var resultDTO = _mapper.Map<DeleteCategoryCommandResultDTO>(category);
 
@@ -102,13 +102,14 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	/// </summary>
 	/// <param name="category">The category to delete.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	private async Task DeleteCategoryAsync(Domain.Entities.Category category)
+	private async Task DeleteCategoryAsync(Domain.Entities.Category category, CancellationToken cancellationToken)
 	{
+		category.MarkAsDeleted();
 		category.WriteDeletedAudit(deletedBy: category.UserId, deletedAt: DateTime.UtcNow);
 
 		category.Validate(_isValidCategoryForDeleteSpecification);
 
-		await _categoryRepository.DeleteAsync(category);
+		await _categoryRepository.DeleteAsync(category, cancellationToken);
 	}
 
 
@@ -117,12 +118,12 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 	/// </summary>
 	/// <param name="category">The category to publish the event for.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	private async Task PublishCategoryDeletedEvent(Domain.Entities.Category category)
+	private async Task PublishCategoryDeletedEvent(Domain.Entities.Category category, CancellationToken cancellationToken = default)
 	{
 		var categoryDeletedEventDetails = new DomainEventDetails(nameof(CategoryDeletedEvent), category.UserId);
 		var categoryDeletedEventData    = new CategoryDeletedEventData(category.Id, category.Name, category.Description, category.UserId);
 		var categoryDeletedEvent        = CategoryDeletedEvent.Create(categoryDeletedEventDetails, categoryDeletedEventData);
 
-		await _mediator.Publish(categoryDeletedEvent);
+		await _mediator.Publish(categoryDeletedEvent, cancellationToken);
 	}
 }
