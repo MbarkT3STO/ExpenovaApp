@@ -1,4 +1,5 @@
 using System.Reflection.Metadata;
+using FluentValidation;
 namespace ExpenseService.Application.Category.Queries;
 
 /// <summary>
@@ -38,6 +39,18 @@ public class GetCategoryByIdQueryResultMappingProfile: Profile
 }
 
 
+/// <summary>
+/// Validator for the GetCategoryByIdQuery class.
+/// </summary>
+public class GetCategoryByIdQueryValidator : AbstractValidator<GetCategoryByIdQuery>
+{
+	public GetCategoryByIdQueryValidator()
+	{
+		RuleFor(x => x.Id).Must(id => id == Guid.Empty).WithMessage("Category ID cannot be empty.");
+	}
+}
+
+
 
 
 /// <summary>
@@ -54,31 +67,31 @@ public class GetCategoryByIdQuery : IRequest<GetCategoryByIdQueryResult>
 }
 
 
-public class GetCategoryByIdQueryHandler: IRequestHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResult>
+public class GetCategoryByIdQueryHandler: BaseQueryHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IMapper _mapper;
 
-	public GetCategoryByIdQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+	public GetCategoryByIdQueryHandler(ICategoryRepository categoryRepository, IMapper mapper) : base(mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper             = mapper;
 	}
 
-	public async Task<GetCategoryByIdQueryResult> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+	public override async Task<GetCategoryByIdQueryResult> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var category    = await _categoryRepository.GetByIdAsync(request.Id);
 			var categoryDTO = _mapper.Map<GetCategoryByIdQueryResultDTO>(category);
 
-			var result = new GetCategoryByIdQueryResult(categoryDTO);
+			var result = GetCategoryByIdQueryResult.Succeeded(categoryDTO);
 
 			return result;
 		}
 		catch (Exception e)
 		{
-			return new GetCategoryByIdQueryResult(new Error(e.Message));
+			var error = new Error(e.Message);
+
+			return GetCategoryByIdQueryResult.Failed(error);
 		}
 	}
 }

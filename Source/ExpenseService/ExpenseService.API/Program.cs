@@ -59,8 +59,7 @@ Log.Logger = new LoggerConfiguration()
 	.WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
 	.CreateLogger();
 
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
+
 
 
 builder.Services.AddControllers();

@@ -35,31 +35,30 @@ public record GetCategoriesQuery: IRequest<GetCategoriesQueryResult>
 
 }
 
-public class GetCategoriesQueryHandler: IRequestHandler<GetCategoriesQuery, GetCategoriesQueryResult>
+public class GetCategoriesQueryHandler: BaseQueryHandler<GetCategoriesQuery, GetCategoriesQueryResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IMapper _mapper;
 
-	public GetCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+	public GetCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper) : base(mapper)
 	{
 		_categoryRepository = categoryRepository;
-		_mapper             = mapper;
 	}
 
-	public async Task<GetCategoriesQueryResult> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+	public override async Task<GetCategoriesQueryResult> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var categories    = await _categoryRepository.GetAsync();
 			var categoriesDTO = _mapper.Map<IEnumerable<GetCategoriesQueryResultDTO>>(categories);
 
-			var result = new GetCategoriesQueryResult(categoriesDTO);
+			var result = GetCategoriesQueryResult.Succeeded(categoriesDTO);
 
 			return result;
 		}
 		catch (Exception e)
 		{
-			return new GetCategoriesQueryResult(new Error(e.Message));
+			var error = new Error(e.Message);
+			return GetCategoriesQueryResult.Failed(error);
 		}
 	}
 }

@@ -1,6 +1,8 @@
 using ExpenseService.Application.ApplicationServices;
+using ExpenseService.Application.Behaviors;
 using ExpenseService.Domain.Shared.Interfaces;
 using ExpenseService.Domain.Specifications.CategorySpecifications;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,16 @@ public static class ApplicationRegistrar
 			options.UseNpgsql(configuration.GetConnectionString("AppDBConnection"),
 			b => b.MigrationsAssembly("ExpenseService.API"));
 		});
+
+
+		// MediatR Pipeline Behaviors
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionHandlingBehavior<,>));
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+
+		// Register FluentValidation validators
+		services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 
 		// Register all Repositories automatically from all assemblies
