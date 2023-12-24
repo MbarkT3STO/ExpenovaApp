@@ -1,0 +1,15 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate" : "/api/Categories",
+            "DownstreamHostAndPorts":[
+                {
+                    "Host": "localhost",
+                    "Port": 5196,
+                    "Scheme": "http"
+                }
+            ],
+            "UpstreamPathTemplate": "/ExpenseService/api/Categories"
+        }
+    ]
+}

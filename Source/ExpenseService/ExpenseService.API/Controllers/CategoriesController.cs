@@ -3,6 +3,7 @@ using ExpenseService.Application.Category.Commands;
 using ExpenseService.Application.Category.Queries;
 using ExpenseService.Application.Common;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseService.API.Controllers;
@@ -20,6 +21,7 @@ public class CategoriesController: ControllerBase
 		_mapper   = mapper;
 	}
 
+	// [Authorize(Roles = "User")]
 	[HttpGet]
 	public async Task<IActionResult> Get()
 	{

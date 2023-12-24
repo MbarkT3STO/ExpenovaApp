@@ -1,4 +1,11 @@
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Ocelot json file
+builder.Configuration.AddJsonFile("ocelot.json");
+builder.Services.AddOcelot(builder.Configuration);
 
 // Add services to the container.
 
@@ -12,9 +19,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
+
+app.UseOcelot().Wait();
 
 app.UseHttpsRedirection();
 

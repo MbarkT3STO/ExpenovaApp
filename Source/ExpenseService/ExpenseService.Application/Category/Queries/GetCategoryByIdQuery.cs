@@ -44,7 +44,7 @@ public class GetCategoryByIdQueryValidator : AbstractValidator<GetCategoryByIdQu
 {
 	public GetCategoryByIdQueryValidator()
 	{
-		RuleFor(x => x.Id).Must(id => id == Guid.Empty).WithMessage("Category ID cannot be empty.");
+		RuleFor(x => x.Id).Must(id => id != Guid.Empty).WithMessage("Category ID cannot be empty.");
 	}
 }
 
