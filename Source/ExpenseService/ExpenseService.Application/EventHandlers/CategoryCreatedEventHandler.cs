@@ -1,9 +1,12 @@
-using ExpenseService.Infrastructure.Data.Entities;
-using Messages.ExpenseServiceMessages.Category;
 using Microsoft.Extensions.Options;
+
+using ExpenseService.Infrastructure.Data.Entities;
+
+using Messages.ExpenseServiceMessages.Category;
+
 using Newtonsoft.Json;
+
 using RabbitMqSettings;
-using RabbitMqSettings.QueueRoutes;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace ExpenseService.Application.EventHandlers;

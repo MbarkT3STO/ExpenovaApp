@@ -5,9 +5,9 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryUpdateAuditSpecification : Specification<Category>
 {
-	protected override void ConfigureConditions()
+	protected override void ConfigureRules()
 	{
-		AddCondition(category => category.LastUpdatedAt != null && category.LastUpdatedAt != default, "Category must have a last updated at date.");
-		AddCondition(category => !string.IsNullOrWhiteSpace(category.LastUpdatedBy), "Category must have a last updated by user.");
+		AddRule(category => category.LastUpdatedAt != null && category.LastUpdatedAt != default, "Category must have a last updated at date.");
+		AddRule(category => !string.IsNullOrWhiteSpace(category.LastUpdatedBy), "Category must have a last updated by user.");
 	}
 }

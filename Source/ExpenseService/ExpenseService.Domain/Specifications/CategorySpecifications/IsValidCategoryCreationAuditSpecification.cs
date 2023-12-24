@@ -7,10 +7,10 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryCreationAuditSpecification: Specification<Category>
 {
-	protected override void ConfigureConditions()
+	protected override void ConfigureRules()
 	{
-		AddCondition(category => !string.IsNullOrEmpty(category.CreatedBy), "Category creation audit is invalid.");
-		AddCondition(category => !string.IsNullOrWhiteSpace(category.CreatedBy), "Category creation audit is invalid.");
-		AddCondition(category => category.CreatedAt != default, "Category creation audit is invalid.");
+		AddRule(category => !string.IsNullOrEmpty(category.CreatedBy), "Category creation audit is invalid.");
+		AddRule(category => !string.IsNullOrWhiteSpace(category.CreatedBy), "Category creation audit is invalid.");
+		AddRule(category => category.CreatedAt != default, "Category creation audit is invalid.");
 	}
 }

@@ -10,22 +10,23 @@ namespace ExpenseService.Domain.Specifications;
 /// <typeparam name="T">The type of entity that the specification can be applied to.</typeparam>
 public abstract class Specification<T> : ISpecification<T> where T : class
 {
-	private readonly List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> conditions;
+	private readonly List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> rules;
 
 	protected Specification()
 	{
-		conditions = new List<(Expression<Func<T, bool>>, string)>();
-		ConfigureConditions();
+		rules = new List<(Expression<Func<T, bool>>, string)>();
+		ConfigureRules();
 	}
 
+
 	/// <summary>
-	/// Adds a condition to the specification with a corresponding error message.
+	/// Adds a rule to the specification.
 	/// </summary>
-	/// <param name="condition">The condition to add.</param>
-	/// <param name="errorMessage">The error message for the condition when false.</param>
-	protected void AddCondition(Expression<Func<T, bool>> condition, string errorMessage)
+	/// <param name="condition">The condition/rule that must be satisfied.</param>
+	/// <param name="errorMessage">The error message to be displayed if the condition/rule is not satisfied.</param>
+	protected void AddRule(Expression<Func<T, bool>> condition, string errorMessage)
 	{
-		conditions.Add((condition, errorMessage));
+		rules.Add((condition, errorMessage));
 	}
 
 
@@ -33,9 +34,9 @@ public abstract class Specification<T> : ISpecification<T> where T : class
 	/// <inheritdoc cref="ISpecification{T}.IsSatisfiedBy"/>
 	public virtual SatisfactionResult IsSatisfiedBy(T entity)
 	{
-		foreach (var (condition, errorMessage) in conditions)
+		foreach (var (rule, errorMessage) in rules)
 		{
-			var predicate = condition.Compile();
+			var predicate = rule.Compile();
 			if (!predicate(entity))
 			{
 				var error = new Error(errorMessage);
@@ -51,28 +52,28 @@ public abstract class Specification<T> : ISpecification<T> where T : class
 	/// <inheritdoc cref="ISpecification{T}.ToExpression"/>
 	public virtual Expression<Func<T, bool>> ToExpression()
 	{
-		if (!conditions.Any())
+		if (!rules.Any())
 		{
-			throw new InvalidOperationException("Specification must have at least one condition.");
+			throw new InvalidOperationException("Specification must have at least one condition/rule.");
 		}
 
-		var combinedExpression = conditions
-			.Select(condition => condition.Condition.Body)
+		var combinedExpression = rules
+			.Select(rule => rule.Condition.Body)
 			.Aggregate(Expression.AndAlso);
 
-		return Expression.Lambda<Func<T, bool>>(combinedExpression, conditions.First().Condition.Parameters);
+		return Expression.Lambda<Func<T, bool>>(combinedExpression, rules.First().Condition.Parameters);
 	}
 
 
 	/// <summary>
-	/// Configures the conditions for the specification.
+	/// Configures the conditions/rules for the specification.
 	/// </summary>
-	protected abstract void ConfigureConditions();
+	protected abstract void ConfigureRules();
 
 
-	public List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> GetConditions()
+	public List<(Expression<Func<T, bool>> Condition, string ErrorMessage)> GetRules()
 	{
-		return conditions;
+		return rules;
 	}
 
 }

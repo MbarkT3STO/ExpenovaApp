@@ -14,10 +14,8 @@ public class IsUniqueCategoryNameSpecification: Specification<Category>
 		_categoryUniquenessChecker = categoryUniquenessChecker;
 	}
 
-	protected override void ConfigureConditions()
+	protected override void ConfigureRules()
 	{
-		AddCondition(category =>
-		category.Id == Guid.Empty ? _categoryUniquenessChecker.IsUniqueCategoryNameAsync(category.Name, category.UserId).Result
-		: _categoryUniquenessChecker.IsUniqueCategoryNameAsync(category.Id, category.Name, category.UserId).Result, "Category name must be unique.");
+		AddRule(category => _categoryUniquenessChecker.IsUniqueCategoryNameAsync(category.Id, category.Name, category.UserId).Result, "Category name must be unique.");
 	}
 }

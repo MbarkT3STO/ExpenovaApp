@@ -11,10 +11,10 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsValidCategoryDescriptionSpecification : Specification<Category>
 {
-	protected override void ConfigureConditions()
+	protected override void ConfigureRules()
 	{
-		AddCondition(category => !string.IsNullOrEmpty(category.Description), "Category description is invalid.");
-		AddCondition(category => !string.IsNullOrWhiteSpace(category.Description), "Category description is invalid.");
-		AddCondition(category => category.Description.Length <= 255, "Category description cannot be longer than 255 characters.");
+		AddRule(category => !string.IsNullOrEmpty(category.Description), "Category description is invalid.");
+		AddRule(category => !string.IsNullOrWhiteSpace(category.Description), "Category description is invalid.");
+		AddRule(category => category.Description.Length <= 255, "Category description cannot be longer than 255 characters.");
 	}
 }

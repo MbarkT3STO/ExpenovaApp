@@ -15,9 +15,9 @@ public class IsValidCategoryNameSpecification : Specification<Category>
     {
     }
 
-    protected override void ConfigureConditions()
+    protected override void ConfigureRules()
 	{
-		AddCondition(category => !string.IsNullOrWhiteSpace(category.Name), "Category name cannot be empty.");
-		AddCondition(category => category.Name.Length <= 50, "Category name cannot be longer than 50 characters.");
+		AddRule(category => !string.IsNullOrWhiteSpace(category.Name), "Category name cannot be empty.");
+		AddRule(category => category.Name.Length <= 50, "Category name cannot be longer than 50 characters.");
 	}
 }

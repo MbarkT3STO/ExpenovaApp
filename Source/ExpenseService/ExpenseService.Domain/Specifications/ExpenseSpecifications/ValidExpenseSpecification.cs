@@ -4,9 +4,9 @@ namespace ExpenseService.Domain.Specifications.ExpenseSpecifications;
 
 public class ValidExpenseSpecification : Specification<Expense>
 {
-	protected override void ConfigureConditions()
+	protected override void ConfigureRules()
 	{
-		AddCondition( expense => expense.Description != null, "Invalid description." );
-		AddCondition( expense => expense.Amount > 0, "Amount must be greater than 0." );
+		AddRule( expense => expense.Description != null, "Invalid description." );
+		AddRule( expense => expense.Amount > 0, "Amount must be greater than 0." );
 	}
 }
