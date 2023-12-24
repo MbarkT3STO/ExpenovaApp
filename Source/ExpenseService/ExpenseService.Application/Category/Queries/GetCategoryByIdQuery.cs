@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-using FluentValidation;
 namespace ExpenseService.Application.Category.Queries;
 
 /// <summary>

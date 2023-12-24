@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace ExpenseService.Application.Category.Queries;
 
 /// <summary>
@@ -33,6 +35,14 @@ public class GetCategoriesByUserIdQueryResultMappingProfile: Profile
 	public GetCategoriesByUserIdQueryResultMappingProfile()
 	{
 		CreateMap<Domain.Entities.Category, GetCategoriesByUserIdQueryResultDTO>();
+	}
+}
+
+public class GetCategoriesByUserIdQueryValidator: AbstractValidator<GetCategoriesByUserIdQuery>
+{
+	public GetCategoriesByUserIdQueryValidator()
+	{
+		RuleFor(x => x.UserId).NotEmpty().WithMessage("User ID is required.");
 	}
 }
 
