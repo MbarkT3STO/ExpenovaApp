@@ -37,7 +37,7 @@ public static class ApplicationRegistrar
 
 		// Register Application Services (Services that are used by the Application Layer)
 		services.AddTransient<UserService>();
-		services.AddTransient<CategoryService>();
+		services.AddTransient<ApplicationCategoryService>();
 
 
 	}

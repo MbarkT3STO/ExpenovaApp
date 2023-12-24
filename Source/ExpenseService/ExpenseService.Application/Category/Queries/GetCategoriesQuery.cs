@@ -8,12 +8,12 @@ public record GetCategoriesQueryResultDTO
 	public string UserId { get; private set; }
 }
 
-public class GetCategoriesQueryResult: QueryResult<IEnumerable<GetCategoriesQueryResultDTO>>
+public class GetCategoriesQueryResult: QueryResult<IEnumerable<GetCategoriesQueryResultDTO>, GetCategoriesQueryResult>
 {
 	public GetCategoriesQueryResult(IEnumerable<GetCategoriesQueryResultDTO>? value): base(value)
 	{
 	}
-	
+
 	public GetCategoriesQueryResult(Error error): base(error)
 	{
 	}
@@ -32,7 +32,7 @@ public class GetCategoriesQueryResultMappingProfile: Profile
 
 public record GetCategoriesQuery: IRequest<GetCategoriesQueryResult>
 {
-	
+
 }
 
 public class GetCategoriesQueryHandler: IRequestHandler<GetCategoriesQuery, GetCategoriesQueryResult>
@@ -45,14 +45,14 @@ public class GetCategoriesQueryHandler: IRequestHandler<GetCategoriesQuery, GetC
 		_categoryRepository = categoryRepository;
 		_mapper             = mapper;
 	}
-	
+
 	public async Task<GetCategoriesQueryResult> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var categories    = await _categoryRepository.GetAsync();
 			var categoriesDTO = _mapper.Map<IEnumerable<GetCategoriesQueryResultDTO>>(categories);
-			
+
 			var result = new GetCategoriesQueryResult(categoriesDTO);
 
 			return result;

@@ -42,7 +42,7 @@ public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategory
 {
 	readonly IsValidCategoryForCreateSpecification _isValidCategoryForCreateSpecification;
 
-	public CreateCategoryCommandHandler(IMapper mapper, IMediator mediator, CategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForCreateSpecification isValidCategoryForCreateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public CreateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForCreateSpecification isValidCategoryForCreateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 		_isValidCategoryForCreateSpecification = isValidCategoryForCreateSpecification;
 	}

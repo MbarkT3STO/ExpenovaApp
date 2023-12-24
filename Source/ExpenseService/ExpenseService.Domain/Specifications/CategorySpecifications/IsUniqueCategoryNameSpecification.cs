@@ -1,5 +1,3 @@
-using ExpenseService.Domain.Services.Category;
-
 namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 
 /// <summary>
@@ -7,15 +5,15 @@ namespace ExpenseService.Domain.Specifications.CategorySpecifications;
 /// </summary>
 public class IsUniqueCategoryNameSpecification: Specification<Category>
 {
-	readonly ICategoryUniquenessChecker _categoryUniquenessChecker;
+	readonly ICategoryService _cCategoryService;
 
-	public IsUniqueCategoryNameSpecification(ICategoryUniquenessChecker categoryUniquenessChecker)
+	public IsUniqueCategoryNameSpecification(ICategoryService categoryService)
 	{
-		_categoryUniquenessChecker = categoryUniquenessChecker;
+		_cCategoryService = categoryService;
 	}
 
 	protected override void ConfigureRules()
 	{
-		AddRule(category => _categoryUniquenessChecker.IsUniqueCategoryNameAsync(category.Id, category.Name, category.UserId).Result, "Category name must be unique.");
+		AddRule(category => _cCategoryService.IsUniqueCategoryNameAsync(category.Id, category.Name, category.UserId).Result, "Category name must be unique.");
 	}
 }

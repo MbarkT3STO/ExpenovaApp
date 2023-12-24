@@ -11,7 +11,7 @@ public record GetExpensesQueryResultDTO
 	public string UserId { get; set; }
 }
 
-public class GetExpensesQueryResult : QueryResult<IEnumerable<GetExpensesQueryResultDTO>>
+public class GetExpensesQueryResult : QueryResult<IEnumerable<GetExpensesQueryResultDTO>, GetExpensesQueryResult>
 {
 	public GetExpensesQueryResult(IEnumerable<GetExpensesQueryResultDTO> data) : base(data)
 	{
@@ -32,7 +32,7 @@ public record GetExpensesQuery : IRequest<GetExpensesQueryResult>
 
 }
 
-public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, IQueryResult>
+public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, GetExpensesQueryResult>
 {
 	private readonly IExpenseRepository _expenseRepository;
 	private readonly IMapper _mapper;
@@ -43,7 +43,7 @@ public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, IQueryR
 		_mapper = mapper;
 	}
 
-	public async Task<IQueryResult> Handle(GetExpensesQuery request, CancellationToken cancellationToken)
+	public async Task<GetExpensesQueryResult> Handle(GetExpensesQuery request, CancellationToken cancellationToken)
 	{
 		var expenses = await _expenseRepository.GetAsync();
 		var expensesDTO = _mapper.Map<IReadOnlyCollection<GetExpensesQueryResultDTO>>(expenses);

@@ -1,26 +1,17 @@
+using ExpenseService.Domain.Services;
+
 namespace ExpenseService.Application.ApplicationServices;
 
-public class CategoryService
+/// <summary>
+/// Represents an application service for managing categories, which extends the Category domain service.
+/// </summary>
+public class ApplicationCategoryService : CategoryService
 {
 	private readonly ICategoryRepository _categoryRepository;
 
-
-	public CategoryService(ICategoryRepository categoryRepository)
+	public ApplicationCategoryService(ICategoryRepository categoryRepository) : base(categoryRepository)
 	{
 		_categoryRepository = categoryRepository;
-	}
-
-	/// <summary>
-	/// Checks if the category name is unique for the specified user.
-	/// </summary>
-	/// <param name="name">The name of the category.</param>
-	/// <param name="userId">The ID of the user.</param>
-	/// <returns>True if the category name is unique, false otherwise.</returns>
-	public async Task<bool> IsCategoryNameUniqueAsync(string name, string userId)
-	{
-		var category = await _categoryRepository.GetByNameAndUserIdAsync(name, userId);
-
-		return category == null;
 	}
 
 	/// <summary>

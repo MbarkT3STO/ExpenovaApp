@@ -4,7 +4,7 @@ namespace ExpenseService.Application.Common;
 /// Represents a successful query result with a value of type <typeparamref name="TValue"/>.
 /// </summary>
 /// <typeparam name="TValue">The type of the value returned by the query.</typeparam>
-public class SucceededQuery<TValue> : QueryResult<TValue>
+public class SucceededQuery<TValue> : QueryResult<TValue, SucceededQuery<TValue>>
 {
 	public SucceededQuery(TValue? value) : base(value)
 	{

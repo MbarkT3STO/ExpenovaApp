@@ -1,5 +1,7 @@
+using ExpenseService.Domain.Services;
 using ExpenseService.Domain.Services.Category;
 using ExpenseService.Domain.Shared.Interfaces;
+using ExpenseService.Domain.Shared.Services;
 using ExpenseService.Domain.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +16,7 @@ public static class DomainRegistrar
 	/// <param name="services">The service collection.</param>
 	public static void RegisterDomainServices(this IServiceCollection services)
 	{
-		services.AddTransient<ICategoryUniquenessChecker, CategoryUniquenessChecker>();
+		services.AddTransient<ICategoryService, CategoryService>();
 	}
 
 	/// <summary>

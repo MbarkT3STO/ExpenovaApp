@@ -52,11 +52,11 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 
 public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
-	readonly CategoryService _categoryService;
+	readonly ApplicationCategoryService _categoryService;
 	readonly IsValidCategoryForUpdateSpecification _isValidCategoryForUpdateSpecification;
 
 
-	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, CategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 		_categoryService                       = categoryService;
 		_isValidCategoryForUpdateSpecification = isValidCategoryForUpdateSpecification;

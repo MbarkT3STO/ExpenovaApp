@@ -14,12 +14,12 @@ public record GetCategoriesByUserIdQueryResultDTO
 /// <summary>
 /// Represents the result of a query to retrieve categories by user ID.
 /// </summary>
-public class GetCategoriesByUserIdQueryResult: QueryResult<IEnumerable<GetCategoriesByUserIdQueryResultDTO>>
+public class GetCategoriesByUserIdQueryResult: QueryResult<IEnumerable<GetCategoriesByUserIdQueryResultDTO>, GetCategoriesByUserIdQueryResult>
 {
 	public GetCategoriesByUserIdQueryResult(IEnumerable<GetCategoriesByUserIdQueryResultDTO>? value): base(value)
 	{
 	}
-	
+
 	public GetCategoriesByUserIdQueryResult(Error error): base(error)
 	{
 	}
@@ -53,45 +53,43 @@ public class GetCategoriesByUserIdQuery: IRequest<GetCategoriesByUserIdQueryResu
 }
 
 
-public class GetCategoriesByUserIdQueryHandler: IRequestHandler<GetCategoriesByUserIdQuery, GetCategoriesByUserIdQueryResult>
+public class GetCategoriesByUserIdQueryHandler: BaseQueryHandler<GetCategoriesByUserIdQuery, GetCategoriesByUserIdQueryResult>
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IUserRepository _userRepository;
-	private readonly IMapper _mapper;
-	
-	public GetCategoriesByUserIdQueryHandler(ICategoryRepository categoryRepository, IUserRepository userRepository, IMapper mapper)
+
+	public GetCategoriesByUserIdQueryHandler(ICategoryRepository categoryRepository, IUserRepository userRepository, IMapper mapper): base(mapper)
 	{
 		_categoryRepository = categoryRepository;
 		_userRepository     = userRepository;
-		_mapper             = mapper;
 	}
-	
-	public async Task<GetCategoriesByUserIdQueryResult> Handle(GetCategoriesByUserIdQuery request, CancellationToken cancellationToken)
+
+	public override async Task<GetCategoriesByUserIdQueryResult> Handle(GetCategoriesByUserIdQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var isUserExists = await _userRepository.IsExistAsync(request.UserId, cancellationToken);
-			
-			if(!isUserExists)
+
+			if (!isUserExists)
 			{
 				var error = new Error($"User with ID {request.UserId} does not exist.");
-				
-				return new GetCategoriesByUserIdQueryResult(error);
+
+				return GetCategoriesByUserIdQueryResult.Failed(error);
 			}
-			
-			
+
+
 			var categories    = await _categoryRepository.GetCategoriesByUserIdAsync(request.UserId, cancellationToken);
 			var categoriesDTO = _mapper.Map<IEnumerable<GetCategoriesByUserIdQueryResultDTO>>(categories);
-			var queryResult   = new GetCategoriesByUserIdQueryResult(categoriesDTO);
-			
+			var queryResult   = GetCategoriesByUserIdQueryResult.Succeeded(categoriesDTO);
+
 			return queryResult;
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			var domainException = new DomainException(e.Message, e);
 			var error           = new Error(e.Message, domainException);
-			
-			return new GetCategoriesByUserIdQueryResult(error);
+
+			return GetCategoriesByUserIdQueryResult.Failed(error);
 		}
 	}
 }

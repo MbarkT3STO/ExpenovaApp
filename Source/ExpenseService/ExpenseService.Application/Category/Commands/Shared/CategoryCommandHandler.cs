@@ -11,11 +11,11 @@ namespace ExpenseService.Application.Category.Commands.Shared;
 public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : BaseCommandHandler<TCommand, TResult, TResultDTO> where TCommand : IRequest<TResult> where TResult : ICommandResult<TResultDTO>
 {
 	protected readonly ICategoryRepository _categoryRepository;
-	readonly CategoryService _categoryService;
+	readonly ApplicationCategoryService _categoryService;
 	protected readonly UserService _userService;
 
 
-	protected CategoryCommandHandler(ICategoryRepository categoryRepository, CategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	protected CategoryCommandHandler(ICategoryRepository categoryRepository, ApplicationCategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
 		_categoryService    = categoryService;

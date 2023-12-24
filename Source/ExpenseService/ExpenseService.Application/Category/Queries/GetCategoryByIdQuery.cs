@@ -15,12 +15,12 @@ public record GetCategoryByIdQueryResultDTO
 /// <summary>
 /// Represents the result of a query to retrieve a category by its ID.
 /// </summary>
-public class GetCategoryByIdQueryResult: QueryResult<GetCategoryByIdQueryResultDTO>
+public class GetCategoryByIdQueryResult: QueryResult<GetCategoryByIdQueryResultDTO, GetCategoryByIdQueryResult>
 {
 	public GetCategoryByIdQueryResult(GetCategoryByIdQueryResultDTO? value): base(value)
 	{
 	}
-	
+
 	public GetCategoryByIdQueryResult(Error error): base(error)
 	{
 	}
@@ -58,20 +58,20 @@ public class GetCategoryByIdQueryHandler: IRequestHandler<GetCategoryByIdQuery, 
 {
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IMapper _mapper;
-	
+
 	public GetCategoryByIdQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
 	{
 		_categoryRepository = categoryRepository;
 		_mapper             = mapper;
 	}
-	
+
 	public async Task<GetCategoryByIdQueryResult> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
 			var category    = await _categoryRepository.GetByIdAsync(request.Id);
 			var categoryDTO = _mapper.Map<GetCategoryByIdQueryResultDTO>(category);
-			
+
 			var result = new GetCategoryByIdQueryResult(categoryDTO);
 
 			return result;
