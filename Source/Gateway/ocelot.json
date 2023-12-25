@@ -1,7 +1,7 @@
 {
     "Routes": [
         {
-            "DownstreamPathTemplate" : "/api/Categories",
+            "DownstreamPathTemplate" : "/api/Categories/{*everything}",
             "DownstreamHostAndPorts":[
                 {
                     "Host": "localhost",
@@ -9,7 +9,8 @@
                     "Scheme": "http"
                 }
             ],
-            "UpstreamPathTemplate": "/ExpenseService/api/Categories"
+            "UpstreamPathTemplate": "/ExpenseService/api/Categories/{*everything}",
+            "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
         }
     ]
 }

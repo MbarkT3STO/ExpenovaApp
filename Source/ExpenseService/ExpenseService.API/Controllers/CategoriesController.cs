@@ -22,8 +22,8 @@ public class CategoriesController: ControllerBase
 	}
 
 	// [Authorize(Roles = "User")]
-	[HttpGet]
-	public async Task<IActionResult> Get()
+	[HttpGet(nameof(GetAllCategories))]
+	public async Task<IActionResult> GetAllCategories()
 	{
 		var queryResult = await _mediator.Send(new GetCategoriesQuery());
 
@@ -36,8 +36,8 @@ public class CategoriesController: ControllerBase
 	}
 
 
-	[HttpGet("{id}")]
-	public async Task<IActionResult> Get(Guid id)
+	[HttpGet(nameof(GetCategoryById)+"/{id}")]
+	public async Task<IActionResult> GetCategoryById(Guid id)
 	{
 		var queryResult = await _mediator.Send(new GetCategoryByIdQuery(id));
 
@@ -50,8 +50,8 @@ public class CategoriesController: ControllerBase
 	}
 
 
-	[HttpPost]
-	public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command)
+	[HttpPost(nameof(CreateCategory))]
+	public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
 
@@ -64,8 +64,8 @@ public class CategoriesController: ControllerBase
 	}
 
 
-	[HttpPut("{id}")]
-	public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCategoryCommand command)
+	[HttpPut(nameof(UpdateCategory)+"/{id}")]
+	public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
 
@@ -78,8 +78,8 @@ public class CategoriesController: ControllerBase
 	}
 
 
-	[HttpGet("GetCategoriesByUserId/{userId}")]
-	public async Task<IActionResult> GetCategoriesByUserId(string userId)
+	[HttpGet(nameof(GetCategoriesForUser)+"/{userId}")]
+	public async Task<IActionResult> GetCategoriesForUser(string userId)
 	{
 		var query       = new GetCategoriesByUserIdQuery(userId);
 		var queryResult = await _mediator.Send(query);
@@ -92,8 +92,9 @@ public class CategoriesController: ControllerBase
 		return Ok(queryResult.Value);
 	}
 
-	[HttpDelete("Delete/{id}")]
-	public async Task<IActionResult> Delete(Guid id)
+
+	[HttpDelete(nameof(DeleteCategory)+"/{id}")]
+	public async Task<IActionResult> DeleteCategory(Guid id)
 	{
 		var commandResult = await _mediator.Send(new DeleteCategoryCommand(id));
 

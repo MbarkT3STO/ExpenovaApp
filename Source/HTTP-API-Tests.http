@@ -1,0 +1,29 @@
+# Expense Service
+# Categories
+GET http://localhost:5196/api/Categories/GetAllCategories
+
+###
+GET http://localhost:5196/api/Categories/GetCategoryById/d402952a-ac6d-42ba-ab42-70c238f23016
+
+
+
+# Gateway Service
+
+# Expenses Service
+
+### Categories
+
+GET http://localhost:5274/ExpenseService/Api/Categories/GetAllCategories
+
+###
+GET http://localhost:5274/ExpenseService/Api/Categories/GetCategoryById/d402952a-ac6d-42ba-ab42-70c238f23016
+
+###
+POST http://localhost:5274/ExpenseService/Api/Categories/CreateCategory
+Content-Type: application/json
+
+{
+  "name": "",
+  "description": "",
+  "userId": "26d371d8-fd39-4f99-a564-daacae87344e"
+}
