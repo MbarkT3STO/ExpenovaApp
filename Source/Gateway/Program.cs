@@ -4,8 +4,11 @@ using Ocelot.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Ocelot json file
-builder.Configuration.AddJsonFile("ocelot.json");
-builder.Services.AddOcelot(builder.Configuration);
+// builder.Configuration.AddJsonFile("ocelot.json");
+// builder.Services.AddOcelot(builder.Configuration);
+
+// Add YARP
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 // Add services to the container.
 
@@ -23,12 +26,14 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.UseOcelot().Wait();
+// app.UseOcelot().Wait();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapReverseProxy();
 
 app.Run();
