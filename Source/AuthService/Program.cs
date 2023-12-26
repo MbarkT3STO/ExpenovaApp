@@ -1,7 +1,11 @@
 using System.Reflection;
+using System.Text;
 using AuthService.DI;
+using AuthService.Options;
 using FluentValidation;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using RabbitMqSettings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +34,35 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 })
 	.AddRoles<AppRole>()
 	.AddEntityFrameworkStores<AppDbContext>();
+
+// Add JWT
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddOptions<JwtSettings>().Bind(builder.Configuration.GetSection("JwtSettings"));
+
+var issuer       = builder.Configuration["JwtSettings:Issuer"];
+var audience     = builder.Configuration["JwtSettings:Audience"];
+var key          = builder.Configuration["JwtSettings:Key"];
+var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+})
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer           = true,
+			ValidateAudience         = true,
+			ValidateLifetime         = true,
+			ValidateIssuerSigningKey = true,
+			ValidIssuer              = issuer,
+			ValidAudience            = audience,
+			IssuerSigningKey         = symmetricKey,
+			ClockSkew				= TimeSpan.Zero
+		};
+	});
 
 // Add Authentication
 

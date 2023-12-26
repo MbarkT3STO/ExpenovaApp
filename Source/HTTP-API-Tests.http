@@ -6,6 +6,15 @@ GET http://localhost:5196/api/Categories/GetAllCategories
 GET http://localhost:5196/api/Categories/GetCategoryById/d402952a-ac6d-42ba-ab42-70c238f23016
 
 
+### Auth Service
+
+# Get Users with JWT Token
+Get http://localhost:5197/api/Users/GetUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYmFya3RpZXN0b0BvdXRsb29rLmNvbSIsImp0aSI6ImE1MTBhODMyLWZhODEtNDcyMy1hZDJhLWZjOGJkMjFhNDcwNCIsImV4cCI6MTcwMzYyMDY3NiwiaXNzIjoiRXhwZW5vdmFBcHAiLCJhdWQiOiJFeHBlbm92YUFwcCJ9.UDsSyIgLTwV5xTvsbV3wLWbNmw82iKxVMezdMLvWHVQ
+
+
+
+
 
 # Gateway Service
 

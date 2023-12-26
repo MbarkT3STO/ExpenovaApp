@@ -28,7 +28,7 @@ public class MappingProfile: Profile
 public class CreateUserCommandResultValue
 {
 	public DTOs.CreatedUserDTO CreatedUser { get; set; }
-	
+
 	public CreateUserCommandResultValue( DTOs.CreatedUserDTO createdUser)
 	{
 		CreatedUser = createdUser;
@@ -51,7 +51,7 @@ public class CreateUserCommand: IRequest<CreateUserCommandResult>
 {
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
-	
+
 	public string UserName { get; set; }
 	public string Email { get; set; }
 	public string Password { get; set; }
@@ -77,7 +77,7 @@ public class CreateUserCommandHandler: CommandHandler, IRequestHandler<CreateUse
 				UserName  = request.UserName,
 				Email     = request.Email,
 			};
-			
+
 			// Create user
 			var createUserResult = await _userManager.CreateAsync(user, request.Password);
 
@@ -85,15 +85,15 @@ public class CreateUserCommandHandler: CommandHandler, IRequestHandler<CreateUse
 			{
 				// Add user to default role
 				var addUserToRoleResult = await _userManager.AddToRoleAsync(user, "User");
-				
+
 				if (addUserToRoleResult.Succeeded)
 				{
 					// Publish UserCreatedEvent
 					await PublishUserCreatedEvent(user, cancellationToken);
-					
+
 					var createdUserDTO     = _mapper.Map<DTOs.CreatedUserDTO>(user);
 					var commandResultValue = new CreateUserCommandResultValue(createdUserDTO);
-					
+
 					return new CreateUserCommandResult(commandResultValue);
 				}
 				else
@@ -114,8 +114,8 @@ public class CreateUserCommandHandler: CommandHandler, IRequestHandler<CreateUse
 			return new CreateUserCommandResult(error);
 		}
 	}
-	
-	
+
+
 	/// <summary>
 	/// Gets an Error object from an IdentityResult object.
 	/// </summary>
@@ -127,7 +127,7 @@ public class CreateUserCommandHandler: CommandHandler, IRequestHandler<CreateUse
 		var error          = new Error(errorsAsString);
 		return error;
 	}
-	
+
 
 	/// <summary>
 	/// Publishes a UserCreatedEvent with the given user and user role information.
