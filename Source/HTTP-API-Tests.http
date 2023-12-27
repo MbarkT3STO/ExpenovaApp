@@ -36,3 +36,8 @@ Content-Type: application/json
   "description": "",
   "userId": "26d371d8-fd39-4f99-a564-daacae87344e"
 }
+
+
+###
+GET http://localhost:5274/AuthService/Api/Users/GetUsers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYmFya3RpZXN0b0BvdXRsb29rLmNvbSIsImp0aSI6IjkwMGIzYjk0LTk0NmYtNGJlZS05YTZlLWZiODA3ODQ5MTRjMCIsImV4cCI6MTcwMzY2NTAwMSwiaXNzIjoiRXhwZW5vdmFBcHAiLCJhdWQiOiJFeHBlbm92YUFwcCJ9.CaMUouzzVGA1Laxkh6NX_9iMjaeOIb_IOuUHeBqXJHU
