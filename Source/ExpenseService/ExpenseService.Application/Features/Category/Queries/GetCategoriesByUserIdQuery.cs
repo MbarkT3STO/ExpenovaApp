@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace ExpenseService.Application.Category.Queries;
+namespace ExpenseService.Application.Features.Category.Queries;
 
 /// <summary>
 /// Represents the result DTO for the GetCategoriesByUserIdQuery.

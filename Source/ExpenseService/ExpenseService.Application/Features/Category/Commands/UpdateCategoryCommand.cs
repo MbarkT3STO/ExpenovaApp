@@ -1,9 +1,9 @@
 using ExpenseService.Application.ApplicationServices;
-using ExpenseService.Application.Category.Commands.Shared;
+using ExpenseService.Application.Features.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseService.Application.Category.Commands;
+namespace ExpenseService.Application.Features.Category.Commands;
 
 public record UpdateCategoryCommandResultDTO
 {

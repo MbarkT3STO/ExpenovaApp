@@ -1,8 +1,8 @@
 using ExpenseService.Application.ApplicationServices;
-using ExpenseService.Application.Category.Commands.Shared;
+using ExpenseService.Application.Features.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
 
-namespace ExpenseService.Application.Category.Commands;
+namespace ExpenseService.Application.Features.Category.Commands;
 
 /// <summary>
 /// Represents the result data transfer object for the delete category command.

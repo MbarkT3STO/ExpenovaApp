@@ -1,4 +1,4 @@
-namespace ExpenseService.Application.Category.Queries;
+namespace ExpenseService.Application.Features.Category.Queries;
 
 public record GetCategoriesQueryResultDTO
 {

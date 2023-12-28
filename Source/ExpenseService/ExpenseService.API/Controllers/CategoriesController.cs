@@ -1,6 +1,6 @@
 using AutoMapper;
-using ExpenseService.Application.Category.Commands;
-using ExpenseService.Application.Category.Queries;
+using ExpenseService.Application.Features.Category.Commands;
+using ExpenseService.Application.Features.Category.Queries;
 using ExpenseService.Application.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

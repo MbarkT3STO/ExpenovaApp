@@ -1,7 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Domain.Entities;
 
-namespace ExpenseService.Application.Category.Commands.Shared;
+namespace ExpenseService.Application.Features.Category.Commands.Shared;
 /// <summary>
 /// Base class for category command handlers.
 /// </summary>

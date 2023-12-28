@@ -1,4 +1,4 @@
-namespace ExpenseService.Application.Category.Queries;
+namespace ExpenseService.Application.Features.Category.Queries;
 
 /// <summary>
 /// Represents the data transfer object for the result of the GetCategoryByIdQuery.
