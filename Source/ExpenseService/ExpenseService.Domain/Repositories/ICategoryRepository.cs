@@ -42,4 +42,12 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// <param name="userId">The ID of the user.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the category.</returns>
 	Task<Category> GetByNameAndUserIdAsync(string name, string userId);
+
+	/// <summary>
+	/// Retrieves a category by its ID and user ID asynchronously.
+	/// </summary>
+	/// <param name="id">The ID of the category.</param>
+	/// <param name="userId">The ID of the user.</param>
+	/// <returns>The category with the specified ID and user ID.</returns>
+	Task<Category> GetByIdAndUserIdAsync(Guid id, string userId);
 }

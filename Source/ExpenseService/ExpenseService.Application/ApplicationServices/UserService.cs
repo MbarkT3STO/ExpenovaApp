@@ -1,3 +1,4 @@
+using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Entities;
 
 namespace ExpenseService.Application.ApplicationServices;
@@ -32,5 +33,20 @@ public class UserService
 	public async Task<bool> IsUserExistsAsync(string id)
 	{
 		return await _userRepository.IsExistAsync(id);
+	}
+
+	/// <summary>
+	/// Retrieves a user by ID and throws an exception if the user does not exist.
+	/// </summary>
+	/// <param name="id">The ID of the user to retrieve.</param>
+	/// <returns>The user with the specified ID.</returns>
+	public async Task<User> GetUserOrThrowExceptionIfNotExistsAsync(string id)
+	{
+		var user = await GetUserByIdAsync(id);
+
+		if (user is null)
+			throw new NotFoundException($"User with the ID {id} does not exist");
+
+		return user;
 	}
 }

@@ -7,9 +7,9 @@ namespace ExpenseService.Domain.Services;
 /// </summary>
 public class CategoryService: ICategoryService
 {
-    readonly ICategoryRepository _categoryRepository;
+	readonly ICategoryRepository _categoryRepository;
 
-    public CategoryService(ICategoryRepository categoryRepository)
+	public CategoryService(ICategoryRepository categoryRepository)
 	{
 		_categoryRepository = categoryRepository;
 	}

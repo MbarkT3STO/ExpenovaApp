@@ -203,5 +203,12 @@ public class CategoryRepository: Repository, ICategoryRepository
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
+	public async Task<Category> GetByIdAndUserIdAsync(Guid id, string userId)
+	{
+		var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
 
+		var domainCategory = _mapper.Map<Category>(category);
+
+		return domainCategory;
+	}
 }
