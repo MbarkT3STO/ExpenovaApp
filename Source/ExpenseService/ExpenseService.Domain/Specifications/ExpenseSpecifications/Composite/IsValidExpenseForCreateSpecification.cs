@@ -7,7 +7,12 @@ namespace ExpenseService.Domain.Specifications.ExpenseSpecifications.Composite;
 /// </summary>
 public class IsValidExpenseForCreateSpecification : CompositeSpecification<Expense>
 {
-	public IsValidExpenseForCreateSpecification()
+	public IsValidExpenseForCreateSpecification() : base( false )
+	{
+		ConfigureSpecifications();
+	}
+
+	public override void ConfigureSpecifications()
 	{
 		AddSpecification(new IsValidAggregateRootCreationAuditSpecification<Expense, Guid>());
 		AddSpecification(new IsValidExpenseAmountSpecification());

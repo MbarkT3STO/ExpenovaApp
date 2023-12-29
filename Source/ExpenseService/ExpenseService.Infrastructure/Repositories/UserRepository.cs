@@ -30,12 +30,12 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-    public Task DeleteAsync(User entity, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+	public Task DeleteAsync(User entity, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
 
-    public void Dispose()
+	public void Dispose()
 	{
 		GC.SuppressFinalize(this);
 	}
@@ -55,17 +55,21 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<User> GetByIdAsync(string id)
+	public async Task<User> GetByIdAsync(string id)
+	{
+		var userEntity = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+		var user = _mapper.Map<User>(userEntity);
+
+		return user;
+	}
+
+	public Task<User> GetByIdAsync(string id, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}
 
-    public Task<User> GetByIdAsync(string id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsExist(string id)
+	public bool IsExist(string id)
 	{
 		var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
 

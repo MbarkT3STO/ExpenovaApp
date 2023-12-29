@@ -27,6 +27,7 @@ public static class ApplicationRegistrar
 		{
 			options.UseNpgsql(configuration.GetConnectionString("AppDBConnection"),
 			b => b.MigrationsAssembly("ExpenseService.API"));
+			options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 		});
 
 
@@ -50,6 +51,7 @@ public static class ApplicationRegistrar
 		// Register Application Services (Services that are used by the Application Layer)
 		services.AddTransient<UserService>();
 		services.AddTransient<ApplicationCategoryService>();
+		services.AddTransient<ApplicationExpenseService>();
 
 
 	}

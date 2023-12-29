@@ -1,7 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
-using ExpenseService.Application.Features.Expense.Commands.Shared;
 using ExpenseService.Domain.Entities;
+using ExpenseService.Domain.Specifications.ExpenseSpecifications.Composite;
 using ExpenseService.Infrastructure.Data.Entities;
 
 namespace ExpenseService.Application.Features.Expense.Commands;
@@ -20,7 +20,7 @@ public class MappingProfile: Profile
 {
 	public MappingProfile()
 	{
-		CreateMap<ExpenseEntity, CreateExpenseCommandResultDto>();
+		CreateMap<Domain.Entities.Expense, CreateExpenseCommandResultDto>();
 	}
 }
 
@@ -62,6 +62,8 @@ public class CreateExpenseCommandHandler: BaseCommandHandler<CreateExpenseComman
 			var user     = await _userService.GetUserOrThrowExceptionIfNotExistsAsync(request.UserId);
 			var category = await _categoryService.GetCategoryOrThrowExceptionIfNotExistsAsync(request.CategoryId, request.UserId);
 			var expense  = CreateAndAuditExpense(request, category, user);
+
+			expense.Validate(new IsValidExpenseForCreateSpecification());
 
 			await _expenseRepository.AddAsync(expense);
 

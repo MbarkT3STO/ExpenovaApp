@@ -1,9 +1,9 @@
 
 namespace ExpenseService.Infrastructure.Repositories;
 
-public class ExpenseRepository : Repository, IExpenseRepository
+public class ExpenseRepository: Repository, IExpenseRepository
 {
-	public ExpenseRepository(AppDbContext dbContext) : base(dbContext)
+	public ExpenseRepository(AppDbContext dbContext, IMapper mapper): base(dbContext, mapper)
 	{
 	}
 
@@ -12,9 +12,12 @@ public class ExpenseRepository : Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public Task AddAsync(Expense entity)
+	public async Task AddAsync(Expense entity)
 	{
-		throw new NotImplementedException();
+		var expenseEntity = _mapper.Map<ExpenseEntity>(entity);
+
+		await _dbContext.Expenses.AddAsync(expenseEntity);
+		await _dbContext.SaveChangesAsync();
 	}
 
 	public void Delete(Expense entity)
@@ -27,14 +30,18 @@ public class ExpenseRepository : Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-    public Task DeleteAsync(Expense entity, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Dispose()
+	public Task DeleteAsync(Expense entity, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
+	}
+
+	public void Dispose()
+	{
+		var disposableDbContext = _dbContext as IDisposable;
+
+		disposableDbContext?.Dispose();
+
+		GC.SuppressFinalize(this);
 	}
 
 	public IQueryable<Expense> Get()
@@ -42,9 +49,12 @@ public class ExpenseRepository : Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<IEnumerable<Expense>> GetAsync()
+	public async Task<IEnumerable<Expense>> GetAsync()
 	{
-		throw new NotImplementedException();
+		var expenses    = await _dbContext.Expenses.ToListAsync();
+		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
+
+		return expensesDto;
 	}
 
 	public Expense GetById(int id)
@@ -57,12 +67,12 @@ public class ExpenseRepository : Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-    public Task<Expense> GetByIdAsync(int id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+	public Task<Expense> GetByIdAsync(int id, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
 
-    public Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
+	public Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
 	{
 		throw new NotImplementedException();
 	}
@@ -81,7 +91,7 @@ public class ExpenseRepository : Repository, IExpenseRepository
 	{
 		throw new NotImplementedException();
 	}
-	
-	
-	
+
+
+
 }

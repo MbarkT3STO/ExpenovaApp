@@ -14,5 +14,5 @@ public class AuditableEntity<T>: Entity<T>, IAuditableEntity
 	public string LastUpdatedBy { get; set; }
 	public bool IsDeleted { get; set; }
 	public DateTime? DeletedAt { get; set; }
-	public string DeletedBy { get; set; }
+	public string? DeletedBy { get; set; }
 }
