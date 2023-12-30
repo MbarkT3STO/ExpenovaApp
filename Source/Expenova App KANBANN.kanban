@@ -1,0 +1,36 @@
+{
+  "lists": [
+    {
+      "id": "782b07a4-df8b-4fef-892c-4b17b2a0d4a5",
+      "title": "TODO",
+      "cards": [
+        {
+          "id": "9a276433-c9af-46b7-9522-cfce12930657",
+          "listId": "782b07a4-df8b-4fef-892c-4b17b2a0d4a5",
+          "title": "Create, Setup and Publish ExpenseCreatedEvemt",
+          "description": "",
+          "labels": [],
+          "checkboxes": [],
+          "comments": []
+        }
+      ]
+    },
+    {
+      "id": "a79cc30a-99b6-4b62-ae66-a83efb67bffd",
+      "title": "DOING",
+      "cards": []
+    },
+    {
+      "id": "2936acbd-35cc-4242-9263-3d9f2980f58e",
+      "title": "DONE",
+      "cards": []
+    }
+  ],
+  "archive": {
+    "lists": [],
+    "cards": []
+  },
+  "settings": {
+    "labels": []
+  }
+}
