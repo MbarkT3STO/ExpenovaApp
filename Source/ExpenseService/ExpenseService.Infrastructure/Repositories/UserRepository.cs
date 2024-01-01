@@ -45,7 +45,7 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<IEnumerable<User>> GetAsync()
+	public Task<IEnumerable<User>> GetAsync(CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}

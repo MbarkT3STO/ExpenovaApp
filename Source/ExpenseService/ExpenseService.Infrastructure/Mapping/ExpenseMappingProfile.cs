@@ -8,6 +8,7 @@ public class ExpenseMappingProfile : Profile
 			.ForMember(dest => dest.Category, opt => opt.Ignore())
 			.ForMember(dest => dest.User, opt => opt.Ignore());
 
+
 		CreateMap<ExpenseEntity, Expense>();
 	}
 }

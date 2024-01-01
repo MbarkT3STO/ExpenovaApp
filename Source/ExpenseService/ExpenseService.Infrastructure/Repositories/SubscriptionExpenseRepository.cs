@@ -42,7 +42,7 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<SubscriptionExpense>> GetAsync()
+    public Task<IEnumerable<SubscriptionExpense>> GetAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

@@ -17,7 +17,7 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// <summary>
 	/// Asynchronously gets all entities.
 	/// </summary>
-	Task<IEnumerable<TEntity>> GetAsync();
+	Task<IEnumerable<TEntity>> GetAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Gets the entity by id.
@@ -49,8 +49,8 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// </summary>
 	/// <param name="entity">The entity to add.</param>
 	Task AddAsync(TEntity entity);
-	
-	
+
+
 	/// <summary>
 	/// Updates the specified entity.
 	/// </summary>

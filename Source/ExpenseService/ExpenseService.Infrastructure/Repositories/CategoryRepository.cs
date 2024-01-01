@@ -106,7 +106,7 @@ public class CategoryRepository: Repository, ICategoryRepository
 		throw new NotImplementedException();
 	}
 
-	public async Task<IEnumerable<Category>> GetAsync()
+	public async Task<IEnumerable<Category>> GetAsync(CancellationToken cancellationToken = default)
 	{
 		var categories = await _dbContext.Categories.ToListAsync();
 

@@ -49,9 +49,9 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public async Task<IEnumerable<Expense>> GetAsync()
+	public async Task<IEnumerable<Expense>> GetAsync(CancellationToken cancellationToken = default)
 	{
-		var expenses    = await _dbContext.Expenses.ToListAsync();
+		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).ToListAsync(cancellationToken: cancellationToken);
 		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
 
 		return expensesDto;
