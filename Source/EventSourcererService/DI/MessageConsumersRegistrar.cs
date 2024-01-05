@@ -12,9 +12,15 @@ public static class MessageConsumersRegistrar
 	public static void RegisterMessageConsumers(this IServiceCollection services)
 	{
 		services.AddScoped<AuthServiceUserCreatedMessageConsumer>();
-		
+
+		#region ExpenseService - Category
 		services.AddScoped<ExpenseServiceCategoryCreatedMessageConsumer>();
 		services.AddScoped<ExpenseServiceCategoryUpdatedMessageConsumer>();
 		services.AddScoped<ExpenseServiceCategoryDeletedMessageConsumer>();
+		#endregion
+
+		#region ExpenseService - Expense
+		services.AddScoped<ExpenseServiceExpenseCreatedMessageConsumer>();
+		#endregion
 	}
 }

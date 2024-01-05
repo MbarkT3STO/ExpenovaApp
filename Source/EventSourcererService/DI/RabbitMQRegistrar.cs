@@ -30,10 +30,12 @@ public static class RabbitMQRegistrar
 				});
 
 				cfg.ReceiveEndpoint(AuthServiceEventSourcererQueues.UserEventSourcererQueue, ep => ep.Consumer<AuthServiceUserCreatedMessageConsumer>(context));
-				
+
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryCreatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryUpdatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceCategoryDeletedMessageConsumer>(context));
+
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.ExpenseCreatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceExpenseCreatedMessageConsumer>(context));
 			});
 		});
 
