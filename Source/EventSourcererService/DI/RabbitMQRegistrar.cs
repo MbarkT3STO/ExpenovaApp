@@ -1,5 +1,6 @@
 using EventSourcererService.MessageConsumers.AuthService;
 using EventSourcererService.MessageConsumers.ExpenseService.Category;
+using EventSourcererService.MessageConsumers.ExpenseService.Expense;
 using MassTransit;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;

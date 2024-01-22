@@ -18,6 +18,10 @@ public class ExpenseRepository: Repository, IExpenseRepository
 
 		await _dbContext.Expenses.AddAsync(expenseEntity);
 		await _dbContext.SaveChangesAsync();
+
+		// Reload the expense entity to get the generated id
+		await _dbContext.Entry(expenseEntity).ReloadAsync();
+		entity.SetId(expenseEntity.Id);
 	}
 
 	public void Delete(Expense entity)

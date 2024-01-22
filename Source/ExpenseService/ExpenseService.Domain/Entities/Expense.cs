@@ -54,4 +54,13 @@ public class Expense: AuditableAggregateRoot<Guid>
 			throw new SpecificationException(satisfactionResult.Errors);
 		}
 	}
+
+	/// <summary>
+	/// Sets the ID of the expense.
+	/// </summary>
+	/// <param name="id">The ID to set.</param>
+	public void SetId(Guid id)
+	{
+		Id = id;
+	}
 }
