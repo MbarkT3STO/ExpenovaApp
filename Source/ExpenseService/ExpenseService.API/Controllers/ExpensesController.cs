@@ -1,6 +1,7 @@
 using AutoMapper;
 using ExpenseService.Application.Expense.Queries;
 using ExpenseService.Application.Features.Expense.Commands;
+using ExpenseService.Application.Features.Expense.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,5 +46,19 @@ public class ExpensesController : ControllerBase
 		}
 
 		return Ok(commandResult.Value);
+	}
+
+
+	[HttpGet(nameof(GetById))]
+	public async Task<IActionResult> GetById([FromQuery] Guid id)
+	{
+		var queryResult = await _mediator.Send(new GetExpenseByIdQuery(id));
+
+		if(queryResult.IsFailure)
+		{
+			return BadRequest(queryResult.Error);
+		}
+
+		return Ok(queryResult.Value);
 	}
 }

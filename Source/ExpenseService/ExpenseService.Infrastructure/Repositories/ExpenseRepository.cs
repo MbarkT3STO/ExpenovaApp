@@ -61,27 +61,33 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		return expensesDto;
 	}
 
-	public Expense GetById(int id)
+	public Expense GetById(Guid id)
+	{
+		var expenseEntity = _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).FirstOrDefault(e => e.Id == id);
+		var expense       = _mapper.Map<Expense>(expenseEntity);
+
+		return expense;
+	}
+
+	public async Task<Expense> GetByIdAsync(Guid id)
+	{
+		var expenseEntity = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).FirstOrDefaultAsync(e => e.Id == id);
+		var expense       = _mapper.Map<Expense>(expenseEntity);
+
+		return expense;
+	}
+
+	public Task<Expense> GetByIdAsync(Guid id, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Expense> GetByIdAsync(int id)
+	public Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(string userId, Guid categoryId)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<Expense> GetByIdAsync(int id, CancellationToken cancellationToken)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<IQueryable<Expense>> GetExpensesByUserIdAsync(int userId)
+	public Task<IQueryable<Expense>> GetExpensesByUserIdAsync(string userId)
 	{
 		throw new NotImplementedException();
 	}
