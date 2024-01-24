@@ -30,8 +30,21 @@ public static class AuditableEntitiesExtensions
 		entity.CreatedAt = createdAt;
 		entity.CreatedBy = createdBy;
 	}
-	
-	
+
+
+
+	/// <summary>
+	/// Writes the updated audit information for an auditable entity.
+	/// </summary>
+	/// <param name="entity">The auditable entity.</param>
+	/// <param name="updatedBy">The user who updated the entity.</param>
+	public static void WriteUpdatedAudit(this IAuditableEntity entity, string updatedBy)
+	{
+		entity.LastUpdatedAt = DateTime.UtcNow;
+		entity.LastUpdatedBy = updatedBy;
+	}
+
+
 	/// <summary>
 	/// Writes the updated audit information for an <see cref="IAuditableEntity"/>.
 	/// </summary>
@@ -43,8 +56,9 @@ public static class AuditableEntitiesExtensions
 		entity.LastUpdatedAt = updatedAt;
 		entity.LastUpdatedBy = updatedBy;
 	}
-	
-	
+
+
+
 	/// <summary>
 	/// Writes Deleted audit information for an <see cref="IAuditableEntity"/>.
 	/// </summary>

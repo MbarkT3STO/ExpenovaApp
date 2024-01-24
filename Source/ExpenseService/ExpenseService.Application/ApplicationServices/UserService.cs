@@ -40,7 +40,7 @@ public class UserService
 	/// </summary>
 	/// <param name="id">The ID of the user to retrieve.</param>
 	/// <returns>The user with the specified ID.</returns>
-	public async Task<User> GetUserOrThrowExceptionIfNotExistsAsync(string id)
+	public async Task<User> GetUserByIdOrThrowAsync(string id)
 	{
 		var user = await GetUserByIdAsync(id);
 

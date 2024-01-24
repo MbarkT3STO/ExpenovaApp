@@ -70,7 +70,7 @@ public class GetExpenseByIdQueryHandler: BaseQueryHandler<GetExpenseByIdQuery, G
 	{
 		try
 		{
-			var expense = await _expenseService.GetExpenseIdOrThrowAsync(request.Id);
+			var expense = await _expenseService.GetExpenseByIdOrThrowAsync(request.Id);
 			var result  = _mapper.Map<GetExpenseByIdQueryResultDto>(expense);
 
 			return GetExpenseByIdQueryResult.Succeeded(result);

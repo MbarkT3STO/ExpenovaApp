@@ -59,8 +59,8 @@ public class CreateExpenseCommandHandler: BaseCommandHandler<CreateExpenseComman
 	{
 		try
 		{
-			var user     = await _userService.GetUserOrThrowExceptionIfNotExistsAsync(request.UserId);
-			var category = await _categoryService.GetCategoryOrThrowExceptionIfNotExistsAsync(request.CategoryId, request.UserId);
+			var user     = await _userService.GetUserByIdOrThrowAsync(request.UserId);
+			var category = await _categoryService.GetCategoryOrThrowAsync(request.CategoryId, request.UserId);
 			var expense  = CreateAndAuditExpense(request, category, user);
 
 			expense.Validate(new IsValidExpenseForCreateSpecification());

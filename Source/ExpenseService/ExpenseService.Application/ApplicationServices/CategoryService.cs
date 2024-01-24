@@ -36,7 +36,7 @@ public class ApplicationCategoryService : CategoryService
 	/// <param name="userId">The ID of the user.</param>
 	/// <returns>The category with the specified ID and user ID.</returns>
 	/// <exception cref="NotFoundException">Thrown if the category does not exist.</exception>
-	public async Task<Category> GetCategoryOrThrowExceptionIfNotExistsAsync(Guid id, string userId)
+	public async Task<Category> GetCategoryOrThrowAsync(Guid id, string userId)
 	{
 		var category = await _categoryRepository.GetByIdAndUserIdAsync(id, userId);
 

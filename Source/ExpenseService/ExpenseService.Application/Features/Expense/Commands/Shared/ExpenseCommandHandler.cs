@@ -5,13 +5,16 @@ namespace ExpenseService.Application.Features.Expense.Commands.Shared;
 
 public class ExpenseCommandHandler<TCommand, TResult, TResultDTO> : BaseCommandHandler<TCommand, TResult, TResultDTO> where TCommand : IRequest<TResult> where TResult : ICommandResult<TResultDTO>
 {
-	readonly ExpenseRepository _expenseRepository;
-	readonly ApplicationExpenseService _expenseService;
-	readonly UserService _userService;
+	protected readonly IExpenseRepository _expenseRepository;
+	protected readonly ApplicationExpenseService _expenseService;
+	protected readonly ApplicationCategoryService _categoryService;
+	protected readonly UserService _userService;
 
-	protected ExpenseCommandHandler( IMapper mapper, IMediator mediator, ApplicationExpenseService expenseService, UserService userService) : base(mediator, mapper)
+	public ExpenseCommandHandler( IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, UserService userService) : base(mediator, mapper)
 	{
-		_expenseService = expenseService;
-		_userService = userService;
+		_expenseRepository = expenseRepository;
+		_expenseService    = expenseService;
+		_categoryService   = categoryService;
+		_userService       = userService;
 	}
 }

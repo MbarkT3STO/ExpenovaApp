@@ -61,4 +61,18 @@ public class ExpensesController : ControllerBase
 
 		return Ok(queryResult.Value);
 	}
+
+
+	[HttpPut(nameof(UpdateExpense))]
+	public async Task<IActionResult> UpdateExpense([FromBody] UpdateExpenseCommand command)
+	{
+		var commandResult = await _mediator.Send(command);
+
+		if(commandResult.IsFailure)
+		{
+			return BadRequest(commandResult.Error.Message);
+		}
+
+		return Ok(commandResult.Value);
+	}
 }
