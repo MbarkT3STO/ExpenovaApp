@@ -97,9 +97,12 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public Task UpdateAsync(Expense entity)
+	public async Task UpdateAsync(Expense entity)
 	{
-		throw new NotImplementedException();
+		var expenseEntity = _mapper.Map<ExpenseEntity>(entity);
+
+		_dbContext.Expenses.Update(expenseEntity);
+		await _dbContext.SaveChangesAsync();
 	}
 
 

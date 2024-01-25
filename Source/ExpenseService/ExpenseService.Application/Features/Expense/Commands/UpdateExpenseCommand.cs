@@ -50,9 +50,8 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 	public string Description { get; set; }
 	public Guid CategoryId { get; set; }
 	public string UserId { get; set; }
-	public string UpdatedBy { get; set; }
 
-	public UpdateExpenseCommand(Guid id, decimal amount, DateTime date, string description, Guid categoryId, string userId, string updatedBy)
+	public UpdateExpenseCommand(Guid id, decimal amount, DateTime date, string description, Guid categoryId, string userId)
 	{
 		Id          = id;
 		Amount      = amount;
@@ -60,38 +59,47 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 		Description = description;
 		CategoryId  = categoryId;
 		UserId      = userId;
-		UpdatedBy   = updatedBy;
-	}
-}
-
-
-public class UpdateExpenseCommandHandler: ExpenseCommandHandler<UpdateExpenseCommand, UpdateExpenseCommandResult, UpdateExpenseCommandResultDto>
-{
-	protected UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, UserService userService) : base(mapper, mediator, expenseRepository, expenseService, categoryService, userService)
-	{
 	}
 
-	public override async Task<UpdateExpenseCommandResult> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
+
+	public class UpdateExpenseCommandHandler: BaseCommandHandler<UpdateExpenseCommand, UpdateExpenseCommandResult, UpdateExpenseCommandResultDto>
 	{
-		try
+		readonly IExpenseRepository _expenseRepository;
+		readonly ApplicationExpenseService _expenseService;
+		readonly ApplicationCategoryService _categoryService;
+		readonly UserService _userService;
+
+		public UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, UserService userService): base(mediator, mapper)
 		{
-			var expense  = await _expenseService.GetExpenseByIdOrThrowAsync(request.Id);
-			var user     = await _userService.GetUserByIdOrThrowAsync(request.UserId);
-			var category = await _categoryService.GetCategoryOrThrowAsync(request.CategoryId, request.UserId);
-
-			expense.WriteUpdatedAudit(request.UpdatedBy);
-
-			await _expenseService.UpdateAsync(expense);
-
-			var expenseDto = _mapper.Map<UpdateExpenseCommandResultDto>(expense);
-
-			return UpdateExpenseCommandResult.Succeeded(expenseDto);
+			_expenseRepository = expenseRepository;
+			_expenseService    = expenseService;
+			_categoryService   = categoryService;
+			_userService       = userService;
 		}
-		catch (Exception e)
-		{
-			var error = new Error(e.Message);
 
-			return UpdateExpenseCommandResult.Failed(error);
+		public override async Task<UpdateExpenseCommandResult> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
+		{
+			try
+			{
+				var expense  = await _expenseService.GetExpenseByIdOrThrowAsync(request.Id);
+				var user     = await _userService.GetUserByIdOrThrowAsync(request.UserId);
+				var category = await _categoryService.GetCategoryOrThrowAsync(request.CategoryId, request.UserId);
+
+				expense.Update(request.Amount, request.Date, request.Description, category, user);
+				expense.WriteUpdatedAudit(request.UserId);
+
+				await _expenseService.ApplyUpdateAsync(expense);
+
+				var expenseDto = _mapper.Map<UpdateExpenseCommandResultDto>(expense);
+
+				return UpdateExpenseCommandResult.Succeeded(expenseDto);
+			}
+			catch (Exception e)
+			{
+				var error = new Error(e.Message);
+
+				return UpdateExpenseCommandResult.Failed(error);
+			}
 		}
 	}
 }

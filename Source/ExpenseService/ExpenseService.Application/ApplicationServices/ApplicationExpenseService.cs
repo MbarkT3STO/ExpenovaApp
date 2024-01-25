@@ -30,7 +30,7 @@ public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 	/// </summary>
 	/// <param name="expense">The expense to update.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	public async Task UpdateAsync(Domain.Entities.Expense expense)
+	public async Task ApplyUpdateAsync(Domain.Entities.Expense expense)
 	{
 		// Validate the expense for update
 		expense.Validate(new IsValidExpenseForUpdateSpecification());
