@@ -89,6 +89,7 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 				expense.WriteUpdatedAudit(request.UserId);
 
 				await _expenseService.ApplyUpdateAsync(expense);
+				await PublishExpenseUpdatedEventAsync(expense);
 
 				var expenseDto = _mapper.Map<UpdateExpenseCommandResultDto>(expense);
 
@@ -100,6 +101,22 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 
 				return UpdateExpenseCommandResult.Failed(error);
 			}
+		}
+
+
+		/// <summary>
+		/// Asynchronously publishes an expense updated event.
+		/// </summary>
+		/// <param name="expense">The expense entity.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task PublishExpenseUpdatedEventAsync(Domain.Entities.Expense expense)
+		{
+			var eventDetails = new DomainEventDetails(nameof(ExpenseUpdatedEvent), expense.User.Id);
+			var eventData    = new ExpenseUpdatedEventData(expense.Id, expense.Amount, expense.Description, expense.Date, expense.Category.Id, expense.User.Id, expense.CreatedAt, expense.CreatedBy, expense.LastUpdatedAt, expense.LastUpdatedBy, expense.IsDeleted, expense.DeletedAt);
+
+			var @event = new ExpenseUpdatedEvent(eventDetails, eventData);
+
+			await _mediator.Publish(@event);
 		}
 	}
 }

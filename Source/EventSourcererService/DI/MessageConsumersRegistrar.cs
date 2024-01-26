@@ -22,6 +22,7 @@ public static class MessageConsumersRegistrar
 
 		#region ExpenseService - Expense
 		services.AddScoped<ExpenseServiceExpenseCreatedMessageConsumer>();
+		services.AddScoped<ExpenseServiceExpenseUpdatedMessageConsumer>();
 		#endregion
 	}
 }
