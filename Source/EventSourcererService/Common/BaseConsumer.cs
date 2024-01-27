@@ -9,7 +9,7 @@ namespace EventSourcererService.Common;
 public abstract class BaseConsumer
 {
 	protected readonly AppDbContext _dbContext;
-	
+
 	protected BaseConsumer(AppDbContext dbContext)
 	{
 		_dbContext = dbContext;
@@ -24,12 +24,12 @@ public abstract class BaseConsumer
 public abstract class BaseConsumer<TMessage> : BaseConsumer, IConsumer<TMessage> where TMessage : class
 {
 	protected readonly IDeduplicationService _deduplicationService;
-	
+
 	protected BaseConsumer(AppDbContext dbContext, IDeduplicationService deduplicationService) : base(dbContext)
 	{
 		_deduplicationService = deduplicationService;
 	}
-	
+
 	/// <summary>
 	/// Consumes a message of type TMessage.
 	/// </summary>

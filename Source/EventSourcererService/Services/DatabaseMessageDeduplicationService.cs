@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using RabbitMqSettings.Interfaces;
 
 namespace EventSourcererService.Services;
 
@@ -23,8 +22,8 @@ public class DatabaseMessageDeduplicationService<TEntity> : IDeduplicationServic
 	{
 		throw new NotImplementedException();
 	}
-	
-	
+
+
 	public async Task ProcessMessage(Expression<Func<Task>> processMessageFunc)
 	{
 		await processMessageFunc.Compile().Invoke();
