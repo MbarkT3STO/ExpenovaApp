@@ -65,6 +65,7 @@ public class Expense: AuditableAggregateRoot<Guid>
 	}
 
 
+
 	public void Update(decimal amount, DateTime date, string description, Category category, User user)
 	{
 		UpdateAmount(amount);
@@ -125,8 +126,6 @@ public class Expense: AuditableAggregateRoot<Guid>
 	{
 		Amount = amount;
 	}
-
-
 
 
 

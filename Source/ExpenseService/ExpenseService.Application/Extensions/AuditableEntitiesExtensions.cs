@@ -70,4 +70,16 @@ public static class AuditableEntitiesExtensions
 		entity.DeletedAt = deletedAt;
 		entity.DeletedBy = deletedBy;
 	}
+
+
+	/// <summary>
+	/// Writes Deleted audit information for an <see cref="IAuditableEntity"/>.
+	/// </summary>
+	/// <param name="entity">The entity to write the audit information for.</param>
+	/// <param name="deletedBy">The used ID of the user who deleted the entity.</param>
+	public static void WriteDeletedAudit(this IAuditableEntity entity, string deletedBy)
+	{
+		entity.DeletedAt = DateTime.UtcNow;
+		entity.DeletedBy = deletedBy;
+	}
 }

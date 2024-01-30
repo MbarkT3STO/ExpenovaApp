@@ -38,4 +38,18 @@ public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 		// Update the expense
 		await _expenseRepository.UpdateAsync(expense);
 	}
-}
+
+
+	/// <summary>
+	/// Applies soft delete to the specified expense.
+	/// </summary>
+	/// <param name="expense">The expense to apply soft delete to.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	public async Task ApplySoftDeleteAsync(Domain.Entities.Expense expense)
+	{
+		// Validate the expense for update
+		expense.Validate(new IsValidExpenseForSoftDeleteSpecification());
+
+		// Update the expense
+		await _expenseRepository.UpdateAsync(expense);
+	}
