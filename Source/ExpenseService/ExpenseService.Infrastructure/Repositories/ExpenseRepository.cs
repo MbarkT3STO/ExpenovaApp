@@ -92,7 +92,15 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public void Update(Expense entity)
+    public async Task SoftDeleteAsync(Expense expense, CancellationToken cancellationToken = default)
+    {
+        var expenseEntity = _mapper.Map<ExpenseEntity>(expense);
+
+		_dbContext.Expenses.Update(expenseEntity);
+		await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Update(Expense entity)
 	{
 		throw new NotImplementedException();
 	}

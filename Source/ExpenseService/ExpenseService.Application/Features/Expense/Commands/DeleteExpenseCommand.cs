@@ -69,7 +69,13 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 		{
 			var expense = await expenseService.GetExpenseByIdOrThrowAsync(request.Id);
 
-			expense.WriteDeletedAudit(request.DeletedBy);
+			// TODO: This is a workaround to set the deleted by property of the expense
+			// For now, the deleted by property is set as the User's ID related to the expense
+			// In the future, this should be set as the ID of the user who is deleting the expense and it should be retrieved from the request ( Web API )
+			// As the following: expense.WriteDeletedAudit(request.DeletedBy);
+
+			expense.WriteDeletedAudit(expense.User.Id);
+
 			await expenseService.ApplySoftDeleteAsync(expense);
 
 			var resultDTO = _mapper.Map<DeleteExpenseCommandResultDto>(expense);

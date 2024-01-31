@@ -67,6 +67,7 @@ public static class AuditableEntitiesExtensions
 	/// <param name="deletedAt">The date and time when the entity was deleted.</param>
 	public static void WriteDeletedAudit(this IAuditableEntity entity, string deletedBy, DateTime deletedAt)
 	{
+		entity.IsDeleted = true;
 		entity.DeletedAt = deletedAt;
 		entity.DeletedBy = deletedBy;
 	}
@@ -79,6 +80,7 @@ public static class AuditableEntitiesExtensions
 	/// <param name="deletedBy">The used ID of the user who deleted the entity.</param>
 	public static void WriteDeletedAudit(this IAuditableEntity entity, string deletedBy)
 	{
+		entity.IsDeleted = true;
 		entity.DeletedAt = DateTime.UtcNow;
 		entity.DeletedBy = deletedBy;
 	}

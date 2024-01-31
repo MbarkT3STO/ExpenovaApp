@@ -3,6 +3,11 @@ using ExpenseService.Domain.Specifications.ExpenseSpecifications.Composite;
 
 namespace ExpenseService.Application.ApplicationServices;
 
+/// <summary>
+/// Represents a service for managing expenses in the application layer.
+/// <br/>
+/// This class is an extension of the <see cref="Domain.Services.Expense.ExpenseService"/> class.
+/// </summary>
 public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 {
 	public ApplicationExpenseService(IExpenseRepository expenseRepository) : base(expenseRepository)
@@ -50,6 +55,8 @@ public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 		// Validate the expense for update
 		expense.Validate(new IsValidExpenseForSoftDeleteSpecification());
 
-		// Update the expense
-		await _expenseRepository.UpdateAsync(expense);
+		// Apply soft delete
+		await _expenseRepository.SoftDeleteAsync(expense);
 	}
+
+}

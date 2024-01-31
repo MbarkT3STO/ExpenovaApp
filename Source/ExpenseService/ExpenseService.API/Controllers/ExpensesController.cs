@@ -10,7 +10,7 @@ namespace ExpenseService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ExpensesController : ControllerBase
+public class ExpensesController: ControllerBase
 {
 	private readonly IMediator _mediator;
 	private readonly IMapper _mapper;
@@ -22,12 +22,12 @@ public class ExpensesController : ControllerBase
 	}
 
 
-	[HttpGet(nameof(GetAllExpenses))]
-	public async Task<IActionResult> GetAllExpenses()
+	[HttpGet(nameof(GetAll))]
+	public async Task<IActionResult> GetAll()
 	{
 		var queryResult = await _mediator.Send(new GetExpensesQuery());
 
-		if(queryResult.IsFailure)
+		if (queryResult.IsFailure)
 		{
 			return BadRequest(queryResult.Error);
 		}
@@ -36,12 +36,12 @@ public class ExpensesController : ControllerBase
 	}
 
 
-	[HttpPost(nameof(CreateExpense))]
-	public async Task<IActionResult> CreateExpense([FromBody] CreateExpenseCommand command)
+	[HttpPost(nameof(Create))]
+	public async Task<IActionResult> Create([FromBody] CreateExpenseCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
 
-		if(commandResult.IsFailure)
+		if (commandResult.IsFailure)
 		{
 			return BadRequest(commandResult.Error.Message);
 		}
@@ -55,7 +55,7 @@ public class ExpensesController : ControllerBase
 	{
 		var queryResult = await _mediator.Send(new GetExpenseByIdQuery(id));
 
-		if(queryResult.IsFailure)
+		if (queryResult.IsFailure)
 		{
 			return BadRequest(queryResult.Error);
 		}
@@ -64,12 +64,28 @@ public class ExpensesController : ControllerBase
 	}
 
 
-	[HttpPut(nameof(UpdateExpense))]
-	public async Task<IActionResult> UpdateExpense([FromBody] UpdateExpenseCommand command)
+	[HttpPut(nameof(Update))]
+	public async Task<IActionResult> Update([FromBody] UpdateExpenseCommand command)
 	{
 		var commandResult = await _mediator.Send(command);
 
-		if(commandResult.IsFailure)
+		if (commandResult.IsFailure)
+		{
+			return BadRequest(commandResult.Error.Message);
+		}
+
+		return Ok(commandResult.Value);
+	}
+
+
+	[HttpDelete(nameof(Delete))]
+	public async Task<IActionResult> Delete([FromQuery] Guid id)
+	{
+		var actionBy      = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		var command       = new DeleteExpenseCommand(id, actionBy);
+		var commandResult = await _mediator.Send(command);
+
+		if (commandResult.IsFailure)
 		{
 			return BadRequest(commandResult.Error.Message);
 		}
