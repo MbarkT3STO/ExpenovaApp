@@ -9,5 +9,6 @@ public class ExpenseServiceEventSourcererQueues
 
 	public const string ExpenseCreatedEventSourcererQueue  = "EventSourcererService-ExpenseService-ExpenseCreatedEventsQueue";
 	public const string ExpenseUpdatedEventSourcererQueue  = "EventSourcererService-ExpenseService-ExpenseUpdatedEventsQueue";
+	public const string ExpenseDeletedEventSourcererQueue  = "EventSourcererService-ExpenseService-ExpenseDeletedEventsQueue";
 
 }

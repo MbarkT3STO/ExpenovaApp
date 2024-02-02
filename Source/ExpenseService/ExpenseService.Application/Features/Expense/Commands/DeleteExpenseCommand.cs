@@ -55,12 +55,14 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 	private readonly IExpenseRepository _expenseRepository;
 	private readonly ApplicationExpenseService expenseService;
 	private readonly IMapper _mapper;
+	private readonly IMediator _mediator;
 
-	public DeleteExpenseCommandHandler(IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, IMapper mapper)
+	public DeleteExpenseCommandHandler(IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, IMapper mapper, IMediator mediator)
 	{
 		_expenseRepository  = expenseRepository;
 		this.expenseService = expenseService;
 		_mapper             = mapper;
+		_mediator           = mediator;
 	}
 
 	public async Task<DeleteExpenseCommandResult> Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
@@ -77,6 +79,7 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 			expense.WriteDeletedAudit(expense.User.Id);
 
 			await expenseService.ApplySoftDeleteAsync(expense);
+			await PublishExpenseDeletedEvent(expense);
 
 			var resultDTO = _mapper.Map<DeleteExpenseCommandResultDto>(expense);
 
@@ -88,5 +91,15 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 
 			return DeleteExpenseCommandResult.Failed(error);
 		}
+	}
+
+
+	async Task PublishExpenseDeletedEvent(Domain.Entities.Expense expense)
+	{
+		var eventDetails = new DomainEventDetails(nameof(ExpenseDeletedEvent), expense.User.Id);
+		var eventData    = new ExpenseDeletedEventData(expense.Id, expense.Amount, expense.Description, expense.Date, expense.Category.Id, expense.User.Id, expense.CreatedAt, expense.CreatedBy, expense.LastUpdatedAt, expense.LastUpdatedBy, expense.IsDeleted, expense.DeletedAt);
+		var @event       = ExpenseDeletedEvent.Create(eventDetails, eventData);
+
+		await _mediator.Publish(@event);
 	}
 }
