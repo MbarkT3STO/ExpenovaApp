@@ -43,7 +43,7 @@ public class ExpenseDeletedEventHandler: INotificationHandler<ExpenseDeletedEven
 			TypeNameHandling = TypeNameHandling.All
 		};
 		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(ExpenseUpdatedEvent), serializedMessage, expenseEventSourcererQueueName);
+		var outboxEvent       = new OutboxMessage(nameof(ExpenseDeletedEvent), serializedMessage, expenseEventSourcererQueueName);
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);
