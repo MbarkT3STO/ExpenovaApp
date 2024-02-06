@@ -36,6 +36,21 @@ public class ExpensesController: ControllerBase
 	}
 
 
+	[HttpGet(nameof(GetByUser))]
+	public async Task<IActionResult> GetByUser(string userId)
+	{
+		var query       = new GetExpensesByUserQuery(userId);
+		var queryResult = await _mediator.Send(query);
+
+		if (queryResult.IsFailure)
+		{
+			return BadRequest(queryResult.Error);
+		}
+
+		return Ok(queryResult.Value);
+	}
+
+
 	[HttpPost(nameof(Create))]
 	public async Task<IActionResult> Create([FromBody] CreateExpenseCommand command)
 	{

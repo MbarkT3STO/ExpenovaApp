@@ -87,20 +87,24 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<IQueryable<Expense>> GetExpensesByUserIdAsync(string userId)
+	public async Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(string userId, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).Where(e => e.UserId == userId).ToListAsync(cancellationToken: cancellationToken);
+		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
+
+		return expensesDto;
 	}
 
-    public async Task SoftDeleteAsync(Expense expense, CancellationToken cancellationToken = default)
-    {
-        var expenseEntity = _mapper.Map<ExpenseEntity>(expense);
+
+	public async Task SoftDeleteAsync(Expense expense, CancellationToken cancellationToken = default)
+	{
+		var expenseEntity = _mapper.Map<ExpenseEntity>(expense);
 
 		_dbContext.Expenses.Update(expenseEntity);
 		await _dbContext.SaveChangesAsync(cancellationToken);
-    }
+	}
 
-    public void Update(Expense entity)
+	public void Update(Expense entity)
 	{
 		throw new NotImplementedException();
 	}
