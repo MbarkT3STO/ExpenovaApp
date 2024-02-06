@@ -1,5 +1,8 @@
 namespace ExpenseService.Application.Features.Expense.Queries;
 
+/// <summary>
+/// Represents the data transfer object (DTO) for the result of the <see cref="GetExpensesByUserQuery"/>.
+/// </summary>
 public class GetExpensesByUserQueryResultDto
 {
 	public Guid Id { get; private set; }
@@ -21,7 +24,7 @@ public class GetExpensesByUserQueryResultDto
 
 
 /// <summary>
-/// Represents the result of a GetExpensesByUserQuery.
+/// Represents the result of a <see cref="GetExpensesByUserQuery"/>.
 /// </summary>
 public class GetExpensesByUserQueryResult: QueryResult<IEnumerable<GetExpensesByUserQueryResultDto>, GetExpensesByUserQueryResult>
 {
