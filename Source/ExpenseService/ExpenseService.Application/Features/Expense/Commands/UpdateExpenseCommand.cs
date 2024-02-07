@@ -67,9 +67,9 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 		readonly IExpenseRepository _expenseRepository;
 		readonly ApplicationExpenseService _expenseService;
 		readonly ApplicationCategoryService _categoryService;
-		readonly UserService _userService;
+		readonly ApplicationUserService _userService;
 
-		public UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, UserService userService): base(mediator, mapper)
+		public UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, ApplicationUserService userService): base(mediator, mapper)
 		{
 			_expenseRepository = expenseRepository;
 			_expenseService    = expenseService;

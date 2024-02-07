@@ -6,11 +6,11 @@ namespace ExpenseService.Application.ApplicationServices;
 /// <summary>
 /// Represents a service for managing user-related operations.
 /// </summary>
-public class UserService
+public class ApplicationUserService
 {
 	readonly IUserRepository _userRepository;
 
-	public UserService(IUserRepository userRepository)
+	public ApplicationUserService(IUserRepository userRepository)
 	{
 		_userRepository = userRepository;
 	}

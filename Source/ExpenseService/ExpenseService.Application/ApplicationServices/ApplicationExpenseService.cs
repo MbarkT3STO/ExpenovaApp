@@ -59,4 +59,17 @@ public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 		await _expenseRepository.SoftDeleteAsync(expense);
 	}
 
+
+	/// <summary>
+	/// Retrieves a list of expenses for a given user ID.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <returns>A collection of expenses.</returns>
+	public async Task<IEnumerable<Domain.Entities.Expense>> GetExpensesByUserIdAsync(string userId)
+	{
+		var expenses = await _expenseRepository.GetExpensesByUserIdAsync(userId);
+
+		return expenses;
+	}
+
 }

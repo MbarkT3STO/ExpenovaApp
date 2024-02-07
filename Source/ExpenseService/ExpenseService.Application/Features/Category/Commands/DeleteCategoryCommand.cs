@@ -78,7 +78,7 @@ public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategory
 {
 	readonly IsValidCategoryForDeleteSpecification _isValidCategoryForDeleteSpecification;
 
-	public DeleteCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForDeleteSpecification isValidCategoryForDeleteSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public DeleteCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, ApplicationUserService userService, ICategoryRepository categoryRepository, IsValidCategoryForDeleteSpecification isValidCategoryForDeleteSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 		_isValidCategoryForDeleteSpecification = isValidCategoryForDeleteSpecification;
 	}

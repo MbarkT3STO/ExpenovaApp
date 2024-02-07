@@ -8,9 +8,9 @@ public class ExpenseCommandHandler<TCommand, TResult, TResultDTO> : BaseCommandH
 	protected readonly IExpenseRepository _expenseRepository;
 	protected readonly ApplicationExpenseService _expenseService;
 	protected readonly ApplicationCategoryService _categoryService;
-	protected readonly UserService _userService;
+	protected readonly ApplicationUserService _userService;
 
-	public ExpenseCommandHandler( IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, UserService userService) : base(mediator, mapper)
+	public ExpenseCommandHandler( IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, ApplicationUserService userService) : base(mediator, mapper)
 	{
 		_expenseRepository = expenseRepository;
 		_expenseService    = expenseService;

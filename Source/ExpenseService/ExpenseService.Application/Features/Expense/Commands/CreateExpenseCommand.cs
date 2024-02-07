@@ -44,10 +44,10 @@ public class CreateExpenseCommandHandler: BaseCommandHandler<CreateExpenseComman
 {
 	readonly IExpenseRepository _expenseRepository;
 	readonly ApplicationExpenseService _expenseService;
-	readonly UserService _userService;
+	readonly ApplicationUserService _userService;
 	readonly ApplicationCategoryService _categoryService;
 
-	public CreateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, UserService userService, ApplicationCategoryService categoryService): base(mediator, mapper)
+	public CreateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationUserService userService, ApplicationCategoryService categoryService): base(mediator, mapper)
 	{
 		_expenseRepository = expenseRepository;
 		_expenseService    = expenseService;

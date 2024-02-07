@@ -56,7 +56,7 @@ public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategory
 	readonly IsValidCategoryForUpdateSpecification _isValidCategoryForUpdateSpecification;
 
 
-	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, UserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, ApplicationUserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
 	{
 		_categoryService                       = categoryService;
 		_isValidCategoryForUpdateSpecification = isValidCategoryForUpdateSpecification;

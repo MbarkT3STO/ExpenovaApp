@@ -1,3 +1,5 @@
+using ExpenseService.Application.ApplicationServices;
+
 namespace ExpenseService.Application.Features.Expense.Queries;
 
 /// <summary>
@@ -61,21 +63,26 @@ public class GetExpensesByUserQuery: IRequest<GetExpensesByUserQueryResult>
 }
 
 
-public class GetExpensesByUserQueryHandler: IRequestHandler<GetExpensesByUserQuery, GetExpensesByUserQueryResult>
+public class GetExpensesByUserQueryHandler: BaseQueryHandler<GetExpensesByUserQuery, GetExpensesByUserQueryResult>
 {
-	private readonly IExpenseRepository _expenseRepository;
-	private readonly IMapper _mapper;
+	readonly ApplicationExpenseService _expenseService;
+	readonly ApplicationUserService _userService;
+	readonly IExpenseRepository _expenseRepository;
 
-	public GetExpensesByUserQueryHandler(IExpenseRepository expenseRepository, IMapper mapper)
+
+	public GetExpensesByUserQueryHandler(IMapper mapper, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationUserService userService): base(mapper)
 	{
+		_expenseService    = expenseService;
+		_userService       = userService;
 		_expenseRepository = expenseRepository;
-		_mapper            = mapper;
 	}
 
-	public async Task<GetExpensesByUserQueryResult> Handle(GetExpensesByUserQuery request, CancellationToken cancellationToken)
+
+	public override async Task<GetExpensesByUserQueryResult> Handle(GetExpensesByUserQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
+			var user        = await _userService.GetUserByIdOrThrowAsync(request.UserId);
 			var expenses    = await _expenseRepository.GetExpensesByUserIdAsync(request.UserId, cancellationToken);
 			var expensesDTO = _mapper.Map<List<GetExpensesByUserQueryResultDto>>(expenses);
 
@@ -83,7 +90,7 @@ public class GetExpensesByUserQueryHandler: IRequestHandler<GetExpensesByUserQue
 
 			return result;
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			var error = new Error(ex.Message);
 

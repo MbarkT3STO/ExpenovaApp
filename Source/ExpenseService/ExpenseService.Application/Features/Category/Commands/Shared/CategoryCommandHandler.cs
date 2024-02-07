@@ -12,10 +12,10 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 {
 	protected readonly ICategoryRepository _categoryRepository;
 	readonly ApplicationCategoryService _categoryService;
-	protected readonly UserService _userService;
+	protected readonly ApplicationUserService _userService;
 
 
-	protected CategoryCommandHandler(ICategoryRepository categoryRepository, ApplicationCategoryService categoryService, UserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
+	protected CategoryCommandHandler(ICategoryRepository categoryRepository, ApplicationCategoryService categoryService, ApplicationUserService userService, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
 		_categoryRepository = categoryRepository;
 		_categoryService    = categoryService;
