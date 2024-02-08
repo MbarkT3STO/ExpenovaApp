@@ -8,11 +8,17 @@ namespace ExpenseService.Application.ApplicationServices;
 /// <br/>
 /// This class is an extension of the <see cref="Domain.Services.Expense.ExpenseService"/> class.
 /// </summary>
-public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
+public class ApplicationExpenseService: Domain.Services.Expense.ExpenseService
 {
-	public ApplicationExpenseService(IExpenseRepository expenseRepository) : base(expenseRepository)
-	{
+	readonly ApplicationCategoryService _categoryService;
 
+	public IExpenseRepository Repository { get; }
+
+
+	public ApplicationExpenseService(IExpenseRepository expenseRepository, ApplicationCategoryService categoryService): base(expenseRepository)
+	{
+		_categoryService = categoryService;
+		Repository       = expenseRepository;
 	}
 
 	/// <summary>
@@ -68,6 +74,15 @@ public class ApplicationExpenseService : Domain.Services.Expense.ExpenseService
 	public async Task<IEnumerable<Domain.Entities.Expense>> GetExpensesByUserIdAsync(string userId)
 	{
 		var expenses = await _expenseRepository.GetExpensesByUserIdAsync(userId);
+
+		return expenses;
+	}
+
+
+	public async Task<IEnumerable<Domain.Entities.Expense>> GetExpensesByCategory(Guid categoryId)
+	{
+		var category = await _categoryService.GetCategoryOrThrowAsync(categoryId);
+		var expenses = await _expenseRepository.GetExpensesByCategoryIdAsync(categoryId);
 
 		return expenses;
 	}

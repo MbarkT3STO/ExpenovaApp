@@ -82,6 +82,14 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
+	public async Task<IEnumerable<Expense>> GetExpensesByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default)
+	{
+		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).Where(e => e.CategoryId == categoryId).ToListAsync(cancellationToken: cancellationToken);
+		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
+
+		return expensesDto;
+	}
+
 	public Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(string userId, Guid categoryId)
 	{
 		throw new NotImplementedException();

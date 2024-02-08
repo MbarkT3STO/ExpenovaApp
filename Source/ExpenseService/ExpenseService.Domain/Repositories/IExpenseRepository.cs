@@ -14,6 +14,15 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 
 
 	/// <summary>
+	/// Retrieves a collection of expenses by category ID asynchronously.
+	/// </summary>
+	/// <param name="categoryId">The ID of the category.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains a collection of expenses.</returns>
+	Task<IEnumerable<Expense>> GetExpensesByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
 	/// Retrieves expenses by user ID and category ID.
 	/// </summary>
 	/// <param name="userId">The ID of the user.</param>

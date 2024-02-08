@@ -29,6 +29,23 @@ public class ApplicationCategoryService : CategoryService
 	}
 
 
+
+	/// <summary>
+	/// Retrieves a category by its ID or throws a NotFoundException if it does not exist.
+	/// </summary>
+	/// <param name="id">The ID of the category to retrieve.</param>
+	/// <returns>The category with the specified ID.</returns>
+	public async Task<Category> GetCategoryOrThrowAsync(Guid id)
+	{
+		var category = await _categoryRepository.GetByIdAsync(id);
+
+		if (category is null)
+			throw new NotFoundException($"Category with the ID {id} does not exist");
+
+		return category;
+	}
+
+
 	/// <summary>
 	/// Retrieves a category by its ID and user ID, or throws an exception if it does not exist.
 	/// </summary>
