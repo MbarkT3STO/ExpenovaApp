@@ -1,6 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
 using ExpenseService.Application.Features.Expense.Commands.Shared;
+using ExpenseService.Domain.Specifications.ExpenseSpecifications.Composite;
 
 namespace ExpenseService.Application.Features.Expense.Commands;
 
@@ -64,31 +65,35 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 
 	public class UpdateExpenseCommandHandler: BaseCommandHandler<UpdateExpenseCommand, UpdateExpenseCommandResult, UpdateExpenseCommandResultDto>
 	{
+		readonly IUserRepository _userRepository;
+		readonly ICategoryRepository _categoryRepository;
 		readonly IExpenseRepository _expenseRepository;
 		readonly ApplicationExpenseService _expenseService;
 		readonly ApplicationCategoryService _categoryService;
 		readonly ApplicationUserService _userService;
 
-		public UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, ApplicationUserService userService): base(mediator, mapper)
+		public UpdateExpenseCommandHandler(IMapper mapper, IMediator mediator, IUserRepository userRepository, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationCategoryService categoryService, ApplicationUserService userService): base(mediator, mapper)
 		{
-			_expenseRepository = expenseRepository;
-			_expenseService    = expenseService;
-			_categoryService   = categoryService;
-			_userService       = userService;
+			_userRepository     = userRepository;
+			_categoryRepository = categoryRepository;
+			_expenseRepository  = expenseRepository;
+			_expenseService     = expenseService;
+			_categoryService    = categoryService;
+			_userService        = userService;
 		}
 
 		public override async Task<UpdateExpenseCommandResult> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
 		{
 			try
 			{
-				var expense  = await _expenseService.GetExpenseByIdOrThrowAsync(request.Id);
-				var user     = await _userService.GetUserByIdOrThrowAsync(request.UserId);
-				var category = await _categoryService.GetCategoryOrThrowAsync(request.CategoryId, request.UserId);
+				var expense  = await _expenseRepository.GetByIdOrThrowAsync(request.Id, cancellationToken);
+				var user     = await _userRepository.GetByIdOrThrowAsync(request.UserId, cancellationToken);
+				var category = await _categoryRepository.GetByIdAndUserOrThrowAsync(request.CategoryId, request.UserId, cancellationToken);
 
 				expense.Update(request.Amount, request.Date, request.Description, category, user);
 				expense.WriteUpdatedAudit(request.UserId);
 
-				await _expenseService.ApplyUpdateAsync(expense);
+				await ApplyUpdateAsync(expense);
 				await PublishExpenseUpdatedEventAsync(expense);
 
 				var expenseDto = _mapper.Map<UpdateExpenseCommandResultDto>(expense);
@@ -101,6 +106,21 @@ public class UpdateExpenseCommand: IRequest<UpdateExpenseCommandResult>
 
 				return UpdateExpenseCommandResult.Failed(error);
 			}
+		}
+
+
+		/// <summary>
+		/// Asynchronously applies the update to the expense.
+		/// </summary>
+		/// <param name="expense">The expense to be updated.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		async Task ApplyUpdateAsync(Domain.Entities.Expense expense)
+		{
+			// Validate the expense for update
+			expense.Validate(new IsValidExpenseForUpdateSpecification());
+
+			// Update the expense
+			await _expenseRepository.UpdateAsync(expense);
 		}
 
 

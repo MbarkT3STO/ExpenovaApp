@@ -211,4 +211,26 @@ public class CategoryRepository: Repository, ICategoryRepository
 
 		return domainCategory;
 	}
+
+	public async Task<Category> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+
+		if (categoryEntity is null) throw new NotFoundException($"The category with ID {id} was not found.");
+
+		var category = _mapper.Map<Category>(categoryEntity);
+
+		return category;
+	}
+
+	public async Task<Category> GetByIdAndUserOrThrowAsync(Guid id, string userId, CancellationToken cancellationToken = default)
+	{
+		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId, cancellationToken);
+
+		if (categoryEntity is null) throw new NotFoundException($"The category with ID #{id} and user ID #{userId} was not found.");
+
+		var category = _mapper.Map<Category>(categoryEntity);
+
+		return category;
+	}
 }

@@ -58,19 +58,17 @@ public class GetExpenseByIdQuery: IRequest<GetExpenseByIdQueryResult>
 public class GetExpenseByIdQueryHandler: BaseQueryHandler<GetExpenseByIdQuery, GetExpenseByIdQueryResult>
 {
 	readonly IExpenseRepository _expenseRepository;
-	readonly  ApplicationExpenseService _expenseService;
 
-	public GetExpenseByIdQueryHandler(IMapper mapper, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService): base(mapper)
+	public GetExpenseByIdQueryHandler(IMapper mapper, IExpenseRepository expenseRepository): base(mapper)
 	{
 		_expenseRepository = expenseRepository;
-		_expenseService    = expenseService;
 	}
 
 	public override async Task<GetExpenseByIdQueryResult> Handle(GetExpenseByIdQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var expense = await _expenseService.GetExpenseByIdOrThrowAsync(request.Id);
+			var expense = await _expenseRepository.GetByIdOrThrowAsync(request.Id, cancellationToken);
 			var result  = _mapper.Map<GetExpenseByIdQueryResultDto>(expense);
 
 			return GetExpenseByIdQueryResult.Succeeded(result);

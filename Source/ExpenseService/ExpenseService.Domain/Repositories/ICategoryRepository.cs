@@ -50,4 +50,6 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// <param name="userId">The ID of the user.</param>
 	/// <returns>The category with the specified ID and user ID.</returns>
 	Task<Category> GetByIdAndUserIdAsync(Guid id, string userId);
+
+	Task<Category> GetByIdAndUserOrThrowAsync(Guid id, string userId, CancellationToken cancellationToken = default);
 }

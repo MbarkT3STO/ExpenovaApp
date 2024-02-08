@@ -1,6 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Extensions;
 using ExpenseService.Domain.Shared.Services;
+using ExpenseService.Domain.Specifications.ExpenseSpecifications.Composite;
 
 namespace ExpenseService.Application.Features.Expense.Commands;
 
@@ -50,26 +51,25 @@ public class DeleteExpenseCommand: IRequest<DeleteExpenseCommandResult>
 }
 
 
-public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, DeleteExpenseCommandResult>
+public class DeleteExpenseCommandHandler: BaseCommandHandler<DeleteExpenseCommand, DeleteExpenseCommandResult, DeleteExpenseCommandResultDto>
 {
+	private readonly IUserRepository _userRepository;
+	private readonly ICategoryRepository _categoryRepository;
 	private readonly IExpenseRepository _expenseRepository;
-	private readonly ApplicationExpenseService expenseService;
-	private readonly IMapper _mapper;
-	private readonly IMediator _mediator;
 
-	public DeleteExpenseCommandHandler(IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, IMapper mapper, IMediator mediator)
+
+	public DeleteExpenseCommandHandler(IUserRepository userRepository, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository, IMapper mapper, IMediator mediator): base(mediator, mapper)
 	{
-		_expenseRepository  = expenseRepository;
-		this.expenseService = expenseService;
-		_mapper             = mapper;
-		_mediator           = mediator;
+		_userRepository      = userRepository;
+		_categoryRepository  = categoryRepository;
+		_expenseRepository   = expenseRepository;
 	}
 
-	public async Task<DeleteExpenseCommandResult> Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
+	public override async Task<DeleteExpenseCommandResult> Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var expense = await expenseService.GetExpenseByIdOrThrowAsync(request.Id);
+			var expense = await _expenseRepository.GetByIdOrThrowAsync(request.Id, cancellationToken);
 
 			// TODO: This is a workaround to set the deleted by property of the expense
 			// For now, the deleted by property is set as the User's ID related to the expense
@@ -78,7 +78,7 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 
 			expense.WriteDeletedAudit(expense.User.Id);
 
-			await expenseService.ApplySoftDeleteAsync(expense);
+			await ApplySoftDeleteAsync(expense);
 			await PublishExpenseDeletedEvent(expense);
 
 			var resultDTO = _mapper.Map<DeleteExpenseCommandResultDto>(expense);
@@ -91,6 +91,21 @@ public class DeleteExpenseCommandHandler: IRequestHandler<DeleteExpenseCommand, 
 
 			return DeleteExpenseCommandResult.Failed(error);
 		}
+	}
+
+
+	/// <summary>
+	/// Applies soft delete to the specified expense.
+	/// </summary>
+	/// <param name="expense">The expense to apply soft delete to.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	async Task ApplySoftDeleteAsync(Domain.Entities.Expense expense)
+	{
+		// Validate the expense for update
+		expense.Validate(new IsValidExpenseForSoftDeleteSpecification());
+
+		// Apply soft delete
+		await _expenseRepository.SoftDeleteAsync(expense);
 	}
 
 

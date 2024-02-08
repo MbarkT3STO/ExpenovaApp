@@ -65,24 +65,21 @@ public class GetExpensesByUserQuery: IRequest<GetExpensesByUserQueryResult>
 
 public class GetExpensesByUserQueryHandler: BaseQueryHandler<GetExpensesByUserQuery, GetExpensesByUserQueryResult>
 {
-	readonly ApplicationExpenseService _expenseService;
-	readonly ApplicationUserService _userService;
 	readonly IExpenseRepository _expenseRepository;
+	readonly IUserRepository _userRepository;
 
 
-	public GetExpensesByUserQueryHandler(IMapper mapper, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationUserService userService): base(mapper)
+	public GetExpensesByUserQueryHandler(IMapper mapper, IExpenseRepository expenseRepository, IUserRepository userRepository): base(mapper)
 	{
-		_expenseService    = expenseService;
-		_userService       = userService;
 		_expenseRepository = expenseRepository;
+		_userRepository    = userRepository;
 	}
-
 
 	public override async Task<GetExpensesByUserQueryResult> Handle(GetExpensesByUserQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var user        = await _userService.GetUserByIdOrThrowAsync(request.UserId);
+			var user        = await _userRepository.GetByIdOrThrowAsync(request.UserId, cancellationToken);
 			var expenses    = await _expenseRepository.GetExpensesByUserIdAsync(request.UserId, cancellationToken);
 			var expensesDTO = _mapper.Map<List<GetExpensesByUserQueryResultDto>>(expenses);
 

@@ -1,4 +1,3 @@
-
 namespace ExpenseService.Infrastructure.Repositories;
 
 public class ExpenseRepository: Repository, IExpenseRepository
@@ -80,6 +79,18 @@ public class ExpenseRepository: Repository, IExpenseRepository
 	public Task<Expense> GetByIdAsync(Guid id, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
+	}
+
+	public async Task<Expense> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var expenseEntity = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+
+		if (expenseEntity is null) throw new NotFoundException($"The expense with ID {id} was not found.");
+
+
+		var expense = _mapper.Map<Expense>(expenseEntity);
+
+		return expense;
 	}
 
 	public async Task<IEnumerable<Expense>> GetExpensesByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default)

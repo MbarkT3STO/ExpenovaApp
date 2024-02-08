@@ -57,18 +57,20 @@ public class GetExpensesByCategoryQuery: IRequest<GetExpensesByCategoryQueryResu
 
 public class GetExpensesByCategoryQueryHandler: BaseQueryHandler<GetExpensesByCategoryQuery, GetExpensesByCategoryQueryResult>
 {
-	readonly ApplicationExpenseService _expenseService;
+	readonly IExpenseRepository _expenseRepository;
+	readonly ICategoryRepository _categoryRepository;
 
-	public GetExpensesByCategoryQueryHandler(IMapper mapper, ApplicationExpenseService expenseService): base(mapper)
+	public GetExpensesByCategoryQueryHandler(IMapper mapper, IExpenseRepository expenseRepository, ICategoryRepository categoryRepository): base(mapper)
 	{
-		_expenseService = expenseService;
+		_expenseRepository   = expenseRepository;
+		_categoryRepository  = categoryRepository;
 	}
-
 	public override async Task<GetExpensesByCategoryQueryResult> Handle(GetExpensesByCategoryQuery request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var expenses   = await _expenseService.GetExpensesByCategory(request.CategoryId);
+			var category   = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
+			var expenses   = await _expenseRepository.GetExpensesByCategoryIdAsync(request.CategoryId, cancellationToken);
 			var resultDTOs = _mapper.Map<IEnumerable<GetExpensesByCategoryQueryResultDto>>(expenses);
 			var result     = GetExpensesByCategoryQueryResult.Succeeded(resultDTOs);
 

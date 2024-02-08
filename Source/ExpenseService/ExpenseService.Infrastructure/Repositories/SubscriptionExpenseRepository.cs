@@ -62,6 +62,11 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
         throw new NotImplementedException();
     }
 
+    public Task<SubscriptionExpense> GetByIdOrThrowAsync(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
     {
         throw new NotImplementedException();

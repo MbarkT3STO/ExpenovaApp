@@ -42,25 +42,24 @@ public record CreateExpenseCommand(decimal Amount, string Description, DateTime 
 
 public class CreateExpenseCommandHandler: BaseCommandHandler<CreateExpenseCommand, CreateExpenseCommandResult, CreateExpenseCommandResultDto>
 {
+	readonly ICategoryRepository _categoryRepository;
 	readonly IExpenseRepository _expenseRepository;
-	readonly ApplicationExpenseService _expenseService;
-	readonly ApplicationUserService _userService;
-	readonly ApplicationCategoryService _categoryService;
+	readonly IUserRepository _userRepository;
 
-	public CreateExpenseCommandHandler(IMapper mapper, IMediator mediator, IExpenseRepository expenseRepository, ApplicationExpenseService expenseService, ApplicationUserService userService, ApplicationCategoryService categoryService): base(mediator, mapper)
+	public CreateExpenseCommandHandler(IMapper mapper, IMediator mediator, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository, IUserRepository userRepository): base(mediator, mapper)
 	{
-		_expenseRepository = expenseRepository;
-		_expenseService    = expenseService;
-		_userService       = userService;
-		_categoryService   = categoryService;
+		_categoryRepository = categoryRepository;
+		_expenseRepository  = expenseRepository;
+		_userRepository     = userRepository;
 	}
+
 
 	public override async Task<CreateExpenseCommandResult> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
 	{
 		try
 		{
-			var user     = await _userService.GetUserByIdOrThrowAsync(request.UserId);
-			var category = await _categoryService.GetCategoryOrThrowAsync(request.CategoryId, request.UserId);
+			var user     = await _userRepository.GetByIdOrThrowAsync(request.UserId, cancellationToken);
+			var category = await _categoryRepository.GetByIdAndUserOrThrowAsync(request.CategoryId, request.UserId, cancellationToken);
 			var expense  = CreateAndAuditExpense(request, category, user);
 
 			expense.Validate(new IsValidExpenseForCreateSpecification());

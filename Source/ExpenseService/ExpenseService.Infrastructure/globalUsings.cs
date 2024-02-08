@@ -17,3 +17,5 @@ global using ExpenseService.Domain.Repositories;
 global using ExpenseService.Infrastructure.Data;
 global using ExpenseService.Infrastructure.Data.Entities;
 
+global using ExpenseService.Infrastructure.Exceptions;
+global using ExpenseService.Infrastructure.Exceptions.RepositoryExceptions;

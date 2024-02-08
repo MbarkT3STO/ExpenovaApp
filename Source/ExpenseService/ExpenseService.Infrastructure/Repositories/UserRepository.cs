@@ -69,7 +69,18 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public bool IsExist(string id)
+    public async Task<User> GetByIdOrThrowAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var userEntity = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
+		if (userEntity is null) throw new NotFoundException($"The user with ID {id} does not exist.");
+
+		var user = _mapper.Map<User>(userEntity);
+
+		return user;
+    }
+
+    public bool IsExist(string id)
 	{
 		var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
 

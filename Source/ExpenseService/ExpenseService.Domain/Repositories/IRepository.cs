@@ -40,6 +40,15 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 
 
 	/// <summary>
+	/// Retrieves an entity by its ID or throws an exception if not found.
+	/// </summary>
+	/// <param name="id">The ID of the entity to retrieve.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the entity.</returns>
+	Task<TEntity> GetByIdOrThrowAsync(TKey id, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
 	/// Adds a new entity.
 	/// </summary>
 	void Add(TEntity entity);
