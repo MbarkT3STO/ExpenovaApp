@@ -78,15 +78,7 @@ public class GetCategoriesByUserIdQueryHandler: BaseQueryHandler<GetCategoriesBy
 	{
 		try
 		{
-			var isUserExists = await _userRepository.IsExistAsync(request.UserId, cancellationToken);
-
-			if (!isUserExists)
-			{
-				var error = new Error($"User with ID {request.UserId} does not exist.");
-
-				return GetCategoriesByUserIdQueryResult.Failed(error);
-			}
-
+			await _userRepository.ThrowIfNotExistAsync(request.UserId, cancellationToken);
 
 			var categories    = await _categoryRepository.GetCategoriesByUserIdAsync(request.UserId, cancellationToken);
 			var categoriesDTO = _mapper.Map<IEnumerable<GetCategoriesByUserIdQueryResultDTO>>(categories);
