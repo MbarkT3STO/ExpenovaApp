@@ -60,21 +60,21 @@ public abstract class CommandResult<TValue, TCommandResult> : ICommandResult<TVa
 
 
 	/// <summary>
-	/// Creates a succeeded command result with the specified value.
+	/// Creates a succeeded <typeparamref name="TCommandResult"/> with the specified value.
 	/// </summary>
 	/// <param name="value">The value.</param>
 	/// <returns>A succeeded command result with the specified value.</returns>
 	public static TCommandResult Succeeded(TValue value) => Activator.CreateInstance(typeof(TCommandResult), value) as TCommandResult;
 
 	/// <summary>
-	/// Creates a failed command result with the specified error.
+	/// Creates a failed <typeparamref name="TCommandResult"/> with the specified error.
 	/// </summary>
 	/// <param name="error">The error.</param>
 	/// <returns>A failed command result with the specified error.</returns>
 	public static TCommandResult Failed(Error error) => Activator.CreateInstance(typeof(TCommandResult), error) as TCommandResult;
 
 	/// <summary>
-	/// Creates a failed command result with the specified error message.
+	/// Creates a failed <typeparamref name="TCommandResult"/> with the specified error message.
 	/// </summary>
 	/// <param name="errorMessage">The error message.</param>
 	/// <returns>A failed command result with the specified error message.</returns>
