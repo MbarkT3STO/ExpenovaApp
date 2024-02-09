@@ -38,18 +38,24 @@ public record CreateCategoryCommand: IRequest<CreateCategoryCommandResult>
 	public string UserId { get; init; }
 }
 
-public class CreateCategoryCommandHandler: CategoryCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
+public class CreateCategoryCommandHandler: BaseCommandHandler<CreateCategoryCommand, CreateCategoryCommandResult, CreateCategoryCommandResultDTO>
 {
 	readonly IsValidCategoryForCreateSpecification _isValidCategoryForCreateSpecification;
+	readonly IUserRepository _userRepository;
+	readonly ICategoryRepository _categoryRepository;
 
-	public CreateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, ApplicationUserService userService, ICategoryRepository categoryRepository, IsValidCategoryForCreateSpecification isValidCategoryForCreateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+
+	public CreateCategoryCommandHandler(IMapper mapper, IMediator mediator, IUserRepository userRepository, ICategoryRepository categoryRepository, IsValidCategoryForCreateSpecification isValidCategoryForCreateSpecification): base(mediator, mapper)
 	{
 		_isValidCategoryForCreateSpecification = isValidCategoryForCreateSpecification;
+		_userRepository                        = userRepository;
+		_categoryRepository                    = categoryRepository;
 	}
+
 
 	public override async Task<CreateCategoryCommandResult> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		await CheckIfUserExistsOrThrowException(request.UserId);
+		await _userRepository.ThrowIfNotExistAsync(request.UserId, cancellationToken);
 
 		var category = CreateAndAuditCategory(request);
 

@@ -69,18 +69,18 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-    public async Task<User> GetByIdOrThrowAsync(string id, CancellationToken cancellationToken = default)
-    {
-        var userEntity = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+	public async Task<User> GetByIdOrThrowAsync(string id, CancellationToken cancellationToken = default)
+	{
+		var userEntity = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
 		if (userEntity is null) throw new NotFoundException($"The user with ID {id} does not exist.");
 
 		var user = _mapper.Map<User>(userEntity);
 
 		return user;
-    }
+	}
 
-    public bool IsExist(string id)
+	public bool IsExist(string id)
 	{
 		var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
 
@@ -106,6 +106,13 @@ public class UserRepository : Repository, IUserRepository
 		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
 		return user != null;
+	}
+
+	public async Task ThrowIfNotExistAsync(string id, CancellationToken cancellationToken = default)
+	{
+		var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
+		if (user is null) throw new NotFoundException($"The user with ID #{id} does not exist.");
 	}
 
 	public void Update(User entity)

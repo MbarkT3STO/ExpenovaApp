@@ -1,7 +1,6 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Features.Category.Commands.Shared;
 using ExpenseService.Application.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseService.Application.Features.Category.Commands;
 
@@ -13,6 +12,9 @@ public record UpdateCategoryCommandResultDTO
 	public string UserId { get; private set; }
 }
 
+/// <summary>
+/// Represents the result of an update category command.
+/// </summary>
 public class UpdateCategoryCommandResult: CommandResult<UpdateCategoryCommandResultDTO, UpdateCategoryCommandResult>
 {
 	public UpdateCategoryCommandResult(UpdateCategoryCommandResultDTO? value): base(value)
@@ -50,23 +52,25 @@ public class UpdateCategoryCommand: IRequest<UpdateCategoryCommandResult>
 }
 
 
-public class UpdateCategoryCommandHandler: CategoryCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
+public class UpdateCategoryCommandHandler: BaseCommandHandler<UpdateCategoryCommand, UpdateCategoryCommandResult, UpdateCategoryCommandResultDTO>
 {
-	readonly ApplicationCategoryService _categoryService;
+	readonly ICategoryRepository _categoryRepository;
+	readonly IUserRepository _userRepository;
 	readonly IsValidCategoryForUpdateSpecification _isValidCategoryForUpdateSpecification;
 
-
-	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, ApplicationUserService userService, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public UpdateCategoryCommandHandler(IMapper mapper, IMediator mediator, IUserRepository userRepository, ICategoryRepository categoryRepository, IsValidCategoryForUpdateSpecification isValidCategoryForUpdateSpecification): base(mediator, mapper)
 	{
-		_categoryService                       = categoryService;
 		_isValidCategoryForUpdateSpecification = isValidCategoryForUpdateSpecification;
+		_categoryRepository                    = categoryRepository;
+		_userRepository                        = userRepository;
 	}
 
 	public override async Task<UpdateCategoryCommandResult> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		var category = await GetCategoryIfExistOrThrowException(request.Id);
+		var category = await _categoryRepository.GetByIdOrThrowAsync(request.Id, cancellationToken);
 
-		await CheckIfUserExistsOrThrowException(category.UserId);
+		await _userRepository.ThrowIfNotExistAsync(category.UserId, cancellationToken);
+
 		await UpdateAndAuditCategoryAsync(category, request);
 		await PublishCategoryUpdatedEvent(category);
 

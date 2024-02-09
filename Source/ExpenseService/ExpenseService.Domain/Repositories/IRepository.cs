@@ -87,4 +87,13 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
 	Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);
+
+
+
+	/// <summary>
+	/// Checks if an entity exists based on the provided ID.
+	/// </summary>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	/// <exception cref="Exception">Thrown if the entity does not exist.</exception>
+	Task ThrowIfNotExistAsync(TKey id, CancellationToken cancellationToken = default);
 }

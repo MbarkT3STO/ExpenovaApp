@@ -74,18 +74,22 @@ public class DeleteCategoryCommand: IRequest<DeleteCategoryCommandResult>
 }
 
 
-public class DeleteCategoryCommandHandler: CategoryCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
+public class DeleteCategoryCommandHandler: BaseCommandHandler<DeleteCategoryCommand, DeleteCategoryCommandResult, DeleteCategoryCommandResultDTO>
 {
-	readonly IsValidCategoryForDeleteSpecification _isValidCategoryForDeleteSpecification;
+	readonly IUserRepository _userRepository;
+	readonly ICategoryRepository _categoryRepository;
+	IsValidCategoryForDeleteSpecification _isValidCategoryForDeleteSpecification;
 
-	public DeleteCategoryCommandHandler(IMapper mapper, IMediator mediator, ApplicationCategoryService categoryService, ApplicationUserService userService, ICategoryRepository categoryRepository, IsValidCategoryForDeleteSpecification isValidCategoryForDeleteSpecification): base(categoryRepository, categoryService, userService, mapper, mediator)
+	public DeleteCategoryCommandHandler(IMapper mapper, IMediator mediator, IUserRepository userRepository, ICategoryRepository categoryRepository, IsValidCategoryForDeleteSpecification isValidCategoryForDeleteSpecification): base(mediator, mapper)
 	{
+		_userRepository                        = userRepository;
+		_categoryRepository                    = categoryRepository;
 		_isValidCategoryForDeleteSpecification = isValidCategoryForDeleteSpecification;
 	}
 
 	public override async Task<DeleteCategoryCommandResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
-		var category = await GetCategoryIfExistOrThrowException(request.Id);
+		var category = await _categoryRepository.GetByIdOrThrowAsync(request.Id, cancellationToken);
 
 		await DeleteCategoryAsync(category, cancellationToken);
 

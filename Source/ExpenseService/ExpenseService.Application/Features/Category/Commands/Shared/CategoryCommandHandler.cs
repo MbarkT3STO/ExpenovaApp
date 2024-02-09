@@ -33,12 +33,7 @@ public abstract class CategoryCommandHandler<TCommand, TResult, TResultDTO> : Ba
 	/// <exception cref="Exception">Thrown if the category does not exist.</exception>
 	protected async Task<Domain.Entities.Category> GetCategoryIfExistOrThrowException(Guid categoryId)
 	{
-		var category = await _categoryRepository.GetByIdAsync(categoryId);
-
-		if (category == null)
-		{
-			throw new Exception($"Category with ID {categoryId} not found.");
-		}
+		var category = await _categoryRepository.GetByIdOrThrowAsync(categoryId);
 
 		return category;
 	}

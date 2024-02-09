@@ -144,6 +144,10 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
+    public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var exists = await _dbContext.Expenses.AnyAsync(e => e.Id == id, cancellationToken);
 
-
+		if (!exists) throw new NotFoundException($"The expense with ID #{id} was not found.");
+    }
 }
