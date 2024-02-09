@@ -80,7 +80,7 @@ public class GetExpensesByUserQueryHandler: BaseQueryHandler<GetExpensesByUserQu
 		try
 		{
 			var user        = await _userRepository.GetByIdOrThrowAsync(request.UserId, cancellationToken);
-			var expenses    = await _expenseRepository.GetExpensesByUserIdAsync(request.UserId, cancellationToken);
+			var expenses    = await _expenseRepository.GetExpensesByUserAsync(request.UserId, cancellationToken);
 			var expensesDTO = _mapper.Map<List<GetExpensesByUserQueryResultDto>>(expenses);
 
 			var result = GetExpensesByUserQueryResult.Succeeded(expensesDTO);

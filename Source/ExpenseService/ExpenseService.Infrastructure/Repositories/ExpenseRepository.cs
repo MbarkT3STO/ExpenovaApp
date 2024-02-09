@@ -93,7 +93,7 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		return expense;
 	}
 
-	public async Task<IEnumerable<Expense>> GetExpensesByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
 	{
 		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).Where(e => e.CategoryId == categoryId).ToListAsync(cancellationToken: cancellationToken);
 		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
@@ -106,7 +106,15 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public async Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<Expense>> GetExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default)
+	{
+		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).Where(e => e.UserId == userId && e.CategoryId == categoryId).ToListAsync(cancellationToken: cancellationToken);
+		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);
+
+		return expensesDto;
+	}
+
+	public async Task<IEnumerable<Expense>> GetExpensesByUserAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var expenses    = await _dbContext.Expenses.Include(e => e.Category).Include(e => e.User).Where(e => e.UserId == userId).ToListAsync(cancellationToken: cancellationToken);
 		var expensesDto = _mapper.Map<IEnumerable<Expense>>(expenses);

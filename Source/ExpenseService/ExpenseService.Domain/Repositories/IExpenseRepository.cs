@@ -10,7 +10,7 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 	/// </summary>
 	/// <param name="userId">The ID of the user.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the expenses.</returns>
-	Task<IEnumerable<Expense>> GetExpensesByUserIdAsync(string userId, CancellationToken cancellationToken = default);
+	Task<IEnumerable<Expense>> GetExpensesByUserAsync(string userId, CancellationToken cancellationToken = default);
 
 
 	/// <summary>
@@ -19,7 +19,7 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 	/// <param name="categoryId">The ID of the category.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains a collection of expenses.</returns>
-	Task<IEnumerable<Expense>> GetExpensesByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken = default);
+	Task<IEnumerable<Expense>> GetExpensesByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default);
 
 
 	/// <summary>
@@ -27,8 +27,9 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 	/// </summary>
 	/// <param name="userId">The ID of the user.</param>
 	/// <param name="categoryId">The ID of the category.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the expenses.</returns>
-	Task<IQueryable<Expense>> GetExpensesByUserIdAndCategoryIdAsync(string userId, Guid categoryId);
+	Task<IEnumerable<Expense>> GetExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Soft deletes an expense.

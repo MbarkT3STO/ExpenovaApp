@@ -70,7 +70,7 @@ public class GetExpensesByCategoryQueryHandler: BaseQueryHandler<GetExpensesByCa
 		try
 		{
 			var category   = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
-			var expenses   = await _expenseRepository.GetExpensesByCategoryIdAsync(request.CategoryId, cancellationToken);
+			var expenses   = await _expenseRepository.GetExpensesByCategoryAsync(request.CategoryId, cancellationToken);
 			var resultDTOs = _mapper.Map<IEnumerable<GetExpensesByCategoryQueryResultDto>>(expenses);
 			var result     = GetExpensesByCategoryQueryResult.Succeeded(resultDTOs);
 

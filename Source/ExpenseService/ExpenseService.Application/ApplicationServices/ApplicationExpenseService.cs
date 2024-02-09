@@ -73,7 +73,7 @@ public class ApplicationExpenseService: Domain.Services.Expense.ExpenseService
 	/// <returns>A collection of expenses.</returns>
 	public async Task<IEnumerable<Domain.Entities.Expense>> GetExpensesByUserIdAsync(string userId)
 	{
-		var expenses = await _expenseRepository.GetExpensesByUserIdAsync(userId);
+		var expenses = await _expenseRepository.GetExpensesByUserAsync(userId);
 
 		return expenses;
 	}
@@ -82,7 +82,7 @@ public class ApplicationExpenseService: Domain.Services.Expense.ExpenseService
 	public async Task<IEnumerable<Domain.Entities.Expense>> GetExpensesByCategory(Guid categoryId)
 	{
 		var category = await _categoryService.GetCategoryOrThrowAsync(categoryId);
-		var expenses = await _expenseRepository.GetExpensesByCategoryIdAsync(categoryId);
+		var expenses = await _expenseRepository.GetExpensesByCategoryAsync(categoryId);
 
 		return expenses;
 	}
