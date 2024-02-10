@@ -9,12 +9,12 @@ public class User: Entity<string>
 	public string RoleId { get; private set; }
 	public DateTime CreatedAt { get; private set; }
 	public DateTime? UpdatedAt { get; private set; }
-	
+
 	// Constructor for DDD
 	private User()
 	{
 	}
-	
+
 	private User(string Id, string firstName, string lastName, string email, string roleId)
 	{
 		this.Id   = Id;
@@ -24,7 +24,7 @@ public class User: Entity<string>
 		RoleId    = roleId;
 		CreatedAt = DateTime.UtcNow;
 	}
-	
+
 	/// <summary>
 	/// Creates a new instance of the User class.
 	/// </summary>
@@ -38,5 +38,6 @@ public class User: Entity<string>
 	{
 		return new User(Id, firstName, lastName, email, roleId);
 	}
-	
+
+
 }

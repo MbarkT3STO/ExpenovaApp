@@ -1,20 +1,27 @@
 
 namespace ExpenseService.Infrastructure.Repositories;
 
+/// <summary>
+/// Represents a repository for managing subscription expenses.
+/// </summary>
 public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRepository
 {
-	public SubscriptionExpenseRepository(AppDbContext dbContext) : base(dbContext)
+	public SubscriptionExpenseRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
 	{
 	}
 
-	public void Add(SubscriptionExpense entity)
+	public async Task<SubscriptionExpense> AddAsync(SubscriptionExpense entity, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
-	}
+		var mappedEntity = _mapper.Map<SubscriptionExpenseEntity>(entity);
 
-	public Task AddAsync(SubscriptionExpense entity)
-	{
-		throw new NotImplementedException();
+		await _dbContext.SubscriptionExpenses.AddAsync(mappedEntity, cancellationToken);
+		await _dbContext.SaveChangesAsync(cancellationToken);
+
+		// Reload the expense entity to get the generated id
+		await _dbContext.Entry(mappedEntity).ReloadAsync(cancellationToken);
+		entity.SetId(mappedEntity.Id);
+
+		return entity;
 	}
 
 	public void Delete(SubscriptionExpense entity)
@@ -34,7 +41,9 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
 
 	public void Dispose()
 	{
-		throw new NotImplementedException();
+		_dbContext.Dispose();
+
+		GC.SuppressFinalize(this);
 	}
 
 	public IQueryable<SubscriptionExpense> Get()

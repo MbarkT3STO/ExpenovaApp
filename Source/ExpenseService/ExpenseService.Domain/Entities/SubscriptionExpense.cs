@@ -11,10 +11,10 @@ public class SubscriptionExpense: AuditableAggregateRoot<Guid>
 	public decimal BillingAmount { get; private set; }
 	public Category Category { get; private set; }
 	public User User { get; private set; }
-	
-	
+
+
 	protected SubscriptionExpense() { }
-	
+
 	public SubscriptionExpense(decimal amount, string description, DateTime startDate, DateTime endDate, RecurrenceInterval recurrenceInterval, decimal billingAmount, Category category, User user)
 	{
 		Amount             = amount;
@@ -25,8 +25,11 @@ public class SubscriptionExpense: AuditableAggregateRoot<Guid>
 		BillingAmount      = billingAmount;
 		Category           = category;
 		User               = user;
-		
-		CreatedAt = DateTime.UtcNow;
-		CreatedBy   = user.Id;
+	}
+
+
+	public void SetId(Guid id)
+	{
+		Id = id;
 	}
 }

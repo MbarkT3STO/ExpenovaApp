@@ -6,21 +6,18 @@ public class ExpenseRepository: Repository, IExpenseRepository
 	{
 	}
 
-	public void Add(Expense entity)
-	{
-		throw new NotImplementedException();
-	}
-
-	public async Task AddAsync(Expense entity)
+	public async Task<Expense> AddAsync(Expense entity, CancellationToken cancellationToken = default)
 	{
 		var expenseEntity = _mapper.Map<ExpenseEntity>(entity);
 
-		await _dbContext.Expenses.AddAsync(expenseEntity);
-		await _dbContext.SaveChangesAsync();
+		await _dbContext.Expenses.AddAsync(expenseEntity, cancellationToken);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		// Reload the expense entity to get the generated id
-		await _dbContext.Entry(expenseEntity).ReloadAsync();
+		await _dbContext.Entry(expenseEntity).ReloadAsync(cancellationToken);
 		entity.SetId(expenseEntity.Id);
+
+		return entity;
 	}
 
 	public void Delete(Expense entity)
@@ -144,10 +141,10 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		await _dbContext.SaveChangesAsync();
 	}
 
-    public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var exists = await _dbContext.Expenses.AnyAsync(e => e.Id == id, cancellationToken);
+	public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var exists = await _dbContext.Expenses.AnyAsync(e => e.Id == id, cancellationToken);
 
 		if (!exists) throw new NotFoundException($"The expense with ID #{id} was not found.");
-    }
+	}
 }

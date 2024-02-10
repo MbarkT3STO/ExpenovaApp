@@ -6,18 +6,17 @@ public class UserRepository : Repository, IUserRepository
 	{
 	}
 
-	public void Add(User entity)
+	public async Task<User> AddAsync(User entity, CancellationToken cancellationToken = default)
 	{
 		var userEntity = _mapper.Map<UserEntity>(entity);
 
-		_dbContext.Users.Add(userEntity);
+		await _dbContext.Users.AddAsync(userEntity, cancellationToken);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
-		_dbContext.SaveChanges();
-	}
+		// Reload the user entity to get the generated id
+		await _dbContext.Entry(userEntity).ReloadAsync(cancellationToken);
 
-	public Task AddAsync(User entity)
-	{
-		return Task.Run(() => Add(entity));
+		return entity;
 	}
 
 	public void Delete(User entity)

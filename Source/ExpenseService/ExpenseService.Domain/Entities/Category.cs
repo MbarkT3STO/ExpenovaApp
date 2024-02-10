@@ -19,6 +19,15 @@ public class Category: AuditableEntity<Guid>
 
 
 	/// <summary>
+	/// Sets the ID of the category.
+	/// </summary>
+	/// <param name="id">The ID to set.</param>
+	public void SetId(Guid id)
+	{
+		Id = id;
+	}
+
+	/// <summary>
 	/// Updates the name of the category.
 	/// </summary>
 	/// <param name="newName">The new name of the category.</param>

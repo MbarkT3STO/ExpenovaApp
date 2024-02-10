@@ -10,17 +10,19 @@ public class CategoryRepository: Repository, ICategoryRepository
 	{
 	}
 
-	public void Add(Category entity)
+
+	public async Task<Category> AddAsync(Category entity, CancellationToken cancellationToken = default)
 	{
 		var categoryEntity = _mapper.Map<CategoryEntity>(entity);
 
-		_dbContext.Categories.Add(categoryEntity);
-		_dbContext.SaveChanges();
-	}
+		await _dbContext.Categories.AddAsync(categoryEntity, cancellationToken);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
-	public Task AddAsync(Category entity)
-	{
-		return Task.Run(() => Add(entity));
+		// Reload the category entity to get the generated id
+		await _dbContext.Entry(categoryEntity).ReloadAsync(cancellationToken);
+		entity.SetId(categoryEntity.Id);
+
+		return entity;
 	}
 
 
@@ -48,11 +50,6 @@ public class CategoryRepository: Repository, ICategoryRepository
 			transaction.Rollback();
 			throw;
 		}
-	}
-
-	public Task AddAsync(Category entity, CategoryCreatedEvent categoryCreatedEvent)
-	{
-		return Task.Run(() => Add(entity, categoryCreatedEvent));
 	}
 
 
@@ -234,10 +231,15 @@ public class CategoryRepository: Repository, ICategoryRepository
 		return category;
 	}
 
-    public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+	public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var categoryEntity = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
 		if (categoryEntity is null) throw new NotFoundException($"The category with ID #{id} was not found.");
+	}
+
+    public Task AddAsync(Category entity, CategoryCreatedEvent categoryCreatedEvent)
+    {
+        throw new NotImplementedException();
     }
 }

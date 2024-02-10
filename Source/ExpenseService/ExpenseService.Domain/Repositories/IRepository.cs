@@ -49,15 +49,12 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 
 
 	/// <summary>
-	/// Adds a new entity.
-	/// </summary>
-	void Add(TEntity entity);
-
-	/// <summary>
 	/// Asynchronously adds a new entity.
 	/// </summary>
 	/// <param name="entity">The entity to add.</param>
-	Task AddAsync(TEntity entity);
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the added entity.</returns>
+	Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
 
 	/// <summary>
