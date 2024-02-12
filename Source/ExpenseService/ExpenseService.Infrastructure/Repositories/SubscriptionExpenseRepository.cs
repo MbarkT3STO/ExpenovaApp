@@ -51,9 +51,12 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
 		throw new NotImplementedException();
 	}
 
-	public Task<IEnumerable<SubscriptionExpense>> GetAsync(CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<SubscriptionExpense>> GetAsync(CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var entities = await _dbContext.SubscriptionExpenses.Include(e => e.Category).Include(e => e.User).ToListAsync(cancellationToken);
+		var expenses = _mapper.Map<IEnumerable<SubscriptionExpense>>(entities);
+
+		return expenses;
 	}
 
 	public SubscriptionExpense GetById(Guid id)

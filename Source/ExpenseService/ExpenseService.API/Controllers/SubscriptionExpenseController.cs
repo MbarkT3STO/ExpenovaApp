@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ExpenseService.Application.Features.SubscriptionExpense.Commands;
+using ExpenseService.Application.Features.SubscriptionExpense.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,20 @@ public class SubscriptionExpenseController : ControllerBase
 	{
 		_mediator = mediator;
 		_mapper   = mapper;
+	}
+
+
+	[HttpGet(nameof(GetAll))]
+	public async Task<IActionResult> GetAll()
+	{
+		var result = await _mediator.Send(new GetSubscriptionExpensesQuery());
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
 	}
 
 

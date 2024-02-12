@@ -11,5 +11,6 @@ public class SubscriptionExpenseMappingProfile : Profile
 
 
 		CreateMap<SubscriptionExpenseEntity, SubscriptionExpense>();
+
 	}
 }
