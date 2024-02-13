@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseService.Domain.Enums;
 
 namespace ExpenseService.Application.Features.SubscriptionExpense.Queries;
 
@@ -14,6 +15,9 @@ public class GetSubscriptionExpensesQueryResultDTO
 	public Guid CategoryId { get; private set; }
 	public DateTime StartDate { get; private set; }
 	public DateTime EndDate { get; private set; }
+	public RecurrenceInterval RecurrenceInterval { get; private set; }
+	public decimal BillingAmount { get; private set; }
+
 
 	public DateTime CreatedAt { get; set; }
 	public string CreatedBy { get; set; }

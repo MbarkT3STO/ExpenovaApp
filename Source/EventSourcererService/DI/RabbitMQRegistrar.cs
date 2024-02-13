@@ -1,6 +1,7 @@
 using EventSourcererService.MessageConsumers.AuthService;
 using EventSourcererService.MessageConsumers.ExpenseService.Category;
 using EventSourcererService.MessageConsumers.ExpenseService.Expense;
+using EventSourcererService.MessageConsumers.ExpenseService.SubscriptionExpense;
 using MassTransit;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
@@ -39,6 +40,8 @@ public static class RabbitMQRegistrar
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.ExpenseCreatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceExpenseCreatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.ExpenseUpdatedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceExpenseUpdatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.ExpenseDeletedEventSourcererQueue, ep => ep.Consumer<ExpenseServiceExpenseDeletedMessageConsumer>(context));
+
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.SubscriptionExpenseCreatedEventSourcererQueue, ep => ep.Consumer<SubscriptionExpenseCreatedMessageConsumer>(context));
 			});
 		});
 

@@ -43,7 +43,7 @@ public class ExpenseServiceExpenseUpdatedMessageConsumer: BaseConsumer<ExpenseUp
 	/// </summary>
 	/// <param name="message">The ExpenseUpdatedMessage to process.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	async Task ProcessMessage(ExpenseUpdatedMessage message)
+	protected override async Task ProcessMessage(ExpenseUpdatedMessage message)
 	{
 		var expense = await _dbContext.ExpenseService_ExpenseEvents.FindAsync(message.Id);
 

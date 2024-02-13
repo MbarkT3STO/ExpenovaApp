@@ -22,19 +22,15 @@ public class ExpenseServiceCategoryDeletedMessageConsumer: BaseConsumer<Category
 
 		await _deduplicationService.ProcessMessage(() => ProcessMessage(message));
 	}
-	
-	
-	/// <summary>
-	/// Asynchronously processes the CategoryDeletedMessage.
-	/// </summary>
-	/// <param name="message">The CategoryDeletedMessage to process.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	async Task ProcessMessage(CategoryDeletedMessage message)
+
+
+
+	protected override async Task ProcessMessage(CategoryDeletedMessage message)
 	{
 		var eventData = new ExpenseServiceCategoryEventJsonData(message.Id, message.Name, message.Description, message.UserId, message.CreatedAt, message.CreatedBy, message.UpdatedAt, message.UpdatedBy);
-		
+
 		var categoryEvent = new ExpenseServiceCategoryEvent(message.EventId, "Delete", DateTime.UtcNow, message.UserId, eventData);
-		
+
 		await _dbContext.ExpenseService_CategoryEvents.AddAsync(categoryEvent);
 		await _dbContext.SaveChangesAsync();
 	}

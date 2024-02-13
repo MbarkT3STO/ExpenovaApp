@@ -21,12 +21,7 @@ public class ExpenseServiceCategoryUpdatedMessageConsumer : BaseConsumer<Categor
 	}
 
 
-	/// <summary>
-	/// Processes the CategoryUpdatedMessage asynchronously.
-	/// </summary>
-	/// <param name="message">The CategoryUpdatedMessage to process.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	async Task ProcessMessage(CategoryUpdatedMessage message)
+	protected override async Task ProcessMessage(CategoryUpdatedMessage message)
 	{
 		var eventData = new ExpenseServiceCategoryEventJsonData(message.Id, message.NewName, message.NewDescription, message.UserId, message.CreatedAt, message.CreatedBy, message.UpdatedAt, message.UpdatedBy);
 

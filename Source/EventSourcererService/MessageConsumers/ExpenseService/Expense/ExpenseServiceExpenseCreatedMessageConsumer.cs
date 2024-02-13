@@ -11,21 +11,29 @@ public class ExpenseServiceExpenseCreatedMessageConsumer: BaseConsumer<ExpenseCr
 
 	public override async Task Consume(ConsumeContext<ExpenseCreatedMessage> context)
 	{
-		var message      = context.Message;
-		var hasProcessed = await _deduplicationService.HasProcessed(message.EventId);
+		try
+		{
+			var hasProcessed = await _deduplicationService.HasProcessed(context.Message.EventId);
 
-		if (hasProcessed) return;
+			if (hasProcessed)
+			{
+				return;
+			}
 
-		await _deduplicationService.ProcessMessage(() => ProcessMessage(message));
+			await _deduplicationService.ProcessMessage(() => ProcessMessage(context.Message));
+		}
+		catch (Exception e)
+		{
+			if (e is DbUpdateException || (e.InnerException != null && e.InnerException.Message.Contains("duplicate key value violates unique constraint")))
+			{
+				return;
+			}
+		}
 	}
 
 
-	/// <summary>
-	/// Processes the ExpenseCreatedMessage asynchronously.
-	/// </summary>
-	/// <param name="message">The ExpenseCreatedMessage to process.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	async Task ProcessMessage(ExpenseCreatedMessage message)
+
+	protected override async Task ProcessMessage(ExpenseCreatedMessage message)
 	{
 		var eventData = new ExpenseServiceExpenseEventJsonData(message.Id, message.Amount, message.Description, message.Date, message.CategoryId, message.UserId, message.CreatedAt, message.CreatedBy);
 

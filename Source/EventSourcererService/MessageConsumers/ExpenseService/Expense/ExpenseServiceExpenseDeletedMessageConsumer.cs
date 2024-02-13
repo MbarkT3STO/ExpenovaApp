@@ -38,12 +38,7 @@ public class ExpenseServiceExpenseDeletedMessageConsumer : BaseConsumer<ExpenseD
 	}
 
 
-	/// <summary>
-	/// Processes the ExpenseDeletedMessage asynchronously.
-	/// </summary>
-	/// <param name="message">The ExpenseDeletedMessage to process.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	async Task ProcessMessage(ExpenseDeletedMessage message)
+	protected override async Task ProcessMessage(ExpenseDeletedMessage message)
 	{
 		var expense = await _dbContext.ExpenseService_ExpenseEvents.FindAsync(message.Id);
 

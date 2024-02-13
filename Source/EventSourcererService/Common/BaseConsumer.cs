@@ -1,4 +1,5 @@
 using MassTransit;
+using Messages.Abstractions;
 using RabbitMqSettings.Interfaces;
 
 namespace EventSourcererService.Common;
@@ -21,7 +22,7 @@ public abstract class BaseConsumer
 /// Represents a base consumer class for handling messages of type TMessage.
 /// </summary>
 /// <typeparam name="TMessage">The type of the message.</typeparam>
-public abstract class BaseConsumer<TMessage> : BaseConsumer, IConsumer<TMessage> where TMessage : class
+public abstract class BaseConsumer<TMessage> : BaseConsumer, IConsumer<TMessage> where TMessage : BaseEventMessage
 {
 	protected readonly IDeduplicationService _deduplicationService;
 
@@ -35,5 +36,32 @@ public abstract class BaseConsumer<TMessage> : BaseConsumer, IConsumer<TMessage>
 	/// </summary>
 	/// <param name="context">The context of the consumed message.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
-	public abstract Task Consume(ConsumeContext<TMessage> context);
+	public virtual async Task Consume(ConsumeContext<TMessage> context)
+	{
+		try
+		{
+			var hasProcessed = await _deduplicationService.HasProcessed(context.Message.EventId);
+
+			if (hasProcessed)
+			{
+				return;
+			}
+
+			await _deduplicationService.ProcessMessage(() => ProcessMessage(context.Message));
+		}
+		catch (Exception e)
+		{
+			if (e is DbUpdateException || (e.InnerException != null && e.InnerException.Message.Contains("duplicate key value violates unique constraint")))
+			{
+				return;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Processes the specified message.
+	/// </summary>
+	/// <param name="message">The message to be processed.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	protected abstract Task ProcessMessage(TMessage message);
 }

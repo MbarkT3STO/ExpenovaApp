@@ -13,6 +13,9 @@ public class CreateSubscriptionExpenseCommandResultDTO
 	public Guid CategoryId { get; private set; }
 	public DateTime StartDate { get; private set; }
 	public DateTime EndDate { get; private set; }
+	public RecurrenceInterval RecurrenceInterval { get; private set; }
+	public decimal BillingAmount { get; private set; }
+
 
 	public DateTime CreatedAt { get; set; }
 	public string CreatedBy { get; set; }
@@ -90,6 +93,8 @@ public class CreateSubscriptionExpenseCommandHandler: BaseCommandHandler<CreateS
 			var createdSubscriptionExpense = await _subscriptionExpenseRepository.AddAsync(subscriptionExpense, cancellationToken);
 			var resultDTO                  = _mapper.Map<CreateSubscriptionExpenseCommandResultDTO>(createdSubscriptionExpense);
 
+			await PublishSubscriptionExpenseCreatedEvent(createdSubscriptionExpense, cancellationToken);
+
 			return CreateSubscriptionExpenseCommandResult.Succeeded(resultDTO);
 		}
 		catch (Exception ex)
@@ -115,5 +120,21 @@ public class CreateSubscriptionExpenseCommandHandler: BaseCommandHandler<CreateS
 		subscriptionExpense.WriteCreatedAudit(user.Id);
 
 		return subscriptionExpense;
+	}
+
+
+	/// <summary>
+	/// Publishes a subscription expense created event.
+	/// </summary>
+	/// <param name="subscriptionExpense">The subscription expense entity.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	private async Task PublishSubscriptionExpenseCreatedEvent(Domain.Entities.SubscriptionExpense subscriptionExpense, CancellationToken cancellationToken)
+	{
+		var eventDetails = new DomainEventDetails(nameof(SubscriptionExpenseCreatedEvent), subscriptionExpense.User.Id);
+		var eventData    = new SubscriptionExpenseCreatedEventData(subscriptionExpense.Id, subscriptionExpense.Description, subscriptionExpense.Amount, subscriptionExpense.User.Id, subscriptionExpense.Category.Id, subscriptionExpense.StartDate, subscriptionExpense.EndDate, subscriptionExpense.RecurrenceInterval, subscriptionExpense.BillingAmount, subscriptionExpense.CreatedAt, subscriptionExpense.CreatedBy, subscriptionExpense.LastUpdatedAt, subscriptionExpense.LastUpdatedBy, subscriptionExpense.IsDeleted, subscriptionExpense.DeletedAt, subscriptionExpense.DeletedBy);
+		var @event       = SubscriptionExpenseCreatedEvent.Create(eventDetails, eventData);
+
+		await _mediator.Publish(@event, cancellationToken);
 	}
 }
