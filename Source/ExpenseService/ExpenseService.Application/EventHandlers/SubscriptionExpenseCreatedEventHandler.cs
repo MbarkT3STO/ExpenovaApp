@@ -25,7 +25,8 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 	{
 		var message = new SubscriptionExpenseCreatedMessage
 		{
-			EventId            = notification.EventData.Id,
+			EventId            = notification.EventDetails.EventId,
+			Id                 = notification.EventData.Id,
 			Description        = notification.EventData.Description,
 			Amount             = notification.EventData.Amount,
 			UserId             = notification.EventData.UserId,

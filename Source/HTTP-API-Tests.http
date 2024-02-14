@@ -41,3 +41,20 @@ Content-Type: application/json
 ###
 GET http://localhost:5274/AuthService/Api/Users/GetUsers
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYmFya3RpZXN0b0BvdXRsb29rLmNvbSIsImp0aSI6IjkwMGIzYjk0LTk0NmYtNGJlZS05YTZlLWZiODA3ODQ5MTRjMCIsImV4cCI6MTcwMzY2NTAwMSwiaXNzIjoiRXhwZW5vdmFBcHAiLCJhdWQiOiJFeHBlbm92YUFwcCJ9.CaMUouzzVGA1Laxkh6NX_9iMjaeOIb_IOuUHeBqXJHU
+
+
+
+### Subscription Expense
+POST http://localhost:5196/api/SubscriptionExpense/Create
+Content-Type: application/json
+
+{
+  "amount": 666,
+  "description": "666",
+  "startDate": "2024-02-14T10:48:25.990Z",
+  "endDate": "2024-06-14T10:48:25.990Z",
+  "recurrenceInterval": 3,
+  "billingAmount": 666,
+  "userId": "e044a393-fcde-41ea-8331-b32be623a7e0",
+  "categoryId": "2024da3a-8e3f-42b7-8cc5-62e92b372cf1"
+}
