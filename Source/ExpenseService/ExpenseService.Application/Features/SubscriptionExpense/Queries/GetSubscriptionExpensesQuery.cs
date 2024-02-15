@@ -42,9 +42,9 @@ public class GetSubscriptionExpensesQueryResult: QueryResult<IEnumerable<GetSubs
 	}
 }
 
-public class MappingProfile: Profile
+public class GetSubscriptionExpensesQueryMappingProfile : Profile
 {
-	public MappingProfile()
+	public GetSubscriptionExpensesQueryMappingProfile()
 	{
 		CreateMap<Domain.Entities.SubscriptionExpense, GetSubscriptionExpensesQueryResultDTO>();
 	}

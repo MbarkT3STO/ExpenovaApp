@@ -10,6 +10,7 @@ global using MassTransit;
 
 
 global using ExpenseService.Application.Common;
+global using ExpenseService.Application.Shared;
 global using ExpenseService.Domain.Repositories;
 global using ExpenseService.Domain.Shared.Common;
 

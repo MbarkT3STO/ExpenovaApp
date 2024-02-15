@@ -74,9 +74,15 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
 		throw new NotImplementedException();
 	}
 
-	public Task<SubscriptionExpense> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<SubscriptionExpense> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var entity = await _dbContext.SubscriptionExpenses.Include(e => e.Category).Include(e => e.User).FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+
+		if (entity == null) throw new NotFoundException($"Subscription expense with id #{id} does not exist.");
+
+		var expense = _mapper.Map<SubscriptionExpense>(entity);
+
+		return expense;
 	}
 
 	public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
