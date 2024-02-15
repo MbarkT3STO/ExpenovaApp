@@ -53,6 +53,36 @@ public class SubscriptionExpenseController : ControllerBase
 	}
 
 
+	[HttpGet(nameof(GetByCategory))]
+	public async Task<IActionResult> GetByCategory(Guid categoryId)
+	{
+		var query = new GetSubscriptionExpensesByCategoryQuery(categoryId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+	[HttpGet(nameof(GetByUser))]
+	public async Task<IActionResult> GetByUser(string userId)
+	{
+		var query = new GetSubscriptionExpensesByUserQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
+	}
+
+
 
 
 	[HttpPost(nameof(Create))]

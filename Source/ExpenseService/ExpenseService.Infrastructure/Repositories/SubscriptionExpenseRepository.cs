@@ -4,9 +4,9 @@ namespace ExpenseService.Infrastructure.Repositories;
 /// <summary>
 /// Represents a repository for managing subscription expenses.
 /// </summary>
-public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRepository
+public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepository
 {
-	public SubscriptionExpenseRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+	public SubscriptionExpenseRepository(AppDbContext dbContext, IMapper mapper): base(dbContext, mapper)
 	{
 	}
 
@@ -85,14 +85,35 @@ public class SubscriptionExpenseRepository : Repository, ISubscriptionExpenseRep
 		return expense;
 	}
 
-	public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAndCategoryIdAsync(int userId, int categoryId)
+	public async Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
+	{
+		var expenses = await _dbContext.SubscriptionExpenses
+										.Where(e => e.CategoryId == categoryId)
+										.Include(e => e.Category)
+										.Include(e => e.User)
+										.ToListAsync(cancellationToken);
+
+		var mappedExpenses = _mapper.Map<IEnumerable<SubscriptionExpense>>(expenses);
+
+		return mappedExpenses.AsQueryable();
+	}
+
+	public Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Task<IQueryable<SubscriptionExpense>> GetSubscriptionExpensesByUserIdAsync(int userId)
+	public async Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAsync(string userId, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var expenses = await _dbContext.SubscriptionExpenses
+										.Where(e => e.UserId == userId)
+										.Include(e => e.Category)
+										.Include(e => e.User)
+										.ToListAsync(cancellationToken);
+
+		var mappedExpenses = _mapper.Map<IEnumerable<SubscriptionExpense>>(expenses);
+
+		return mappedExpenses;
 	}
 
 	public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
