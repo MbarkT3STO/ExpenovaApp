@@ -119,7 +119,7 @@ public class UserRepository : Repository, IUserRepository
 		throw new NotImplementedException();
 	}
 
-	public Task UpdateAsync(User entity)
+	public Task UpdateAsync(User entity, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

@@ -65,7 +65,9 @@ public interface IRepository<TEntity, TKey> : IDisposable where TEntity : class
 	/// <summary>
 	/// Asynchronously updates the specified entity.
 	/// </summary>
-	Task UpdateAsync(TEntity entity);
+	/// <param name="entity">The entity to update.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes the specified entity.

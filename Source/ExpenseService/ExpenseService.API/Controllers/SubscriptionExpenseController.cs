@@ -83,10 +83,43 @@ public class SubscriptionExpenseController : ControllerBase
 	}
 
 
+	[HttpGet(nameof(GetByCategoryAndUser))]
+	public async Task<IActionResult> GetByCategoryAndUser(Guid categoryId, string userId)
+	{
+		var query = new GetSubscriptionExpensesByCategoryAndUserQuery(categoryId, userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
 
 
 	[HttpPost(nameof(Create))]
 	public async Task<IActionResult> Create(CreateSubscriptionExpenseCommand command)
+	{
+		var result = await _mediator.Send(command);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+	[HttpPut(nameof(Update))]
+	public async Task<IActionResult> Update(UpdateSubscriptionExpenseCommand command)
 	{
 		var result = await _mediator.Send(command);
 

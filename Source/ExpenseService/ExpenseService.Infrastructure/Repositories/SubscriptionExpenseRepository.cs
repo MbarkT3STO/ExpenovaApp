@@ -98,9 +98,17 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		return mappedExpenses.AsQueryable();
 	}
 
-	public Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var expenses = await _dbContext.SubscriptionExpenses
+										.Where(e => e.UserId == userId && e.CategoryId == categoryId)
+										.Include(e => e.Category)
+										.Include(e => e.User)
+										.ToListAsync(cancellationToken);
+
+		var mappedExpenses = _mapper.Map<IEnumerable<SubscriptionExpense>>(expenses);
+
+		return mappedExpenses;
 	}
 
 	public async Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAsync(string userId, CancellationToken cancellationToken = default)
@@ -128,8 +136,11 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		throw new NotImplementedException();
 	}
 
-	public Task UpdateAsync(SubscriptionExpense entity)
+	public async Task UpdateAsync(SubscriptionExpense entity, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var mappedEntity = _mapper.Map<SubscriptionExpenseEntity>(entity);
+
+		_dbContext.SubscriptionExpenses.Update(mappedEntity);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 }

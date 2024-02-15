@@ -133,12 +133,12 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		throw new NotImplementedException();
 	}
 
-	public async Task UpdateAsync(Expense entity)
+	public async Task UpdateAsync(Expense entity, CancellationToken cancellationToken = default)
 	{
 		var expenseEntity = _mapper.Map<ExpenseEntity>(entity);
 
 		_dbContext.Expenses.Update(expenseEntity);
-		await _dbContext.SaveChangesAsync();
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
 	public async Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
