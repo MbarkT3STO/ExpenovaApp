@@ -103,8 +103,7 @@ public class UpdateSubscriptionExpenseCommandHandler: BaseCommandHandler<UpdateS
 			expense.Update(request.Amount, request.Description, request.StartDate, request.EndDate, request.RecurrenceInterval, request.BillingAmount, category, user);
 			expense.WriteUpdatedAudit(user.Id);
 
-
-			await _subscriptionExpenseRepository.UpdateAsync(expense, cancellationToken);
+			await ApplyUpdateAsync(expense, cancellationToken);
 
 			var resultDTO = _mapper.Map<UpdateSubscriptionExpenseCommandResultDTO>(expense);
 			var result    = UpdateSubscriptionExpenseCommandResult.Succeeded(resultDTO);
@@ -113,19 +112,25 @@ public class UpdateSubscriptionExpenseCommandHandler: BaseCommandHandler<UpdateS
 		}
 		catch (Exception ex)
 		{
-			return UpdateSubscriptionExpenseCommandResult.Failed(new Error(ex.Message));
+			return UpdateSubscriptionExpenseCommandResult.Failed(ex);
 		}
 	}
 
 
 
-	async Task ApplyUpdateAsync(Domain.Entities.SubscriptionExpense expense)
+	/// <summary>
+	/// Asynchronously applies the update to the specified subscription expense.
+	/// </summary>
+	/// <param name="expense">The subscription expense to update.</param>
+	/// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	async Task ApplyUpdateAsync(Domain.Entities.SubscriptionExpense expense, CancellationToken cancellationToken = default)
 	{
 		// Validate the expense for update
 		expense.Validate(new IsValidSubscriptionExpenseForUpdateSpecification());
 
 		// Update the expense
-		await _subscriptionExpenseRepository.UpdateAsync(expense);
+		await _subscriptionExpenseRepository.UpdateAsync(expense, cancellationToken);
 	}
 
 }

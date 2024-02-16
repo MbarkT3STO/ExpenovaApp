@@ -81,4 +81,10 @@ public abstract class CommandResult<TValue, TCommandResult> : ICommandResult<TVa
 	public static TCommandResult Failed(string errorMessage) => Failed(new Error(errorMessage));
 
 
+	/// <summary>
+	/// Creates a failed <typeparamref name="TCommandResult"/> with the specified exception.
+	/// </summary>
+	/// <typeparam name="TCommandResult">The type of the command result.</typeparam>
+	/// <param name="exception">The exception.</param>
+	public static TCommandResult Failed(Exception exception) => Failed(new Error(exception));
 }

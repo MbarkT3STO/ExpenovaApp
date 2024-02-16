@@ -125,7 +125,7 @@ public class SubscriptionExpenseController : ControllerBase
 
 		if (result.IsFailure)
 		{
-			return BadRequest(result.Error);
+			return BadRequest(result.Error?.Message);
 		}
 
 		return Ok(result.Value);
