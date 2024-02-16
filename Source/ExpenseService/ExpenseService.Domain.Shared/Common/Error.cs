@@ -18,6 +18,12 @@ public class Error
 		Exception = null;
 	}
 
+	public Error(Exception exception)
+	{
+		Message = exception.Message;
+		Exception = new DomainException(exception.Message, exception);
+	}
+
 	public Error(string message, DomainException exception)
 	{
 		Message = message;
