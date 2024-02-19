@@ -12,14 +12,14 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult> : IRequestHan
 {
 	private protected readonly IMediator _mediator;
 	private protected readonly IMapper _mapper;
-	
-	
+
+
 	protected BaseCommandHandler(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
 		_mapper   = mapper;
 	}
-	
+
 	public Task<TCommandResult> Handle(TCommand request, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
@@ -51,7 +51,7 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult, TCommandResul
 	{
 		throw new NotImplementedException();
 	}
-	
+
 
 	/// <summary>
 	/// Validates the specifications for the given entity.
@@ -63,23 +63,23 @@ public abstract class BaseCommandHandler<TCommand, TCommandResult, TCommandResul
 	protected virtual Task ValidateSpecificationsAsync<TEntity>(TEntity entity, params ISpecification<TEntity>[] specifications) where TEntity : class
 	{
 		var errors = new List<Error>();
-		
+
 		foreach (var specification in specifications)
 		{
 			var satisfactionResult = specification.IsSatisfiedBy(entity);
-			
+
 			if (!satisfactionResult.IsSatisfied)
 			{
 				errors.AddRange(satisfactionResult.Errors);
 			}
 		}
-		
+
 		if (errors.Any())
 		{
 			var exception = new SpecificationException(errors);
 			throw exception;
 		}
-		
+
 		return Task.CompletedTask;
 	}
 

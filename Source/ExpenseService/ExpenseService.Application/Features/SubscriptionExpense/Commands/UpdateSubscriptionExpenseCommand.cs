@@ -104,6 +104,7 @@ public class UpdateSubscriptionExpenseCommandHandler: BaseCommandHandler<UpdateS
 			expense.WriteUpdatedAudit(user.Id);
 
 			await ApplyUpdateAsync(expense, cancellationToken);
+			await PublishSubscriptionExpenseUpdatedEventAsync(expense, cancellationToken);
 
 			var resultDTO = _mapper.Map<UpdateSubscriptionExpenseCommandResultDTO>(expense);
 			var result    = UpdateSubscriptionExpenseCommandResult.Succeeded(resultDTO);
@@ -131,6 +132,16 @@ public class UpdateSubscriptionExpenseCommandHandler: BaseCommandHandler<UpdateS
 
 		// Update the expense
 		await _subscriptionExpenseRepository.UpdateAsync(expense, cancellationToken);
+	}
+
+
+	async Task PublishSubscriptionExpenseUpdatedEventAsync(Domain.Entities.SubscriptionExpense expense, CancellationToken cancellationToken = default)
+	{
+		var eventData    = new SubscriptionExpenseUpdatedEventData(expense.Id, expense.Description, expense.Amount, expense.User.Id, expense.Category.Id, expense.StartDate, expense.EndDate, expense.RecurrenceInterval, expense.BillingAmount, expense.CreatedAt, expense.CreatedBy, expense.LastUpdatedAt, expense.LastUpdatedBy, expense.IsDeleted, expense.DeletedAt);
+		var eventDetails = new DomainEventDetails(nameof(SubscriptionExpenseUpdatedEvent), expense.User.Id);
+		var @event       = SubscriptionExpenseUpdatedEvent.Create(eventDetails, eventData);
+
+		await _mediator.Publish(@event, cancellationToken);
 	}
 
 }
