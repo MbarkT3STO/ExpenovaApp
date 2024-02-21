@@ -52,7 +52,6 @@ public class SubscriptionExpenseUpdatedEventData
 }
 
 
-
 /// <summary>
 /// Represents an event that is raised when a subscription expense is updated.
 /// </summary>

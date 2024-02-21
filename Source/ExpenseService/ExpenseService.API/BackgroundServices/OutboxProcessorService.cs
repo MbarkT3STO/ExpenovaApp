@@ -68,33 +68,4 @@ public class OutboxProcessorService: BackgroundService
 			throw;
 		}
 	}
-
-
-
-	// private INotification BuildEventFromOutboxEvent(OutboxMessage outboxMessage)
-	// {
-	// 	var eventName = outboxMessage.EventName;
-
-	// 	var eventMessage = JsonConvert.DeserializeObject(outboxMessage.Data);
-
-	// 	var messageQueue = new Uri(outboxMessage.QueueName);
-
-	// 	var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(messageQueue);
-
-	// 	await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
-
-
-	// 	// switch (eventName)
-	// 	// {
-	// 	// 	case nameof(CategoryCreatedEvent):
-	// 	// 		{
-	// 	// 			var categoryCreatedEvent = JsonConvert.DeserializeObject(outboxMessage.Data);
-
-	// 	// 			return categoryCreatedEvent;
-	// 	// 		}
-
-	// 	// 	default:
-	// 	// 		throw new Exception("Event type not supported [From Outbox Event Processor]");
-	// 	// }
-	// }
 }

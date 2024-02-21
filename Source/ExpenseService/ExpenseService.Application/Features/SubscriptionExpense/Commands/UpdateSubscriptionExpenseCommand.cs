@@ -143,5 +143,4 @@ public class UpdateSubscriptionExpenseCommandHandler: BaseCommandHandler<UpdateS
 
 		await _mediator.Publish(@event, cancellationToken);
 	}
-
 }

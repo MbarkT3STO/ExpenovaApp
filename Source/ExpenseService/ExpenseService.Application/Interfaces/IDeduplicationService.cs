@@ -14,16 +14,6 @@ public interface IDomainEventDeduplicationService
 	Task<bool> HasProcessed(Guid eventId);
 
 
-
-	/// <summary>
-	/// Processes the specified event asynchronously.
-	/// </summary>
-	/// <typeparam name="TEvent">The type of the event to process.</typeparam>
-	/// <param name="event">The event to process.</param>
-	Task ProcessEventAsync<TEvent>(TEvent @event) where TEvent : DomainEvent<TEvent>;
-
-
-
 	/// <summary>
 	/// Processes an event asynchronously.
 	/// </summary>

@@ -57,6 +57,7 @@ public static class ApplicationRegistrar
 
 		// Register Deduplication Services
 		services.AddTransient<IDomainEventDeduplicationService, DomainEventDatabaseDeduplicationService>();
+		services.AddTransient<DomainEventDatabaseDeduplicationService, DomainEventDatabaseDeduplicationService>(serviceProvider => new DomainEventDatabaseDeduplicationService(serviceProvider.GetRequiredService<AppDbContext>()));
 	}
 
 
