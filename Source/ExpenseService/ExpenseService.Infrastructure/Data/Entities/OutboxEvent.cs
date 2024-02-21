@@ -20,7 +20,7 @@ public class OutboxMessage
 	/// Gets or sets the data of the outbox message.
 	/// </summary>
 	public string Data { get; set; }
-	
+
 	/// <summary>
 	/// Gets or sets the name of the queue.
 	/// </summary>
@@ -42,7 +42,7 @@ public class OutboxMessage
 		EventName   = eventName;
 		Data        = data;
 		QueueName   = queueName;
-		
+
 		CreatedAt   = DateTime.UtcNow;
 		IsProcessed = false;
 	}
