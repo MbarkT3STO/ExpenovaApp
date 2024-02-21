@@ -1,5 +1,6 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Behaviors;
+using ExpenseService.Application.Interfaces;
 using ExpenseService.Domain.Shared.Interfaces;
 using ExpenseService.Domain.Specifications.CategorySpecifications;
 using FluentValidation;
@@ -54,6 +55,8 @@ public static class ApplicationRegistrar
 		services.AddTransient<ApplicationExpenseService>();
 
 
+		// Register Deduplication Services
+		services.AddTransient<IDomainEventDeduplicationService, DomainEventDatabaseDeduplicationService>();
 	}
 
 

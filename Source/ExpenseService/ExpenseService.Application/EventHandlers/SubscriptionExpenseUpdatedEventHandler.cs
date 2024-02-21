@@ -1,3 +1,5 @@
+using ExpenseService.Application.Common;
+using ExpenseService.Application.Interfaces;
 using ExpenseService.Infrastructure.Data.Entities;
 using Messages.ExpenseServiceMessages.SubscriptionExpense;
 using Microsoft.Extensions.Options;
@@ -12,17 +14,25 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly AppDbContext _dbContext;
+	private readonly IDomainEventDeduplicationService _deduplicationService;
 
-	public SubscriptionExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
+	public SubscriptionExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext, IDomainEventDeduplicationService deduplicationService)
 	{
-		_bus             = bus;
+		_bus = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_dbContext       = dbContext;
+		_dbContext = dbContext;
+		_deduplicationService = deduplicationService;
 	}
-
 
 	public async Task Handle(SubscriptionExpenseUpdatedEvent notification, CancellationToken cancellationToken)
 	{
+		var hasProcessed = await _deduplicationService.HasProcessed(notification.EventDetails.EventId);
+
+		if (hasProcessed)
+		{
+			return;
+		}
+
 		var message = new SubscriptionExpenseUpdatedMessage
 		{
 			EventId            = notification.EventDetails.EventId,
@@ -52,7 +62,7 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 			TypeNameHandling = TypeNameHandling.All
 		};
 		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(SubscriptionExpenseUpdatedEvent), serializedMessage, expenseEventSourcererQueueName );
+		var outboxEvent       = new OutboxMessage(message.EventId, nameof(SubscriptionExpenseUpdatedEvent), serializedMessage, expenseEventSourcererQueueName );
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);

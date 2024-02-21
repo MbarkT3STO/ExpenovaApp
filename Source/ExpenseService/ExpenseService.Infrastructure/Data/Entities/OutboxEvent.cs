@@ -12,6 +12,11 @@ public class OutboxMessage
 	public int Id { get; set; }
 
 	/// <summary>
+	/// Gets or sets the ID of the event associated with the outbox message.
+	/// </summary>
+	public Guid EventId { get; set; }
+
+	/// <summary>
 	/// Gets or sets the name of the event associated with the outbox message.
 	/// </summary>
 	public string EventName { get; set; }
@@ -39,9 +44,21 @@ public class OutboxMessage
 
 	public OutboxMessage(string eventName, string data, string queueName)
 	{
-		EventName   = eventName;
-		Data        = data;
-		QueueName   = queueName;
+		EventId   = Guid.NewGuid();
+		EventName = eventName;
+		Data      = data;
+		QueueName = queueName;
+
+		CreatedAt   = DateTime.UtcNow;
+		IsProcessed = false;
+	}
+
+	public OutboxMessage(Guid eventId, string eventName, string data, string queueName)
+	{
+		EventId      = eventId;
+		EventName    = eventName;
+		Data         = data;
+		QueueName    = queueName;
 
 		CreatedAt   = DateTime.UtcNow;
 		IsProcessed = false;

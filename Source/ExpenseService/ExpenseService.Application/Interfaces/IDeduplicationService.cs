@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 namespace ExpenseService.Application.Interfaces;
 
 /// <summary>
-/// Represents a service for deduplication.
+/// Represents a service that checks for and processes duplicate Domain Events.
 /// </summary>
-public interface IDeduplicationService
+public interface IDomainEventDeduplicationService
 {
 	/// <summary>
 	/// Checks if an Event has been processed.
@@ -20,7 +20,7 @@ public interface IDeduplicationService
 	/// </summary>
 	/// <typeparam name="TEvent">The type of the event to process.</typeparam>
 	/// <param name="event">The event to process.</param>
-	Task ProcessEventAsync<TEvent>(TEvent @event) where TEvent : class;
+	Task ProcessEventAsync<TEvent>(TEvent @event) where TEvent : DomainEvent<TEvent>;
 
 
 
