@@ -14,7 +14,6 @@ public class IsValidSubscriptionExpenseForSoftDeleteSpecification : CompositeSpe
 
 	public override void ConfigureSpecifications()
 	{
-		AddSpecification(new IsValidSubscriptionExpenseDatesSpecification());
 		AddSpecification(new IsValidSubscriptionExpenseDescriptionSpecification());
 		AddSpecification(new IsValidSubscriptionExpenseAmountSpecification());
 

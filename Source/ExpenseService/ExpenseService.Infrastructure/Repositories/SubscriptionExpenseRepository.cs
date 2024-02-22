@@ -34,9 +34,15 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		throw new NotImplementedException();
 	}
 
-	public Task DeleteAsync(SubscriptionExpense entity, CancellationToken cancellationToken)
+	public async Task DeleteAsync(SubscriptionExpense entity, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var entityToDelete = await GetByIdOrThrowAsync(entity.Id, cancellationToken);
+
+		entityToDelete.IsDeleted = true;
+		entityToDelete.DeletedAt = entity.DeletedAt;
+		entityToDelete.DeletedBy = entity.DeletedBy;
+
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
 	public void Dispose()
