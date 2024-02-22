@@ -13,19 +13,19 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly AppDbContext _dbContext;
-	private readonly IDomainEventDeduplicationService _deduplicationService;
+	private readonly IOutboxService _outboxService;
 
-	public SubscriptionExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext, DomainEventDatabaseDeduplicationService deduplicationService)
+	public SubscriptionExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext, IOutboxService outboxService)
 	{
-		_bus                  = bus;
-		_rabbitMqOptions      = rabbitMqOptions.Value;
-		_dbContext            = dbContext;
-		_deduplicationService = deduplicationService;
+		_bus           = bus;
+		_rabbitMqOptions = rabbitMqOptions.Value;
+		_dbContext     = dbContext;
+		_outboxService = outboxService;
 	}
 
 	public async Task Handle(SubscriptionExpenseUpdatedEvent notification, CancellationToken cancellationToken)
 	{
-		var hasProcessed = await _deduplicationService.HasProcessed(notification.EventDetails.EventId);
+		var hasProcessed = await _outboxService.HasProcessed(notification.EventDetails.EventId, cancellationToken);
 
 		if (hasProcessed) return;
 
@@ -54,7 +54,7 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue;
 
-		await _deduplicationService.ProcessEventAsync(() => SaveOutboxMessageAsync(message, expenseEventSourcererQueueName, cancellationToken));
+		await _outboxService.ProcessEventAsync(() => SaveOutboxMessageAsync(message, expenseEventSourcererQueueName, cancellationToken));
 	}
 
 

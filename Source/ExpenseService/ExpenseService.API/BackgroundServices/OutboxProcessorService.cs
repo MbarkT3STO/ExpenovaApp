@@ -1,3 +1,4 @@
+using ExpenseService.Application.Interfaces;
 using ExpenseService.Infrastructure.Data;
 using ExpenseService.Infrastructure.Data.Entities;
 using MassTransit;
@@ -13,15 +14,18 @@ public class OutboxProcessorService: BackgroundService
 	readonly IMediator _mediator;
 	readonly AppDbContext _dbContext;
 	readonly IBus _bus;
+	readonly IOutboxService _outboxService;
 
 	public OutboxProcessorService(IServiceScopeFactory serviceScopeFactory)
 	{
 		_serviceScopeFactory = serviceScopeFactory;
 
-		var scope      = _serviceScopeFactory.CreateScope();
-			_mediator  = scope.ServiceProvider.GetRequiredService<IMediator>();
-			_dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-			_bus       = scope.ServiceProvider.GetRequiredService<IBus>();
+		var scope          = _serviceScopeFactory.CreateScope();
+
+			_mediator      = scope.ServiceProvider.GetRequiredService<IMediator>();
+			_dbContext     = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+			_bus           = scope.ServiceProvider.GetRequiredService<IBus>();
+			_outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
 	}
 
 
@@ -29,7 +33,7 @@ public class OutboxProcessorService: BackgroundService
 	{
 		while (!stoppingToken.IsCancellationRequested)
 		{
-			var outboxMessages = await _dbContext.OutboxMessages.ToListAsync(stoppingToken);
+			var outboxMessages = await _outboxService.GetUnprocessedOutboxMessagesAsync(stoppingToken);
 
 			foreach (var outboxEvent in outboxMessages)
 			{
@@ -56,8 +60,7 @@ public class OutboxProcessorService: BackgroundService
 
 			await queueEndPoint.Send(eventMessage, cancellationToken);
 
-			_dbContext.OutboxMessages.Remove(outboxMessage);
-			await _dbContext.SaveChangesAsync(cancellationToken);
+			await _outboxService.MarkAsProcessedAsync(outboxMessage.Id, cancellationToken);
 
 			transaction.Commit();
 		}

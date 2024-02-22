@@ -1,6 +1,7 @@
 using ExpenseService.Application.ApplicationServices;
 using ExpenseService.Application.Behaviors;
 using ExpenseService.Application.Interfaces;
+using ExpenseService.Application.Services;
 using ExpenseService.Domain.Shared.Interfaces;
 using ExpenseService.Domain.Specifications.CategorySpecifications;
 using FluentValidation;
@@ -53,6 +54,8 @@ public static class ApplicationRegistrar
 		services.AddTransient<ApplicationUserService>();
 		services.AddTransient<ApplicationCategoryService>();
 		services.AddTransient<ApplicationExpenseService>();
+
+		services.AddTransient<IOutboxService, OutboxService>();
 
 
 		// Register Deduplication Services
