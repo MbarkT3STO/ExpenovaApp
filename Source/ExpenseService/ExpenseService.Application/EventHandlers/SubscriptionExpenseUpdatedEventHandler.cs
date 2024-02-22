@@ -54,27 +54,6 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue;
 
-		await _outboxService.ProcessEventAsync(() => SaveOutboxMessageAsync(message, expenseEventSourcererQueueName, cancellationToken));
-	}
-
-
-	/// <summary>
-	/// Saves the outbox message asynchronously.
-	/// </summary>
-	/// <param name="message">The subscription expense updated message.</param>
-	/// <param name="queueName">The name of the queue.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>A task representing the asynchronous operation.</returns>
-	private async Task SaveOutboxMessageAsync(SubscriptionExpenseUpdatedMessage message, string queueName, CancellationToken cancellationToken)
-	{
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(message.EventId, nameof(SubscriptionExpenseUpdatedMessage), serializedMessage, queueName);
-
-		_dbContext.OutboxMessages.Add(outboxEvent);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }

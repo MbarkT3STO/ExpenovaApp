@@ -10,19 +10,20 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
+	private readonly IOutboxService _outboxService;
 
-	public CategoryDeletedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions)
+	public CategoryDeletedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
+		_outboxService   = outboxService;
 	}
-
 
 	public async Task Handle(CategoryDeletedEvent notification, CancellationToken cancellationToken)
 	{
 		var eventDetails = notification.EventDetails;
 		var eventData    = notification.EventData;
-		
+
 		var message = new CategoryDeletedMessage
 		{
 			EventId     = eventDetails.EventId,
@@ -38,11 +39,9 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 			DeletedBy   = eventDetails.OccurredBy
 		};
 
-		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue;
-		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
-		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
+		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue;
 
-		await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
+		await _outboxService.SaveMessageAsync(message, categoryEventSourcererQueueName, cancellationToken);
 	}
 
 }

@@ -24,3 +24,6 @@ global using ExpenseService.Domain.Specifications.CategorySpecifications.Composi
 
 global using Serilog;
 global using FluentValidation;
+
+global using ExpenseService.Application.Interfaces;
+global using ExpenseService.Application.Services;

@@ -8,17 +8,17 @@ using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace ExpenseService.Application.EventHandlers;
 
-public class ExpenseCreatedEventHandler : INotificationHandler<ExpenseCreatedEvent>
+public class ExpenseCreatedEventHandler: INotificationHandler<ExpenseCreatedEvent>
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	private readonly AppDbContext _dbContext;
+	private readonly IOutboxService _outboxService;
 
-	public ExpenseCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
+	public ExpenseCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_dbContext       = dbContext;
+		_outboxService   = outboxService;
 	}
 
 
@@ -39,14 +39,6 @@ public class ExpenseCreatedEventHandler : INotificationHandler<ExpenseCreatedEve
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.ExpenseCreatedEventSourcererQueue;
 
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(ExpenseCreatedEvent), serializedMessage, expenseEventSourcererQueueName );
-
-		_dbContext.OutboxMessages.Add(outboxEvent);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }

@@ -11,13 +11,13 @@ public class ExpenseDeletedEventHandler: INotificationHandler<ExpenseDeletedEven
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	private readonly AppDbContext _dbContext;
+	private readonly IOutboxService _outboxService;
 
-	public ExpenseDeletedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
+	public ExpenseDeletedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_dbContext       = dbContext;
+		_outboxService   = outboxService;
 	}
 
 
@@ -38,14 +38,6 @@ public class ExpenseDeletedEventHandler: INotificationHandler<ExpenseDeletedEven
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.ExpenseDeletedEventSourcererQueue;
 
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(ExpenseDeletedEvent), serializedMessage, expenseEventSourcererQueueName);
-
-		_dbContext.OutboxMessages.Add(outboxEvent);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }

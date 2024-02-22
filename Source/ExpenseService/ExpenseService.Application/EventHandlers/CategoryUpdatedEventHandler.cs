@@ -9,15 +9,17 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	
-	
-	public CategoryUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions)
+	private readonly IOutboxService _outboxService;
+
+
+	public CategoryUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
+		_outboxService   = outboxService;
 	}
-	
-	
+
+
 	public async Task Handle(CategoryUpdatedEvent notification, CancellationToken cancellationToken)
 	{
 		var message = new CategoryUpdatedMessage
@@ -31,10 +33,8 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 			UpdatedBy      = notification.EventDetails.OccurredBy
 		};
 
-		var categoryEventSourcererQueueName     = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue;
-		var categoryEventSourcererQueue         = new Uri(categoryEventSourcererQueueName);
-		var categoryEventSourcererQueueEndPoint = await _bus.GetSendEndpoint(categoryEventSourcererQueue);
+		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue;
 
-		await categoryEventSourcererQueueEndPoint.Send(message, cancellationToken);
+		await _outboxService.SaveMessageAsync(message, categoryEventSourcererQueueName, cancellationToken);
 	}
 }

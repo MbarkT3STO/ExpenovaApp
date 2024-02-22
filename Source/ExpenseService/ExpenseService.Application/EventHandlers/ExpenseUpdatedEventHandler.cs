@@ -7,46 +7,37 @@ using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace ExpenseService.Application.EventHandlers;
 
-public class ExpenseUpdatedEventHandler : INotificationHandler<ExpenseUpdatedEvent>
+public class ExpenseUpdatedEventHandler: INotificationHandler<ExpenseUpdatedEvent>
 {
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	private readonly AppDbContext _dbContext;
+	private readonly IOutboxService _outboxService;
 
-	public ExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
+	public ExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus             = bus;
+		_bus           = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_dbContext       = dbContext;
+		_outboxService = outboxService;
 	}
-
 
 	public async Task Handle(ExpenseUpdatedEvent notification, CancellationToken cancellationToken)
 	{
 		var message = new ExpenseUpdatedMessage
 		{
-			EventId         = notification.EventDetails.EventId,
-			Id              = notification.EventData.Id,
-			Amount          = notification.EventData.Amount,
-			Description     = notification.EventData.Description,
-			Date            = notification.EventData.Date,
-			CategoryId      = notification.EventData.CategoryId,
-			UserId          = notification.EventData.UserId,
-			LastUpdatedAt   = notification.EventDetails.OccurredOn,
-			LastUpdatedBy   = notification.EventDetails.OccurredBy
+			EventId       = notification.EventDetails.EventId,
+			Id            = notification.EventData.Id,
+			Amount        = notification.EventData.Amount,
+			Description   = notification.EventData.Description,
+			Date          = notification.EventData.Date,
+			CategoryId    = notification.EventData.CategoryId,
+			UserId        = notification.EventData.UserId,
+			LastUpdatedAt = notification.EventDetails.OccurredOn,
+			LastUpdatedBy = notification.EventDetails.OccurredBy
 		};
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.ExpenseUpdatedEventSourcererQueue;
 
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(ExpenseUpdatedEvent), serializedMessage, expenseEventSourcererQueueName );
-
-		_dbContext.OutboxMessages.Add(outboxEvent);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 
 }

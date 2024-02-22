@@ -12,14 +12,15 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly AppDbContext _dbContext;
+	private readonly IOutboxService _outboxService;
 
-	public SubscriptionExpenseCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext)
+	public SubscriptionExpenseCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext, IOutboxService outboxService)
 	{
 		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_dbContext       = dbContext;
+		_outboxService   = outboxService;
 	}
-
 
 	public async Task Handle(SubscriptionExpenseCreatedEvent notification, CancellationToken cancellationToken)
 	{
@@ -46,14 +47,6 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseCreatedEventSourcererQueue;
 
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent       = new OutboxMessage(nameof(SubscriptionExpenseCreatedEvent), serializedMessage, expenseEventSourcererQueueName);
-
-		_dbContext.OutboxMessages.Add(outboxEvent);
-		await _dbContext.SaveChangesAsync(cancellationToken);
+		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }
