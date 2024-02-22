@@ -130,4 +130,21 @@ public class SubscriptionExpenseController : ControllerBase
 
 		return Ok(result.Value);
 	}
+
+
+
+
+	[HttpDelete(nameof(Delete))]
+	public async Task<IActionResult> Delete(Guid id)
+	{
+		var command = new DeleteSubscriptionExpenseCommand(id);
+		var result = await _mediator.Send(command);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error);
+		}
+
+		return Ok(result.Value);
+	}
 }

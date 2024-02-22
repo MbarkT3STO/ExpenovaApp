@@ -62,9 +62,9 @@ public class DeleteSubscriptionExpenseCommand: IRequest<DeleteSubscriptionExpens
 
 public class DeleteSubscriptionExpenseCommandHandler: BaseCommandHandler<DeleteSubscriptionExpenseCommand, DeleteSubscriptionExpenseCommandResult, DeleteSubscriptionExpenseCommandResultDTO>
 {
-	readonly SubscriptionExpenseRepository _subscriptionExpenseRepository;
+	readonly ISubscriptionExpenseRepository _subscriptionExpenseRepository;
 
-	public DeleteSubscriptionExpenseCommandHandler(IMapper mapper, IMediator mediator, SubscriptionExpenseRepository subscriptionExpenseRepository): base(mediator, mapper)
+	public DeleteSubscriptionExpenseCommandHandler(IMapper mapper, IMediator mediator, ISubscriptionExpenseRepository subscriptionExpenseRepository): base(mediator, mapper)
 	{
 		_subscriptionExpenseRepository = subscriptionExpenseRepository;
 	}
@@ -78,6 +78,7 @@ public class DeleteSubscriptionExpenseCommandHandler: BaseCommandHandler<DeleteS
 			expense.WriteDeletedAudit(expense.User.Id);
 
 			await DeleteAsync(expense, cancellationToken);
+			await PublishSubscriptionExpenseDeletedEvent(expense, cancellationToken);
 
 			var resultDTO = _mapper.Map<DeleteSubscriptionExpenseCommandResultDTO>(expense);
 			var result    = DeleteSubscriptionExpenseCommandResult.Succeeded(resultDTO);
@@ -91,9 +92,20 @@ public class DeleteSubscriptionExpenseCommandHandler: BaseCommandHandler<DeleteS
 	}
 
 
+
 	async Task DeleteAsync(Domain.Entities.SubscriptionExpense entity, CancellationToken cancellationToken)
 	{
-		entity.Validate(new IsValidSubscriptionExpenseForSoftDeleteSpecification
+		entity.Validate(new IsValidSubscriptionExpenseForSoftDeleteSpecification());
 		await _subscriptionExpenseRepository.DeleteAsync(entity, cancellationToken);
+	}
+
+
+	async Task PublishSubscriptionExpenseDeletedEvent(Domain.Entities.SubscriptionExpense entity, CancellationToken cancellationToken)
+	{
+		var eventData    = new SubscriptionExpenseDeletedEventData(entity.Id, entity.Description, entity.Amount, entity.User.Id, entity.Category.Id, entity.StartDate, entity.EndDate, entity.RecurrenceInterval, entity.BillingAmount, entity.CreatedAt, entity.CreatedBy, entity.LastUpdatedAt, entity.LastUpdatedBy, entity.IsDeleted, entity.DeletedAt);
+		var eventDetails = new DomainEventDetails(nameof(SubscriptionExpenseDeletedEvent), entity.User.Id);
+		var @event       = new SubscriptionExpenseDeletedEvent(eventDetails, eventData);
+
+		await _mediator.Publish(@event, cancellationToken);
 	}
 }

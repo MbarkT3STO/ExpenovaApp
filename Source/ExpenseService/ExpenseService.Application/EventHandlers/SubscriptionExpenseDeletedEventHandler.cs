@@ -1,32 +1,28 @@
-using ExpenseService.Application.Interfaces;
-using ExpenseService.Infrastructure.Data.Entities;
 using Messages.ExpenseServiceMessages.SubscriptionExpense;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using RabbitMqSettings;
 using RabbitMqSettings.QueueRoutes.EventSourcerer;
 
 namespace ExpenseService.Application.EventHandlers;
 
-public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<SubscriptionExpenseUpdatedEvent>
+public class SubscriptionExpenseDeletedEventHandler: INotificationHandler<SubscriptionExpenseDeletedEvent>
 {
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly IOutboxService _outboxService;
 
-	public SubscriptionExpenseUpdatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
+	public SubscriptionExpenseDeletedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_outboxService   = outboxService;
 	}
 
-	public async Task Handle(SubscriptionExpenseUpdatedEvent notification, CancellationToken cancellationToken)
+	public async Task Handle(SubscriptionExpenseDeletedEvent notification, CancellationToken cancellationToken)
 	{
 		var hasProcessed = await _outboxService.HasProcessed(notification.EventDetails.EventId, cancellationToken);
 
 		if (hasProcessed) return;
 
-
-		var message = new SubscriptionExpenseUpdatedMessage
+		var message = new SubscriptionExpenseDeletedMessage
 		{
 			EventId            = notification.EventDetails.EventId,
 			Id                 = notification.EventData.Id,
@@ -48,7 +44,7 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 			DeletedBy     = notification.EventData.DeletedBy
 		};
 
-		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue;
+		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseDeletedEventSourcererQueue;
 
 		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
