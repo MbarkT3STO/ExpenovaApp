@@ -36,12 +36,13 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 
 	public async Task DeleteAsync(SubscriptionExpense entity, CancellationToken cancellationToken)
 	{
-		var entityToDelete = await GetByIdOrThrowAsync(entity.Id, cancellationToken);
+		var entityToDelete = await _dbContext.SubscriptionExpenses.FirstOrDefaultAsync(e => e.Id == entity.Id, cancellationToken);
 
 		entityToDelete.IsDeleted = true;
 		entityToDelete.DeletedAt = entity.DeletedAt;
 		entityToDelete.DeletedBy = entity.DeletedBy;
 
+		_dbContext.Update(entityToDelete);
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 

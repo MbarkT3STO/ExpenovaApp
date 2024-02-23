@@ -104,7 +104,7 @@ public class DeleteSubscriptionExpenseCommandHandler: BaseCommandHandler<DeleteS
 	{
 		var eventData    = new SubscriptionExpenseDeletedEventData(entity.Id, entity.Description, entity.Amount, entity.User.Id, entity.Category.Id, entity.StartDate, entity.EndDate, entity.RecurrenceInterval, entity.BillingAmount, entity.CreatedAt, entity.CreatedBy, entity.LastUpdatedAt, entity.LastUpdatedBy, entity.IsDeleted, entity.DeletedAt);
 		var eventDetails = new DomainEventDetails(nameof(SubscriptionExpenseDeletedEvent), entity.User.Id);
-		var @event       = new SubscriptionExpenseDeletedEvent(eventDetails, eventData);
+		var @event       = SubscriptionExpenseDeletedEvent.Create(eventDetails, eventData);
 
 		await _mediator.Publish(@event, cancellationToken);
 	}
