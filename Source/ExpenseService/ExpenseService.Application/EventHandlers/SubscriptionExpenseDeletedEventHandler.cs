@@ -46,7 +46,7 @@ public class SubscriptionExpenseDeletedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseDeletedEventSourcererQueue;
 
-		var isMessageExists = await _outboxService.IsMessageExistsAndNotProcessedAsync(notification.EventDetails.EventId, expenseEventSourcererQueueName, cancellationToken);
+		var isMessageExists = await _outboxService.IsMessageExistsAndNotProcessedAsync(notification.EventDetails.EventId, expenseEventSourcererQueueName, message, cancellationToken);
 
 		if (isMessageExists) return;
 

@@ -20,7 +20,7 @@ public class OutboxProcessorService: BackgroundService
 	{
 		_serviceScopeFactory = serviceScopeFactory;
 
-		var scope          = _serviceScopeFactory.CreateScope();
+		var scope = _serviceScopeFactory.CreateScope();
 
 			_mediator      = scope.ServiceProvider.GetRequiredService<IMediator>();
 			_dbContext     = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -50,13 +50,8 @@ public class OutboxProcessorService: BackgroundService
 
 		try
 		{
-			var deserializationSettings = new JsonSerializerSettings()
-			{
-				TypeNameHandling = TypeNameHandling.All
-			};
-
 			var eventName     = outboxMessage.EventName;
-			var eventMessage  = JsonConvert.DeserializeObject(outboxMessage.Data, deserializationSettings);
+			var eventMessage  = _outboxService.DeserializeMessage(outboxMessage.Data);
 			var messageQueue  = new Uri(outboxMessage.QueueName);
 			var queueEndPoint = await _bus.GetSendEndpoint(messageQueue);
 

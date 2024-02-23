@@ -10,7 +10,7 @@ namespace ExpenseService.Application.Services;
 /// <summary>
 /// Represents a service for managing outbox messages.
 /// </summary>
-public class OutboxService : IOutboxService
+public class OutboxService: IOutboxService
 {
 	readonly AppDbContext _dbContext;
 
@@ -47,6 +47,13 @@ public class OutboxService : IOutboxService
 		return isExists;
 	}
 
+	public async Task<bool> IsMessageExistsAndNotProcessedAsync(Guid eventId, string queueName, string body, CancellationToken cancellationToken = default)
+	{
+		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.QueueName == queueName && x.Data == body && !x.IsProcessed, cancellationToken);
+
+		return isExists;
+	}
+
 	public async Task<bool> IsMessageExistsAsync(int messageId, CancellationToken cancellationToken = default)
 	{
 		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.Id == messageId, cancellationToken);
@@ -57,6 +64,14 @@ public class OutboxService : IOutboxService
 	public async Task<bool> IsMessageExistsAsync(Guid eventId, string queueName, CancellationToken cancellationToken = default)
 	{
 		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.QueueName == queueName, cancellationToken);
+
+		return isExists;
+	}
+
+	public async Task<bool> IsMessageExistsAndNotProcessedAsync<T>(Guid eventId, string queueName, T message, CancellationToken cancellationToken = default) where T : BaseEventMessage
+	{
+		var serializedMessage = SerializeMessage(message);
+		var isExists          = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.QueueName == queueName && x.Data == serializedMessage && !x.IsProcessed, cancellationToken);
 
 		return isExists;
 	}
@@ -88,7 +103,7 @@ public class OutboxService : IOutboxService
 		await action.Compile().Invoke();
 	}
 
-    public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
+	public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
 		var processedMessages = await _dbContext.OutboxMessages.Where(x => x.IsProcessed).ToListAsync(cancellationToken);
 
@@ -96,16 +111,41 @@ public class OutboxService : IOutboxService
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-    public async Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
+	public async Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T: BaseEventMessage
 	{
-		var jsonSerializerSettings = new JsonSerializerSettings
-		{
-			TypeNameHandling = TypeNameHandling.All
-		};
-		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
+		var serializedMessage = SerializeMessage(message);
+		var outboxEvent       = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+
+
+
+
+	public string SerializeMessage(object message)
+	{
+		var serializationSettings = new JsonSerializerSettings()
+		{
+			TypeNameHandling = TypeNameHandling.All
+		};
+
+		var serializedMessage = JsonConvert.SerializeObject(message, serializationSettings);
+
+		return serializedMessage;
+	}
+
+
+	public object DeserializeMessage(string serializedMessage)
+	{
+		var deserializationSettings = new JsonSerializerSettings()
+		{
+			TypeNameHandling = TypeNameHandling.All
+		};
+
+		var deserializedMessage = JsonConvert.DeserializeObject(serializedMessage, deserializationSettings);
+
+		return deserializedMessage;
 	}
 }

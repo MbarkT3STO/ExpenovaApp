@@ -85,7 +85,48 @@ public interface IOutboxService
 
 
 	/// <summary>
+	/// Checks if a message with the specified event ID, queue name, and body exists in the outbox and has not been processed.
+	/// </summary>
+	/// <param name="eventId">The ID of the event.</param>
+	/// <param name="queueName">The name of the queue.</param>
+	/// <param name="body">The body of the message.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains a boolean value indicating whether the message exists and has not been processed.</returns>
+	Task<bool> IsMessageExistsAndNotProcessedAsync(Guid eventId, string queueName, string body, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Checks if a message with the specified event ID exists in the specified queue and has not been processed.
+	/// </summary>
+	/// <typeparam name="T">The type of the message.</typeparam>
+	/// <param name="eventId">The ID of the event.</param>
+	/// <param name="queueName">The name of the queue.</param>
+	/// <param name="message">The message to check.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	Task<bool> IsMessageExistsAndNotProcessedAsync<T>(Guid eventId, string queueName, T message, CancellationToken cancellationToken = default) where T : BaseEventMessage;
+
+
+	/// <summary>
 	/// Purges all processed messages from the outbox.
 	/// </summary>
 	Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default);
+
+
+
+
+
+
+	/// <summary>
+	/// Serializes the specified message.
+	/// </summary>
+	/// <param name="message">The message to be serialized.</param>
+	/// <returns>The serialized message.</returns>
+	string SerializeMessage(object message);
+
+	/// <summary>
+	/// Deserializes a message object from a string representation.
+	/// </summary>
+	/// <param name="message">The string representation of the message.</param>
+	/// <returns>The deserialized message object.</returns>
+	object DeserializeMessage(string message);
 }
