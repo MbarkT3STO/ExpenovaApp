@@ -19,7 +19,7 @@ public class OutboxService : IOutboxService
 		_dbContext = dbContext;
 	}
 
-	public async Task<IEnumerable<OutboxMessage>> GetUnprocessedOutboxMessagesAsync(CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<OutboxMessage>> GetUnprocessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
 		var outboxMessages = await _dbContext.OutboxMessages.Where(x => !x.IsProcessed).ToListAsync(cancellationToken);
 
@@ -28,27 +28,23 @@ public class OutboxService : IOutboxService
 
 	public async Task<bool> HasProcessed(Guid eventId, CancellationToken cancellationToken = default)
 	{
-		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.EventId == eventId, cancellationToken);
+		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.EventId == eventId && x.IsProcessed, cancellationToken);
 
-		return !hasProcessed;
+		return hasProcessed;
 	}
 
 	public async Task<bool> HasProcessed(int messageId, CancellationToken cancellationToken = default)
 	{
-		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.Id == messageId, cancellationToken);
+		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.Id == messageId && x.IsProcessed, cancellationToken);
 
-		return !hasProcessed;
+		return hasProcessed;
 	}
 
 	public async Task MarkAsProcessedAsync(Guid eventId, CancellationToken cancellationToken = default)
 	{
 		var outboxMessages = await _dbContext.OutboxMessages.Where(x => x.EventId == eventId).ToListAsync(cancellationToken);
 
-		foreach (var outboxMessage in outboxMessages)
-		{
-			// Delete the message
-			_dbContext.OutboxMessages.Remove(outboxMessage);
-		}
+		outboxMessages.ForEach(x => x.IsProcessed = true);
 
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
@@ -59,8 +55,9 @@ public class OutboxService : IOutboxService
 
 		if (outboxMessage != null)
 		{
-			// Delete the message
-			_dbContext.OutboxMessages.Remove(outboxMessage);
+			outboxMessage.IsProcessed = true;
+
+			_dbContext.OutboxMessages.Update(outboxMessage);
 			await _dbContext.SaveChangesAsync(cancellationToken);
 		}
 	}

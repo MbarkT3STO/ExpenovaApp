@@ -21,7 +21,6 @@ public class IsValidSubscriptionExpenseForSoftDeleteSpecification : CompositeSpe
 		AddSpecification(new IsValidSubscriptionExpenseCategorySpecification());
 
 		AddSpecification(new IsValidAggregateRootCreationAuditSpecification<SubscriptionExpense, Guid>());
-		AddSpecification(new IsValidAggregateRootUpdateAuditSpecification<SubscriptionExpense, Guid>());
 		AddSpecification(new IsValidAggregateRootSoftDeleteAuditSpecification<SubscriptionExpense, Guid>());
 	}
 }

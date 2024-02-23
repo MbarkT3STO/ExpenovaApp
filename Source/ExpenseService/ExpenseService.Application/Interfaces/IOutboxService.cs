@@ -42,7 +42,7 @@ public interface IOutboxService
 	/// Retrieves a collection of unprocessed outbox messages asynchronously.
 	/// </summary>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	Task<IEnumerable<OutboxMessage>> GetUnprocessedOutboxMessagesAsync(CancellationToken cancellationToken = default);
+	Task<IEnumerable<OutboxMessage>> GetUnprocessedMessagesAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Marks all messages related to the specified event as processed.

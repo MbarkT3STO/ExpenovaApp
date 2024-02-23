@@ -33,7 +33,7 @@ public class OutboxProcessorService: BackgroundService
 	{
 		while (!stoppingToken.IsCancellationRequested)
 		{
-			var outboxMessages = await _outboxService.GetUnprocessedOutboxMessagesAsync(stoppingToken);
+			var outboxMessages = await _outboxService.GetUnprocessedMessagesAsync(stoppingToken);
 
 			foreach (var outboxEvent in outboxMessages)
 			{
