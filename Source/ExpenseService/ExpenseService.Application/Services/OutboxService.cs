@@ -28,16 +28,37 @@ public class OutboxService : IOutboxService
 
 	public async Task<bool> HasProcessed(Guid eventId, CancellationToken cancellationToken = default)
 	{
-		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.EventId == eventId && x.IsProcessed, cancellationToken);
+		var hasProcessed = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.IsProcessed, cancellationToken);
 
 		return hasProcessed;
 	}
 
 	public async Task<bool> HasProcessed(int messageId, CancellationToken cancellationToken = default)
 	{
-		var hasProcessed = await _dbContext.OutboxMessages.AnyAsync(x => x.Id == messageId && x.IsProcessed, cancellationToken);
+		var hasProcessed = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.Id == messageId && x.IsProcessed, cancellationToken);
 
 		return hasProcessed;
+	}
+
+	public async Task<bool> IsMessageExistsAndNotProcessedAsync(Guid eventId, string queueName, CancellationToken cancellationToken = default)
+	{
+		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.QueueName == queueName && !x.IsProcessed, cancellationToken);
+
+		return isExists;
+	}
+
+	public async Task<bool> IsMessageExistsAsync(int messageId, CancellationToken cancellationToken = default)
+	{
+		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.Id == messageId, cancellationToken);
+
+		return isExists;
+	}
+
+	public async Task<bool> IsMessageExistsAsync(Guid eventId, string queueName, CancellationToken cancellationToken = default)
+	{
+		var isExists = await _dbContext.OutboxMessages.AsNoTracking().AnyAsync(x => x.EventId == eventId && x.QueueName == queueName, cancellationToken);
+
+		return isExists;
 	}
 
 	public async Task MarkAsProcessedAsync(Guid eventId, CancellationToken cancellationToken = default)
@@ -67,14 +88,22 @@ public class OutboxService : IOutboxService
 		await action.Compile().Invoke();
 	}
 
-	public async Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
+    public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
+	{
+		var processedMessages = await _dbContext.OutboxMessages.Where(x => x.IsProcessed).ToListAsync(cancellationToken);
+
+		_dbContext.OutboxMessages.RemoveRange(processedMessages);
+		await _dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+    public async Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
 	{
 		var jsonSerializerSettings = new JsonSerializerSettings
 		{
 			TypeNameHandling = TypeNameHandling.All
 		};
 		var serializedMessage = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-		var outboxEvent = new OutboxMessage(message.EventId, nameof(T), serializedMessage, queueName);
+		var outboxEvent = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);

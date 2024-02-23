@@ -18,9 +18,9 @@ public class SubscriptionExpenseDeletedEventHandler: INotificationHandler<Subscr
 
 	public async Task Handle(SubscriptionExpenseDeletedEvent notification, CancellationToken cancellationToken)
 	{
-		var hasProcessed = await _outboxService.HasProcessed(notification.EventDetails.EventId, cancellationToken);
+		// var hasProcessed = await _outboxService.HasProcessed(notification.EventDetails.EventId, cancellationToken);
 
-		if (hasProcessed) return;
+		// if (hasProcessed) return;
 
 		var message = new SubscriptionExpenseDeletedMessage
 		{
@@ -45,6 +45,10 @@ public class SubscriptionExpenseDeletedEventHandler: INotificationHandler<Subscr
 		};
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseDeletedEventSourcererQueue;
+
+		var isMessageExists = await _outboxService.IsMessageExistsAndNotProcessedAsync(notification.EventDetails.EventId, expenseEventSourcererQueueName, cancellationToken);
+
+		if (isMessageExists) return;
 
 		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}

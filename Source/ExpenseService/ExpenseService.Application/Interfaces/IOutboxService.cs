@@ -56,4 +56,36 @@ public interface IOutboxService
 	/// <param name="messageId">The ID of the message to mark as processed.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	Task MarkAsProcessedAsync(int messageId, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Checks if a message with the specified ID exists in the outbox.
+	/// </summary>
+	/// <param name="messageId">The ID of the message to check.</param>
+	/// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+	Task<bool> IsMessageExistsAsync(int messageId, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Checks if a message with the specified event ID exists in the specified queue.
+	/// </summary>
+	/// <param name="eventId">The ID of the event.</param>
+	/// <param name="queueName">The name of the queue.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	Task<bool> IsMessageExistsAsync(Guid eventId, string queueName, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Checks if a message with the specified event ID exists in the specified queue and has not been processed.
+	/// </summary>
+	/// <param name="eventId">The ID of the event.</param>
+	/// <param name="queueName">The name of the queue.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	Task<bool> IsMessageExistsAndNotProcessedAsync(Guid eventId, string queueName, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Purges all processed messages from the outbox.
+	/// </summary>
+	Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default);
 }

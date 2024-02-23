@@ -37,12 +37,14 @@ public class OutboxProcessorService: BackgroundService
 
 			foreach (var outboxEvent in outboxMessages)
 			{
-				await ProcessOutboxEvent(outboxEvent, stoppingToken);
+				await ProcessOutboxMessage(outboxEvent, stoppingToken);
 			}
+
+			await _outboxService.PurgeProcessedMessagesAsync(stoppingToken);
 		}
 	}
 
-	private async Task ProcessOutboxEvent(OutboxMessage outboxMessage, CancellationToken cancellationToken)
+	private async Task ProcessOutboxMessage(OutboxMessage outboxMessage, CancellationToken cancellationToken)
 	{
 		var transaction = _dbContext.Database.BeginTransaction();
 
