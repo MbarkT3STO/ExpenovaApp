@@ -9,16 +9,12 @@ namespace ExpenseService.Application.EventHandlers;
 
 public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<SubscriptionExpenseCreatedEvent>
 {
-	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
-	private readonly AppDbContext _dbContext;
 	private readonly IOutboxService _outboxService;
 
-	public SubscriptionExpenseCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, AppDbContext dbContext, IOutboxService outboxService)
+	public SubscriptionExpenseCreatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_dbContext       = dbContext;
 		_outboxService   = outboxService;
 	}
 
@@ -47,6 +43,6 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseCreatedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }

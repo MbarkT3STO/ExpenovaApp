@@ -8,13 +8,11 @@ namespace ExpenseService.Application.EventHandlers;
 
 public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEvent>
 {
-	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly IOutboxService _outboxService;
 
-	public CategoryDeletedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
+	public CategoryDeletedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_outboxService   = outboxService;
 	}
@@ -41,7 +39,7 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 
 		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryDeletedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, categoryEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, categoryEventSourcererQueueName, cancellationToken);
 	}
 
 }

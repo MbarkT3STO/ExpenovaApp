@@ -13,13 +13,11 @@ namespace ExpenseService.Application.EventHandlers;
 
 public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEvent>
 {
-	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly IOutboxService _outboxService;
 
-	public CategoryCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
+	public CategoryCreatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_outboxService   = outboxService;
 	}
@@ -40,7 +38,7 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 
 		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryCreatedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, categoryEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, categoryEventSourcererQueueName, cancellationToken);
 	}
 }
 

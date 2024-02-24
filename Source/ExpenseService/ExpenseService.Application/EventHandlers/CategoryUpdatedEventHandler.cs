@@ -7,14 +7,12 @@ namespace ExpenseService.Application.EventHandlers;
 
 public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEvent>
 {
-	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly IOutboxService _outboxService;
 
 
-	public CategoryUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
+	public CategoryUpdatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus             = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_outboxService   = outboxService;
 	}
@@ -35,6 +33,6 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 
 		var categoryEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.CategoryUpdatedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, categoryEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, categoryEventSourcererQueueName, cancellationToken);
 	}
 }

@@ -50,6 +50,6 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 }

@@ -9,13 +9,11 @@ namespace ExpenseService.Application.EventHandlers;
 
 public class ExpenseUpdatedEventHandler: INotificationHandler<ExpenseUpdatedEvent>
 {
-	private readonly IBus _bus;
 	private readonly RabbitMqOptions _rabbitMqOptions;
 	private readonly IOutboxService _outboxService;
 
-	public ExpenseUpdatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
+	public ExpenseUpdatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
-		_bus           = bus;
 		_rabbitMqOptions = rabbitMqOptions.Value;
 		_outboxService = outboxService;
 	}
@@ -37,7 +35,7 @@ public class ExpenseUpdatedEventHandler: INotificationHandler<ExpenseUpdatedEven
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.ExpenseUpdatedEventSourcererQueue;
 
-		await _outboxService.SaveMessageAsync(message, expenseEventSourcererQueueName, cancellationToken);
+		await _outboxService.SaveMessageIfNotExistsAsync(message, expenseEventSourcererQueueName, cancellationToken);
 	}
 
 }
