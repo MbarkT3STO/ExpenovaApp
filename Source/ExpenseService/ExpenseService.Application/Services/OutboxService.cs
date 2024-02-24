@@ -105,7 +105,12 @@ public class OutboxService: IOutboxService
 
 	public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
-		var processedMessages = await _dbContext.OutboxMessages.Where(x => x.IsProcessed).ToListAsync(cancellationToken);
+		var processedMessages = await _dbContext.OutboxMessages.AsNoTracking().Where(x => x.IsProcessed).ToListAsync(cancellationToken);
+
+		foreach (var message in processedMessages)
+		{
+			_dbContext.Entry(message).State = EntityState.Detached;
+		}
 
 		_dbContext.OutboxMessages.RemoveRange(processedMessages);
 		await _dbContext.SaveChangesAsync(cancellationToken);
@@ -148,4 +153,18 @@ public class OutboxService: IOutboxService
 
 		return deserializedMessage;
 	}
+
+    public async Task SaveMessageIfNotExistsAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
+    {
+        var serializedMessage = SerializeMessage(message);
+		var isExists = await IsMessageExistsAndNotProcessedAsync(message.EventId, queueName, serializedMessage, cancellationToken);
+
+		if (!isExists)
+		{
+			var outboxEvent = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
+
+			_dbContext.OutboxMessages.Add(outboxEvent);
+			await _dbContext.SaveChangesAsync(cancellationToken);
+		}
+    }
 }

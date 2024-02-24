@@ -102,7 +102,7 @@ public class DeleteSubscriptionExpenseCommandHandler: BaseCommandHandler<DeleteS
 
 	async Task PublishSubscriptionExpenseDeletedEvent(Domain.Entities.SubscriptionExpense entity, CancellationToken cancellationToken)
 	{
-		var eventData    = new SubscriptionExpenseDeletedEventData(entity.Id, entity.Description, entity.Amount, entity.User.Id, entity.Category.Id, entity.StartDate, entity.EndDate, entity.RecurrenceInterval, entity.BillingAmount, entity.CreatedAt, entity.CreatedBy, entity.LastUpdatedAt, entity.LastUpdatedBy, entity.IsDeleted, entity.DeletedAt);
+		var eventData    = new SubscriptionExpenseDeletedEventData(entity.Id, entity.Description, entity.Amount, entity.User.Id, entity.Category.Id, entity.StartDate, entity.EndDate, entity.RecurrenceInterval, entity.BillingAmount, entity.CreatedAt, entity.CreatedBy, entity.LastUpdatedAt, entity.LastUpdatedBy, entity.IsDeleted, entity.DeletedAt, entity.DeletedBy);
 		var eventDetails = new DomainEventDetails(nameof(SubscriptionExpenseDeletedEvent), entity.User.Id);
 		var @event       = SubscriptionExpenseDeletedEvent.Create(eventDetails, eventData);
 

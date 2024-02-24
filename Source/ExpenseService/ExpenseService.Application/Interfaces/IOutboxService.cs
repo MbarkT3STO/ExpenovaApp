@@ -18,6 +18,16 @@ public interface IOutboxService
 	/// <param name="cancellationToken">The cancellation token.</param>
 	Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage;
 
+
+	/// <summary>
+	/// Saves a message if it does not already exist in the outbox.
+	/// </summary>
+	/// <typeparam name="T">The type of the message.</typeparam>
+	/// <param name="message">The message to save.</param>
+	/// <param name="queueName">The name of the queue.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	Task SaveMessageIfNotExistsAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage;
+
 	/// <summary>
 	/// Processes an event asynchronously.
 	/// </summary>

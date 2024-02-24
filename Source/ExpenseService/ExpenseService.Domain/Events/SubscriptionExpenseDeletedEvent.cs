@@ -26,7 +26,7 @@ public class SubscriptionExpenseDeletedEventData
 	}
 
 
-	public SubscriptionExpenseDeletedEventData(Guid id, string description, decimal amount, string userId, Guid categoryId, DateTime startDate, DateTime endDate, RecurrenceInterval recurrenceInterval, decimal billingAmount, DateTime createdAt, string createdBy, DateTime? lastUpdatedAt, string lastUpdatedBy, bool isDeleted, DateTime? deletedAt)
+	public SubscriptionExpenseDeletedEventData(Guid id, string description, decimal amount, string userId, Guid categoryId, DateTime startDate, DateTime endDate, RecurrenceInterval recurrenceInterval, decimal billingAmount, DateTime createdAt, string createdBy, DateTime? lastUpdatedAt, string lastUpdatedBy, bool isDeleted, DateTime? deletedAt, string? deletedBy)
 	{
 		Id                 = id;
 		Description        = description;
@@ -43,6 +43,7 @@ public class SubscriptionExpenseDeletedEventData
 		LastUpdatedBy      = lastUpdatedBy;
 		IsDeleted          = isDeleted;
 		DeletedAt          = deletedAt;
+		DeletedBy          = deletedBy;
 	}
 }
 
