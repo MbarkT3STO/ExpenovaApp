@@ -113,7 +113,7 @@ public class CreateSubscriptionExpenseCommandHandler: BaseCommandHandler<CreateS
 	/// <param name="user">The user creating the expense.</param>
 	/// <param name="category">The category of the expense.</param>
 	/// <returns>The created subscription expense.</returns>
-	Domain.Entities.SubscriptionExpense CreateAndAuditSubscriptionExpense(CreateSubscriptionExpenseCommand request, User user, Domain.Entities.Category category)
+	Domain.Entities.SubscriptionExpense CreateAndAuditSubscriptionExpense(CreateSubscriptionExpenseCommand request, Domain.Entities.User user, Domain.Entities.Category category)
 	{
 		var subscriptionExpense = new Domain.Entities.SubscriptionExpense(request.Amount, request.Description, request.StartDate, request.EndDate, request.RecurrenceInterval, request.BillingAmount, category, user);
 

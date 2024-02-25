@@ -242,4 +242,11 @@ public class CategoryRepository: Repository, ICategoryRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var totalCategories = await _dbContext.Categories.CountAsync(c => c.UserId == userId, cancellationToken);
+
+		return totalCategories;
+	}
 }

@@ -29,4 +29,21 @@ public interface ISubscriptionExpenseRepository : IRepository<SubscriptionExpens
 	/// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains a queryable collection of subscription expenses.</returns>
 	Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Retrieves the count of subscription expenses for a specific user.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The count of subscription expenses.</returns>
+	Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Retrieves the sum of expenses for a specific user.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The sum of expenses for the user.</returns>
+	Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default);
 }

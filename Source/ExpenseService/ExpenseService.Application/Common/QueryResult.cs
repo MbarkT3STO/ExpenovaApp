@@ -40,4 +40,10 @@ public abstract class QueryResult<TValue, TQueryResult> : IQueryResult<TValue> w
 	/// </summary>
 	/// <typeparam name="TQueryResult">The type of the query result.</typeparam>
 	public static TQueryResult Failed(Error error) => (TQueryResult)Activator.CreateInstance(typeof(TQueryResult), error)!;
+
+	/// <summary>
+	/// Creates a failed result with the specified exception/error.
+	/// </summary>
+	/// <typeparam name="TQueryResult">The type of the query result.</typeparam>
+	public static TQueryResult Failed(Exception exception) => (TQueryResult)Activator.CreateInstance(typeof(TQueryResult), new Error(exception.Message))!;
 }

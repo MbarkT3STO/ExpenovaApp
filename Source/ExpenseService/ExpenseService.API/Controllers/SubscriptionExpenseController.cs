@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ExpenseService.Application.Features.SubscriptionExpense.Commands;
 using ExpenseService.Application.Features.SubscriptionExpense.Queries;
+using ExpenseService.Application.Features.User.Queries.Statistics;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace ExpenseService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SubscriptionExpenseController : ControllerBase
+public class SubscriptionExpenseController: ControllerBase
 {
 	readonly IMapper _mapper;
 	readonly IMediator _mediator;
@@ -41,7 +42,7 @@ public class SubscriptionExpenseController : ControllerBase
 	[HttpGet(nameof(GetById))]
 	public async Task<IActionResult> GetById(Guid id)
 	{
-		var query = new GetSubscriptionExpenseByIdQuery(id);
+		var query  = new GetSubscriptionExpenseByIdQuery(id);
 		var result = await _mediator.Send(query);
 
 		if (result.IsFailure)
@@ -56,7 +57,7 @@ public class SubscriptionExpenseController : ControllerBase
 	[HttpGet(nameof(GetByCategory))]
 	public async Task<IActionResult> GetByCategory(Guid categoryId)
 	{
-		var query = new GetSubscriptionExpensesByCategoryQuery(categoryId);
+		var query  = new GetSubscriptionExpensesByCategoryQuery(categoryId);
 		var result = await _mediator.Send(query);
 
 		if (result.IsFailure)
@@ -71,7 +72,7 @@ public class SubscriptionExpenseController : ControllerBase
 	[HttpGet(nameof(GetByUser))]
 	public async Task<IActionResult> GetByUser(string userId)
 	{
-		var query = new GetSubscriptionExpensesByUserQuery(userId);
+		var query  = new GetSubscriptionExpensesByUserQuery(userId);
 		var result = await _mediator.Send(query);
 
 		if (result.IsFailure)
@@ -86,7 +87,7 @@ public class SubscriptionExpenseController : ControllerBase
 	[HttpGet(nameof(GetByCategoryAndUser))]
 	public async Task<IActionResult> GetByCategoryAndUser(Guid categoryId, string userId)
 	{
-		var query = new GetSubscriptionExpensesByCategoryAndUserQuery(categoryId, userId);
+		var query  = new GetSubscriptionExpensesByCategoryAndUserQuery(categoryId, userId);
 		var result = await _mediator.Send(query);
 
 		if (result.IsFailure)
@@ -138,7 +139,7 @@ public class SubscriptionExpenseController : ControllerBase
 	public async Task<IActionResult> Delete(Guid id)
 	{
 		var command = new DeleteSubscriptionExpenseCommand(id);
-		var result = await _mediator.Send(command);
+		var result  = await _mediator.Send(command);
 
 		if (result.IsFailure)
 		{

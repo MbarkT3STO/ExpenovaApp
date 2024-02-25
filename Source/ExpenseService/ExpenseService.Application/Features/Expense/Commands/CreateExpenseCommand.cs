@@ -87,7 +87,7 @@ public class CreateExpenseCommandHandler: BaseCommandHandler<CreateExpenseComman
 	/// <param name="category">The category of the expense.</param>
 	/// <param name="user">The user creating the expense.</param>
 	/// <returns>The newly created expense.</returns>
-	private Domain.Entities.Expense CreateAndAuditExpense(CreateExpenseCommand request, Domain.Entities.Category category, User user)
+	private Domain.Entities.Expense CreateAndAuditExpense(CreateExpenseCommand request, Domain.Entities.Category category, Domain.Entities.User user)
 	{
 		var expense = new Domain.Entities.Expense(request.Amount, request.Date, request.Description, category, user);
 

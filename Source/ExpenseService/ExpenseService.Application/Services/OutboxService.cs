@@ -105,12 +105,7 @@ public class OutboxService: IOutboxService
 
 	public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
-		var processedMessages = await _dbContext.OutboxMessages.AsNoTracking().Where(x => x.IsProcessed).ToListAsync(cancellationToken);
-
-		foreach (var message in processedMessages)
-		{
-			_dbContext.Entry(message).State = EntityState.Detached;
-		}
+		var processedMessages = _dbContext.OutboxMessages.Where(x => x.IsProcessed);
 
 		_dbContext.OutboxMessages.RemoveRange(processedMessages);
 		await _dbContext.SaveChangesAsync(cancellationToken);

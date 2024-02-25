@@ -92,6 +92,15 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		return expense;
 	}
 
+	public async Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var sum = await _dbContext.SubscriptionExpenses
+								.Where(e => e.UserId == userId)
+								.SumAsync(e => e.Amount, cancellationToken);
+
+		return sum;
+	}
+
 	public async Task<IEnumerable<SubscriptionExpense>> GetSubscriptionExpensesByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
 	{
 		var expenses = await _dbContext.SubscriptionExpenses
@@ -149,5 +158,14 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 
 		_dbContext.SubscriptionExpenses.Update(mappedEntity);
 		await _dbContext.SaveChangesAsync(cancellationToken);
+	}
+
+	public async Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var count = await _dbContext.SubscriptionExpenses
+								.Where(e => e.UserId == userId)
+								.CountAsync(cancellationToken);
+
+		return count;
 	}
 }

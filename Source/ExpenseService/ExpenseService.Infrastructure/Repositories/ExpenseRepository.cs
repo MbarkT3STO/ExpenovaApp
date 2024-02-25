@@ -147,4 +147,18 @@ public class ExpenseRepository: Repository, IExpenseRepository
 
 		if (!exists) throw new NotFoundException($"The expense with ID #{id} was not found.");
 	}
+
+	public async Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var sum = await _dbContext.Expenses.Where(e => e.UserId == userId).SumAsync(e => e.Amount, cancellationToken);
+
+		return sum;
+	}
+
+	public async Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var count = await _dbContext.Expenses.CountAsync(e => e.UserId == userId, cancellationToken);
+
+		return count;
+	}
 }

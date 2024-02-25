@@ -51,5 +51,19 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// <returns>The category with the specified ID and user ID.</returns>
 	Task<Category> GetByIdAndUserIdAsync(Guid id, string userId);
 
+	/// <summary>
+	/// Retrieves a category by its ID and user ID, or throws an exception if not found.
+	/// </summary>
+	/// <param name="id">The ID of the category.</param>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	Task<Category> GetByIdAndUserOrThrowAsync(Guid id, string userId, CancellationToken cancellationToken = default);
+
+
+	/// <summary>
+	/// Gets the total number of categories associated with the specified user ID.
+	/// </summary>
+	/// <param name="userId">The user ID.</param>
+	/// <param name="cancellationToken">The cancellation token (optional).</param>
+	Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default);
 }

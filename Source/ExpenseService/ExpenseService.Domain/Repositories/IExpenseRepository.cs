@@ -38,4 +38,20 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task that represents the asynchronous operation.</returns>
 	Task SoftDeleteAsync(Expense expense, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Retrieves the count of expenses for a specific user asynchronously.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The count of expenses.</returns>
+	Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Retrieves the sum of expenses for a specific user.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The sum of expenses as a decimal.</returns>
+	Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default);
 }
