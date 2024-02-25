@@ -183,7 +183,7 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		return expensesSumDTOs;
 	}
 
-    public async Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var expensesSum = await _dbContext.Expenses
 										.Where(e => e.UserId == userId)
@@ -194,5 +194,19 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		var expensesSumDTOs = expensesSum.Select(e => (e.Year, e.Sum));
 
 		return expensesSumDTOs;
-    }
+	}
+
+	public async Task<(string? Category, decimal? Sum)> GetTopCategoryAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var topCategory = await _dbContext.Expenses
+										.Where(e => e.UserId == userId)
+										.GroupBy(e => e.Category.Name)
+										.Select(g => new { Category = g.Key, Sum = g.Sum(e => e.Amount) })
+										.OrderByDescending(e => e.Sum)
+										.FirstOrDefaultAsync(cancellationToken);
+
+		var result = (topCategory?.Category, topCategory?.Sum);
+
+		return result;
+	}
 }

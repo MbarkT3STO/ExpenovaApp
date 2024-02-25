@@ -190,4 +190,18 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 
 		return expensesSumDTOs;
 	}
+
+	public async Task<(string? Category, decimal? Sum)> GetTopCategoryAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var topCategory = await _dbContext.SubscriptionExpenses
+										.Where(e => e.UserId == userId)
+										.GroupBy(e => e.Category.Name)
+										.Select(g => new { Category = g.Key, Sum = g.Sum(e => e.Amount) })
+										.OrderByDescending(e => e.Sum)
+										.FirstOrDefaultAsync(cancellationToken);
+
+		var result = (topCategory?.Category, topCategory?.Sum);
+
+		return result;
+	}
 }

@@ -77,4 +77,12 @@ public interface IExpenseRepository : IRepository<Expense, Guid>
 	/// <param name="userId">The ID of the user.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Retrieves the top expense category and its sum for a specific user asynchronously.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A tuple containing the top expense category and its sum.</returns>
+	Task<(string? Category, decimal? Sum)> GetTopCategoryAsync(string userId, CancellationToken cancellationToken = default);
 }

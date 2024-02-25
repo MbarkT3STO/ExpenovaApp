@@ -74,6 +74,20 @@ public class StatisticsController: ControllerBase
 	}
 
 
+	[HttpGet(nameof(GetTopExpenseCategory))]
+	public async Task<IActionResult> GetTopExpenseCategory(string userId)
+	{
+		var query  = new GetTopExpenseCategoryQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
 
 
 
@@ -91,4 +105,20 @@ public class StatisticsController: ControllerBase
 
 		return Ok(result.Value);
 	}
+
+
+	[HttpGet(nameof(GetTopSubscriptionExpenseCategory))]
+	public async Task<IActionResult> GetTopSubscriptionExpenseCategory(string userId)
+	{
+		var query  = new GetTopSubscriptionExpenseCategoryQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
 }
