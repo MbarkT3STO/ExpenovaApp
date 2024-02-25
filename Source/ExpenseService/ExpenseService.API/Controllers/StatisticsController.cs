@@ -16,6 +16,7 @@ public class StatisticsController: ControllerBase
 	readonly IMediator _mediator;
 	readonly IMapper _mapper;
 
+
 	public StatisticsController(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
@@ -23,10 +24,64 @@ public class StatisticsController: ControllerBase
 	}
 
 
+
+
 	[HttpGet(nameof(GetBasicStatistics))]
 	public async Task<IActionResult> GetBasicStatistics(string userId)
 	{
 		var query  = new GetUserBasicStatisticsQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+
+	[HttpGet(nameof(GetExpensesSumGroupedByMonthAndYear))]
+	public async Task<IActionResult> GetExpensesSumGroupedByMonthAndYear(string userId)
+	{
+		var query  = new GetExpensesSumGroupedByMonthAndYearQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+	[HttpGet(nameof(GetExpensesSumGroupedByYear))]
+	public async Task<IActionResult> GetExpensesSumGroupedByYear(string userId)
+	{
+		var query  = new GetExpensesSumGroupedByYearQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+
+
+	[HttpGet(nameof(GeGetSubscriptionExpensesSumGroupedByYear))]
+	public async Task<IActionResult> GeGetSubscriptionExpensesSumGroupedByYear(string userId)
+	{
+		var query  = new GetSubscriptionExpensesSumGroupedByYearQuery(userId);
 		var result = await _mediator.Send(query);
 
 		if (result.IsFailure)

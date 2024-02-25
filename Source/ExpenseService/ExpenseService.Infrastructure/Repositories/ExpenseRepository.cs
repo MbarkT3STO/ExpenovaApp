@@ -148,17 +148,51 @@ public class ExpenseRepository: Repository, IExpenseRepository
 		if (!exists) throw new NotFoundException($"The expense with ID #{id} was not found.");
 	}
 
-	public async Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<decimal> GetSumAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var sum = await _dbContext.Expenses.Where(e => e.UserId == userId).SumAsync(e => e.Amount, cancellationToken);
 
 		return sum;
 	}
 
-	public async Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<int> GetCountAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var count = await _dbContext.Expenses.CountAsync(e => e.UserId == userId, cancellationToken);
 
 		return count;
 	}
+
+	public async Task<decimal> GetAverageAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var average = await _dbContext.Expenses.Where(e => e.UserId == userId).AverageAsync(e => e.Amount, cancellationToken);
+
+		return average;
+	}
+
+
+	public async Task<IEnumerable<(int Month, int Year, decimal Sum)>> GetSumGroupedByMonthAndYearAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var expensesSum = await _dbContext.Expenses
+										.Where(e => e.UserId == userId)
+										.GroupBy(e => new { e.Date.Month, e.Date.Year })
+										.Select(g => new { g.Key.Month, g.Key.Year, Sum = g.Sum(e => e.Amount) })
+										.ToArrayAsync(cancellationToken);
+
+		var expensesSumDTOs = expensesSum.Select(e => (e.Month, e.Year, e.Sum));
+
+		return expensesSumDTOs;
+	}
+
+    public async Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var expensesSum = await _dbContext.Expenses
+										.Where(e => e.UserId == userId)
+										.GroupBy(e => e.Date.Year)
+										.Select(g => new { Year = g.Key, Sum = g.Sum(e => e.Amount) })
+										.ToArrayAsync(cancellationToken);
+
+		var expensesSumDTOs = expensesSum.Select(e => (e.Year, e.Sum));
+
+		return expensesSumDTOs;
+    }
 }

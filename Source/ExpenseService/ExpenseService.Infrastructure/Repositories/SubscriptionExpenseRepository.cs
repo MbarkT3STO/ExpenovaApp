@@ -92,7 +92,7 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		return expense;
 	}
 
-	public async Task<decimal> GetSumByUserAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<decimal> GetSumAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var sum = await _dbContext.SubscriptionExpenses
 								.Where(e => e.UserId == userId)
@@ -160,12 +160,34 @@ public class SubscriptionExpenseRepository: Repository, ISubscriptionExpenseRepo
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
-	public async Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default)
+	public async Task<int> GetCountAsync(string userId, CancellationToken cancellationToken = default)
 	{
 		var count = await _dbContext.SubscriptionExpenses
 								.Where(e => e.UserId == userId)
 								.CountAsync(cancellationToken);
 
 		return count;
+	}
+
+	public async Task<decimal> GetAverageAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var average = await _dbContext.SubscriptionExpenses
+								.Where(e => e.UserId == userId)
+								.AverageAsync(e => e.Amount, cancellationToken);
+
+		return average;
+	}
+
+	public async Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var expensesSum = await _dbContext.SubscriptionExpenses
+										.Where(e => e.UserId == userId)
+										.GroupBy(e => e.EndDate.Year)
+										.Select(g => new { Year = g.Key, Sum = g.Sum(e => e.Amount) })
+										.ToListAsync(cancellationToken);
+
+		var expensesSumDTOs = expensesSum.Select(e => (e.Year, e.Sum)).ToList();
+
+		return expensesSumDTOs;
 	}
 }

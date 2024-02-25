@@ -65,5 +65,5 @@ public interface ICategoryRepository : IRepository<Category, Guid>
 	/// </summary>
 	/// <param name="userId">The user ID.</param>
 	/// <param name="cancellationToken">The cancellation token (optional).</param>
-	Task<int> GetCountByUserAsync(string userId, CancellationToken cancellationToken = default);
+	Task<int> GetCountAsync(string userId, CancellationToken cancellationToken = default);
 }

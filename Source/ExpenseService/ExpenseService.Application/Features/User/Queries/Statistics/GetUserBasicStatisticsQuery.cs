@@ -6,8 +6,10 @@ public class GetUserBasicStatisticsQueryResultDTO
 	public int CategoriesCount { get; set; }
 	public int ExpensesCount { get; set; }
 	public decimal ExpensesSum { get; set; }
+	public decimal ExpensesAverage { get; set; }
 	public int SubscriptionExpensesCount { get; set; }
 	public decimal SubscriptionExpensesSum { get; set; }
+	public decimal SubscriptionExpensesAverage { get; set; }
 }
 
 /// <summary>
@@ -57,20 +59,24 @@ public class GetUserBasicStatisticsQueryHandler: BaseQueryHandler<GetUserBasicSt
 	{
 		try
 		{
-			var categoriesCount           = await _categoryRepository.GetCountByUserAsync(request.UserId, cancellationToken);
-			var expensesCount             = await _expenseRepository.GetCountByUserAsync(request.UserId, cancellationToken);
-			var expensesSum               = await _expenseRepository.GetSumByUserAsync(request.UserId, cancellationToken);
-			var subscriptionExpensesCount = await _subscriptionExpenseRepository.GetCountByUserAsync(request.UserId, cancellationToken);
-			var subscriptionExpensesSum   = await _subscriptionExpenseRepository.GetSumByUserAsync(request.UserId, cancellationToken);
+			var categoriesCount             = await _categoryRepository.GetCountAsync(request.UserId, cancellationToken);
+			var expensesCount               = await _expenseRepository.GetCountAsync(request.UserId, cancellationToken);
+			var expensesSum                 = await _expenseRepository.GetSumAsync(request.UserId, cancellationToken);
+			var expensesAverage             = await _expenseRepository.GetAverageAsync(request.UserId, cancellationToken);
+			var subscriptionExpensesCount   = await _subscriptionExpenseRepository.GetCountAsync(request.UserId, cancellationToken);
+			var subscriptionExpensesSum     = await _subscriptionExpenseRepository.GetSumAsync(request.UserId, cancellationToken);
+			var subscriptionExpensesAverage = await _subscriptionExpenseRepository.GetAverageAsync(request.UserId, cancellationToken);
 
 
 			var resultDTO = new GetUserBasicStatisticsQueryResultDTO
 			{
-				CategoriesCount           = categoriesCount,
-				ExpensesCount             = expensesCount,
-				ExpensesSum               = expensesSum,
-				SubscriptionExpensesCount = subscriptionExpensesCount,
-				SubscriptionExpensesSum   = subscriptionExpensesSum
+				CategoriesCount             = categoriesCount,
+				ExpensesCount               = expensesCount,
+				ExpensesSum                 = expensesSum,
+				ExpensesAverage             = expensesAverage,
+				SubscriptionExpensesCount   = subscriptionExpensesCount,
+				SubscriptionExpensesSum     = subscriptionExpensesSum,
+				SubscriptionExpensesAverage = subscriptionExpensesAverage
 			};
 
 			var result = GetUserBasicStatisticsQueryResult.Succeeded(resultDTO);
