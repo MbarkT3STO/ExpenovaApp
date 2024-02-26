@@ -13,12 +13,12 @@ namespace ExpenseService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SubscriptionExpenseController: ControllerBase
+public class SubscriptionExpensesController: ControllerBase
 {
 	readonly IMapper _mapper;
 	readonly IMediator _mediator;
 
-	public SubscriptionExpenseController(IMediator mediator, IMapper mapper)
+	public SubscriptionExpensesController(IMediator mediator, IMapper mapper)
 	{
 		_mediator = mediator;
 		_mapper   = mapper;

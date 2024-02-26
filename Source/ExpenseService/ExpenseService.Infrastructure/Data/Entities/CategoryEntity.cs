@@ -9,7 +9,8 @@ public class CategoryEntity : AuditableEntity<Guid>
 	public string Description { get; set; }
 	public string UserId { get; set; }
 	public UserEntity User { get; set; }
-	
+
 	public virtual ICollection<ExpenseEntity> Expenses { get; set; }
 	public virtual ICollection<SubscriptionExpenseEntity> SubscriptionExpenses { get; set; }
+	public virtual ICollection<IncomeEntity> Incomes { get; set; }
 }

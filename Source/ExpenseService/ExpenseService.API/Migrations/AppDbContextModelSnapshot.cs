@@ -126,6 +126,63 @@ namespace ExpenseService.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ExpenseService.Infrastructure.Data.Entities.IncomeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Incomes", t =>
+                        {
+                            t.HasCheckConstraint("CK_Expenses_Amount", "\"Amount\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("ExpenseService.Infrastructure.Data.Entities.OutboxMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -292,6 +349,25 @@ namespace ExpenseService.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ExpenseService.Infrastructure.Data.Entities.IncomeEntity", b =>
+                {
+                    b.HasOne("ExpenseService.Infrastructure.Data.Entities.CategoryEntity", "Category")
+                        .WithMany("Incomes")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExpenseService.Infrastructure.Data.Entities.UserEntity", "User")
+                        .WithMany("Incomes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ExpenseService.Infrastructure.Data.Entities.SubscriptionExpenseEntity", b =>
                 {
                     b.HasOne("ExpenseService.Infrastructure.Data.Entities.CategoryEntity", "Category")
@@ -315,6 +391,8 @@ namespace ExpenseService.API.Migrations
                 {
                     b.Navigation("Expenses");
 
+                    b.Navigation("Incomes");
+
                     b.Navigation("SubscriptionExpenses");
                 });
 
@@ -323,6 +401,8 @@ namespace ExpenseService.API.Migrations
                     b.Navigation("Categories");
 
                     b.Navigation("Expenses");
+
+                    b.Navigation("Incomes");
 
                     b.Navigation("SubscriptionExpenses");
                 });

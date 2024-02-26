@@ -48,6 +48,7 @@ public static class ApplicationRegistrar
 		services.AddTransient(typeof(IExpenseRepository), typeof(ExpenseRepository));
 		services.AddTransient(typeof(ISubscriptionExpenseRepository), typeof(SubscriptionExpenseRepository));
 		services.AddTransient(typeof(IUserRepository), typeof(UserRepository));
+		services.AddTransient(typeof(IIncomeRepository), typeof(IncomeRepository));
 
 
 		// Register Application Services (Services that are used by the Application Layer)

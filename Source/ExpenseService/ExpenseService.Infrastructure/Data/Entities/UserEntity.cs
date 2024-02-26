@@ -13,5 +13,5 @@ public class UserEntity
 	public virtual ICollection<CategoryEntity> Categories { get; set; }
 	public virtual ICollection<ExpenseEntity> Expenses { get; set; }
 	public virtual ICollection<SubscriptionExpenseEntity> SubscriptionExpenses { get; set; }
-	
+	public virtual ICollection<IncomeEntity> Incomes { get; set; }
 }
