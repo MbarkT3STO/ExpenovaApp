@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ExpenseService.Application.Features.Income.Commands;
 using ExpenseService.Application.Features.Income.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,22 @@ public class IncomesController : ControllerBase
 	{
 		var query  = new GetIncomesQuery();
 		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+	[HttpPost(nameof(Create))]
+	public async Task<IActionResult> Create([FromBody] CreateIncomeCommand command)
+	{
+		var result = await _mediator.Send(command);
 
 		if (result.IsFailure)
 		{
