@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventSourcererService.Migrations
 {
     /// <inheritdoc />
-    public partial class Initiial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,6 +42,36 @@ namespace EventSourcererService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExpenseService_IncomeEvents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    JsonData = table.Column<string>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExpenseService_IncomeEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExpenseService_SubscriptionExpenseEvents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    JsonData = table.Column<string>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExpenseService_SubscriptionExpenseEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ExpenseService_UserEvents",
                 columns: table => new
                 {
@@ -55,21 +85,6 @@ namespace EventSourcererService.Migrations
                 {
                     table.PrimaryKey("PK_ExpenseService_UserEvents", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "ExpenseServiceSubscription_ExpenseEvents",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    JsonData = table.Column<string>(type: "jsonb", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExpenseServiceSubscription_ExpenseEvents", x => x.Id);
-                });
         }
 
         /// <inheritdoc />
@@ -82,10 +97,13 @@ namespace EventSourcererService.Migrations
                 name: "ExpenseService_ExpenseEvents");
 
             migrationBuilder.DropTable(
-                name: "ExpenseService_UserEvents");
+                name: "ExpenseService_IncomeEvents");
 
             migrationBuilder.DropTable(
-                name: "ExpenseServiceSubscription_ExpenseEvents");
+                name: "ExpenseService_SubscriptionExpenseEvents");
+
+            migrationBuilder.DropTable(
+                name: "ExpenseService_UserEvents");
         }
     }
 }

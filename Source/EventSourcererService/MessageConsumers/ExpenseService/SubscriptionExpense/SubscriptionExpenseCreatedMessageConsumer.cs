@@ -14,7 +14,7 @@ public class SubscriptionExpenseCreatedMessageConsumer : BaseConsumer<Subscripti
 
         var expenseEvent = new ExpenseServiceSubscriptionExpenseEvent(message.EventId, "Create", DateTime.UtcNow, message.UserId, eventData);
 
-        await _dbContext.ExpenseServiceSubscription_ExpenseEvents.AddAsync(expenseEvent);
+        await _dbContext.ExpenseService_SubscriptionExpenseEvents.AddAsync(expenseEvent);
         await _dbContext.SaveChangesAsync();
     }
 }

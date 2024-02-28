@@ -78,10 +78,10 @@ public class UpdateIncomeCommandHandler: BaseCommandHandler<UpdateIncomeCommand,
 
 			await ApplyUpdateAsync(income, cancellationToken);
 
-			// TODO: Publish the Update event
+			await PublishIncomeUpdatedEventAsync(income);
 
 			var resultDTO = _mapper.Map<UpdateIncomeCommandResultDTO>(income);
-			var result = UpdateIncomeCommandResult.Succeeded(resultDTO);
+			var result    = UpdateIncomeCommandResult.Succeeded(resultDTO);
 
 			return result;
 		}
@@ -97,5 +97,20 @@ public class UpdateIncomeCommandHandler: BaseCommandHandler<UpdateIncomeCommand,
 		income.Validate(new IsValidIncomeForUpdateSpecification());
 
 		await _incomeRepository.UpdateAsync(income, cancellationToken);
+	}
+
+
+	/// <summary>
+	/// Publishes an income updated event asynchronously.
+	/// </summary>
+	/// <param name="income">The updated income.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	async Task PublishIncomeUpdatedEventAsync(Domain.Entities.Income income)
+	{
+		var eventData    = new IncomeUpdatedEventData(income.Id, income.Description, income.Date, income.Amount, income.Category.Id, income.User.Id);
+		var eventDetails = new DomainEventDetails(nameof(IncomeUpdatedEvent), income.User.Id);
+		var @event       = IncomeUpdatedEvent.Create(eventDetails, eventData);
+
+		await _mediator.Publish(@event);
 	}
 }

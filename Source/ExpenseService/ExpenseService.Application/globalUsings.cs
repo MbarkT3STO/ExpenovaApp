@@ -18,9 +18,11 @@ global using ExpenseService.Infrastructure.Repositories;
 global using ExpenseService.Infrastructure.Data;
 
 global using ExpenseService.Domain.Events;
+global using ExpenseService.Domain.Events.Income;
 
 global using ExpenseService.Domain.Specifications.CategorySpecifications;
 global using ExpenseService.Domain.Specifications.CategorySpecifications.Composite;
+
 
 global using Serilog;
 global using FluentValidation;

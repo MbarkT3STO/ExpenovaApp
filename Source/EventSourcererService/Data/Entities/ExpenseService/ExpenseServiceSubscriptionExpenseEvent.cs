@@ -12,7 +12,7 @@ public class ExpenseServiceSubscriptionExpenseEvent : Event<ExpenseServiceSubscr
 	public ExpenseServiceSubscriptionExpenseEvent()
 	{
 	}
-	
+
 	public ExpenseServiceSubscriptionExpenseEvent(Guid eventId, string type, DateTime timeStamp, string userId, ExpenseServiceSubscriptionExpenseEventJsonData jsonData) : base(eventId, type, timeStamp, userId, jsonData)
 	{
 	}

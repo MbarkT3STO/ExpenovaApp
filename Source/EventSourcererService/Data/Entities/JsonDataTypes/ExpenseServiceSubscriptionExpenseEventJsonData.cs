@@ -1,6 +1,6 @@
 namespace EventSourcererService.Data.Entities.JsonDataTypes;
 
-public class ExpenseServiceSubscriptionExpenseEventJsonData : AuditableJsonEntity<Guid>
+public class ExpenseServiceSubscriptionExpenseEventJsonData: AuditableJsonEntity<Guid>
 {
 	public string Description { get; set; }
 	public decimal Amount { get; set; }
@@ -12,15 +12,15 @@ public class ExpenseServiceSubscriptionExpenseEventJsonData : AuditableJsonEntit
 	public decimal BillingAmount { get; set; }
 
 
-	public ExpenseServiceSubscriptionExpenseEventJsonData(Guid id, decimal amount, string description, string userId, Guid categoryId, DateTime startDate, DateTime endDate, byte recurrenceInterval, decimal billingAmount, DateTime createdAt, string createdBy, DateTime? lastUpdatedAt, string lastUpdatedBy, DateTime? deletedAt, string? deletedBy) : base(id, createdAt, createdBy, lastUpdatedAt, lastUpdatedBy, deletedAt, deletedBy)
+	public ExpenseServiceSubscriptionExpenseEventJsonData(Guid id, decimal amount, string description, string userId, Guid categoryId, DateTime startDate, DateTime endDate, byte recurrenceInterval, decimal billingAmount, DateTime createdAt, string createdBy, DateTime? lastUpdatedAt, string lastUpdatedBy, DateTime? deletedAt, string? deletedBy): base(id, createdAt, createdBy, lastUpdatedAt, lastUpdatedBy, deletedAt, deletedBy)
 	{
-		Description = description;
-		Amount = amount;
-		UserId = userId;
-		CategoryId = categoryId;
-		StartDate = startDate;
-		EndDate = endDate;
+		Description        = description;
+		Amount             = amount;
+		UserId             = userId;
+		CategoryId         = categoryId;
+		StartDate          = startDate;
+		EndDate            = endDate;
 		RecurrenceInterval = recurrenceInterval;
-		BillingAmount = billingAmount;
+		BillingAmount      = billingAmount;
 	}
 }

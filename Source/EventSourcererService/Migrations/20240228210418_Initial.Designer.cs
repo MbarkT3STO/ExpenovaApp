@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventSourcererService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231127155224_Initiial")]
-    partial class Initiial
+    [Migration("20240228210418_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,6 +77,32 @@ namespace EventSourcererService.Migrations
                     b.ToTable("ExpenseService_ExpenseEvents");
                 });
 
+            modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceIncomeEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("JsonData")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExpenseService_IncomeEvents");
+                });
+
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceSubscriptionExpenseEvent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -100,7 +126,7 @@ namespace EventSourcererService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExpenseServiceSubscription_ExpenseEvents");
+                    b.ToTable("ExpenseService_SubscriptionExpenseEvents");
                 });
 
             modelBuilder.Entity("EventSourcererService.Data.Entities.ExpenseService.ExpenseServiceUserEvent", b =>

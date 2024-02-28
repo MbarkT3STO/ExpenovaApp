@@ -19,4 +19,9 @@ public class ExpenseServiceEventSourcererQueues
 	public const string SubscriptionExpenseUpdatedEventSourcererQueue = "EventSourcererService-ExpenseService-SubscriptionExpenseUpdatedEventsQueue";
 	public const string SubscriptionExpenseDeletedEventSourcererQueue = "EventSourcererService-ExpenseService-SubscriptionExpenseDeletedEventsQueue";
 
+
+	public const string IncomeCreatedEventSourcererQueue = "EventSourcererService-ExpenseService-IncomeCreatedEventsQueue";
+	public const string IncomeUpdatedEventSourcererQueue = "EventSourcererService-ExpenseService-IncomeUpdatedEventsQueue";
+	public const string IncomeDeletedEventSourcererQueue = "EventSourcererService-ExpenseService-IncomeDeletedEventsQueue";
+
 }
