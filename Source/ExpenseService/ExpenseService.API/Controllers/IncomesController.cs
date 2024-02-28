@@ -26,8 +26,8 @@ public class IncomesController : ControllerBase
 
 
 
-	[HttpGet(nameof(GetIncomes))]
-	public async Task<IActionResult> GetIncomes()
+	[HttpGet(nameof(Get))]
+	public async Task<IActionResult> Get()
 	{
 		var query  = new GetIncomesQuery();
 		var result = await _mediator.Send(query);
@@ -60,6 +60,22 @@ public class IncomesController : ControllerBase
 
 	[HttpPost(nameof(Create))]
 	public async Task<IActionResult> Create([FromBody] CreateIncomeCommand command)
+	{
+		var result = await _mediator.Send(command);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+	[HttpPut(nameof(Update))]
+	public async Task<IActionResult> Update([FromBody] UpdateIncomeCommand command)
 	{
 		var result = await _mediator.Send(command);
 

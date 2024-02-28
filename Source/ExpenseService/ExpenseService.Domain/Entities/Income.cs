@@ -64,4 +64,14 @@ public class Income: AuditableAggregateRoot<Guid>
 	{
 		Id = id;
 	}
+
+
+	public void Update(string description, DateTime date, decimal amount, Category category, User user)
+	{
+		Description = description;
+		Date        = date;
+		Amount      = amount;
+		Category    = category;
+		User        = user;
+	}
 }

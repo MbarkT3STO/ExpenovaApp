@@ -111,8 +111,12 @@ public class IncomeRepository : Repository, IIncomeRepository
 		throw new NotImplementedException();
 	}
 
-	public Task UpdateAsync(Income entity, CancellationToken cancellationToken = default)
+	public async Task UpdateAsync(Income entity, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var income = _mapper.Map<IncomeEntity>(entity);
+
+		_dbContext.Incomes.Update(income);
+
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 }
