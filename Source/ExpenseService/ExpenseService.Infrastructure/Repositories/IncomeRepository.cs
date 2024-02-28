@@ -86,9 +86,19 @@ public class IncomeRepository : Repository, IIncomeRepository
 		throw new NotImplementedException();
 	}
 
-	public Task<Income> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<Income> GetByIdOrThrowAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var income = await _dbContext.Incomes
+									.Include(i => i.Category)
+									.Include(i => i.User)
+									.FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
+
+		if (income == null)
+			throw new NotFoundException($"The income with ID #{id} does not exist.");
+
+		var result = _mapper.Map<Income>(income);
+
+		return result;
 	}
 
 	public Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
