@@ -22,7 +22,6 @@ public class IsValidIncomeForSoftDeleteSpecification : CompositeSpecification<In
 		AddSpecification(new IsValidIncomeCategorySpecification());
 
 		AddSpecification(new IsValidAggregateRootCreationAuditSpecification<Income, Guid>());
-		AddSpecification(new IsValidAggregateRootUpdateAuditSpecification<Income, Guid>());
 		AddSpecification(new IsValidAggregateRootSoftDeleteAuditSpecification<Income, Guid>());
 	}
 }

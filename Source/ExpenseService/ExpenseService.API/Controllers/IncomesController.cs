@@ -12,7 +12,7 @@ namespace ExpenseService.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class IncomesController : ControllerBase
+public class IncomesController: ControllerBase
 {
 	readonly IMediator _mediator;
 	readonly IMapper _mapper;
@@ -78,6 +78,23 @@ public class IncomesController : ControllerBase
 	public async Task<IActionResult> Update([FromBody] UpdateIncomeCommand command)
 	{
 		var result = await _mediator.Send(command);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+
+
+	[HttpDelete(nameof(Delete))]
+	public async Task<IActionResult> Delete(Guid id)
+	{
+		var command = new DeleteIncomeCommand(id);
+		var result  = await _mediator.Send(command);
 
 		if (result.IsFailure)
 		{

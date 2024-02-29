@@ -40,9 +40,13 @@ public class IncomeRepository : Repository, IIncomeRepository
 		throw new NotImplementedException();
 	}
 
-	public Task DeleteAsync(Income entity, CancellationToken cancellationToken)
+	public async Task DeleteAsync(Income entity, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		// Soft delete
+		var income = _mapper.Map<IncomeEntity>(entity);
+
+		_dbContext.Incomes.Update(income);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
 	public void Dispose()

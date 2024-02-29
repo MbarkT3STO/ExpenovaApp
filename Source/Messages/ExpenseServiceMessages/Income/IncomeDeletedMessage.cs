@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Messages.ExpenseServiceMessages.Income;
 
-public class IncomeCreatedMessage : BaseEventMessage
+public class IncomeDeletedMessage : BaseEventMessage
 {
 	public Guid Id { get; set; }
 	public decimal Amount { get; set; }
