@@ -1,6 +1,7 @@
 using EventSourcererService.MessageConsumers.AuthService;
 using EventSourcererService.MessageConsumers.ExpenseService.Category;
 using EventSourcererService.MessageConsumers.ExpenseService.Expense;
+using EventSourcererService.MessageConsumers.ExpenseService.Income;
 using EventSourcererService.MessageConsumers.ExpenseService.SubscriptionExpense;
 
 namespace EventSourcererService.DI;
@@ -31,6 +32,12 @@ public static class MessageConsumersRegistrar
 		services.AddScoped<SubscriptionExpenseCreatedMessageConsumer>();
 		services.AddScoped<SubscriptionExpenseUpdatedMessageConsumer>();
 		services.AddScoped<SubscriptionExpenseDeletedMessageConsumer>();
+		#endregion
+
+		#region ExpenseService - Income
+		// services.AddScoped<IncomeCreatedMessageConsumer>();
+		services.AddScoped<IncomeUpdatedMessageConsumer>();
+		// services.AddScoped<IncomeDeletedMessageConsumer>();
 		#endregion
 	}
 }

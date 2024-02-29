@@ -21,6 +21,7 @@ public class OutboxService: IOutboxService
 
 	public async Task<IEnumerable<OutboxMessage>> GetUnprocessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
+		_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 		var outboxMessages = await _dbContext.OutboxMessages.Where(x => !x.IsProcessed).ToListAsync(cancellationToken);
 
 		return outboxMessages;
@@ -105,7 +106,11 @@ public class OutboxService: IOutboxService
 
 	public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
-		var processedMessages = _dbContext.OutboxMessages.Where(x => x.IsProcessed);
+		_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		var processedMessages = _dbContext.OutboxMessages.Where(x => x.IsProcessed).AsNoTracking();
+
+		// Attach the already tracked entities to the context to avoid the exception.
+		_dbContext.AttachRange(processedMessages);
 
 		_dbContext.OutboxMessages.RemoveRange(processedMessages);
 		await _dbContext.SaveChangesAsync(cancellationToken);
@@ -149,9 +154,9 @@ public class OutboxService: IOutboxService
 		return deserializedMessage;
 	}
 
-    public async Task SaveMessageIfNotExistsAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
-    {
-        var serializedMessage = SerializeMessage(message);
+	public async Task SaveMessageIfNotExistsAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T : BaseEventMessage
+	{
+		var serializedMessage = SerializeMessage(message);
 		var isExists = await IsMessageExistsAndNotProcessedAsync(message.EventId, queueName, serializedMessage, cancellationToken);
 
 		if (!isExists)
@@ -161,5 +166,5 @@ public class OutboxService: IOutboxService
 			_dbContext.OutboxMessages.Add(outboxEvent);
 			await _dbContext.SaveChangesAsync(cancellationToken);
 		}
-    }
+	}
 }
