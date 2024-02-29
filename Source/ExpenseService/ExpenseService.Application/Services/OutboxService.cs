@@ -21,8 +21,7 @@ public class OutboxService: IOutboxService
 
 	public async Task<IEnumerable<OutboxMessage>> GetUnprocessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
-		_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-		var outboxMessages = await _dbContext.OutboxMessages.Where(x => !x.IsProcessed).ToListAsync(cancellationToken);
+		var outboxMessages = await _dbContext.OutboxMessages.Where(x => !x.IsProcessed).AsNoTracking().ToListAsync(cancellationToken);
 
 		return outboxMessages;
 	}
@@ -106,13 +105,34 @@ public class OutboxService: IOutboxService
 
 	public async Task PurgeProcessedMessagesAsync(CancellationToken cancellationToken = default)
 	{
-		_dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-		var processedMessages = _dbContext.OutboxMessages.Where(x => x.IsProcessed).AsNoTracking();
+		// Get the IDs of the processed messages
+		// var processedMessageIds = _dbContext.OutboxMessages
+		// 	.Where(x => x.IsProcessed)
+		// 	.Select(x => x.Id)
+		// 	.ToList();
 
-		// Attach the already tracked entities to the context to avoid the exception.
-		_dbContext.AttachRange(processedMessages);
+		var processedMessages = _dbContext.OutboxMessages.Where(x => x.IsProcessed);
 
-		_dbContext.OutboxMessages.RemoveRange(processedMessages);
+		// Detach all OutboxMessage entities
+		foreach (var entry in _dbContext.ChangeTracker.Entries<OutboxMessage>())
+		{
+			entry.State = EntityState.Detached;
+		}
+
+		 _dbContext.RemoveRange(processedMessages);
+
+		// For each ID, create a new OutboxMessage instance with that ID and mark it for deletion
+		// foreach (var id in processedMessageIds)
+		// {
+		// 	var message =  await _dbContext.OutboxMessages.FindAsync(new object[] { id }, cancellationToken);
+
+		// 	if (message != null)
+		// 	{
+		// 		_dbContext.OutboxMessages.Remove(message);
+		// 	}
+		// }
+
+		// Save changes
 		await _dbContext.SaveChangesAsync(cancellationToken);
 	}
 
@@ -167,4 +187,21 @@ public class OutboxService: IOutboxService
 			await _dbContext.SaveChangesAsync(cancellationToken);
 		}
 	}
+
+
+
+	// public void Dispose()
+	// {
+	// 	var disposableDbContext = _dbContext as IDisposable;
+
+	// 	disposableDbContext?.Dispose();
+
+	// 	GC.SuppressFinalize(this);
+	// }
+
+	// public async ValueTask DisposeAsync()
+	// {
+	// 	await _dbContext.DisposeAsync();
+	// 	GC.SuppressFinalize(this);
+	// }
 }

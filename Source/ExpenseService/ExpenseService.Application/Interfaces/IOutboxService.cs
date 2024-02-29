@@ -7,7 +7,7 @@ namespace ExpenseService.Application.Interfaces;
 /// <summary>
 /// Represents a service for managing outbox messages.
 /// </summary>
-public interface IOutboxService
+public interface IOutboxService /*: IDisposable, IAsyncDisposable*/
 {
 	/// <summary>
 	/// Saves an outbox message to the specified queue.
