@@ -28,6 +28,7 @@ public class CategoryCreatedEventHandler: INotificationHandler<CategoryCreatedEv
 		var message = new CategoryCreatedMessage
 		{
 			EventId     = notification.EventDetails.EventId,
+			EventName   = notification.EventDetails.EventName,
 			Id          = notification.EventData.Id,
 			Name        = notification.EventData.Name,
 			Description = notification.EventData.Description,

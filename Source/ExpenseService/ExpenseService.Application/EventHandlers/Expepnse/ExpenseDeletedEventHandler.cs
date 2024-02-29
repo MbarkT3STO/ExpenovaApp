@@ -24,6 +24,7 @@ public class ExpenseDeletedEventHandler: INotificationHandler<ExpenseDeletedEven
 		var message = new ExpenseDeletedMessage
 		{
 			EventId       = notification.EventDetails.EventId,
+			EventName     = notification.EventDetails.EventName,
 			Id            = notification.EventData.Id,
 			Amount        = notification.EventData.Amount,
 			Description   = notification.EventData.Description,

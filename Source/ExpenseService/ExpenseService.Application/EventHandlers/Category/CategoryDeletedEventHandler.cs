@@ -25,6 +25,7 @@ public class CategoryDeletedEventHandler: INotificationHandler<CategoryDeletedEv
 		var message = new CategoryDeletedMessage
 		{
 			EventId     = eventDetails.EventId,
+			EventName   = notification.EventDetails.EventName,
 			Id          = eventData.Id,
 			Name        = eventData.Name,
 			Description = eventData.Description,

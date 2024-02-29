@@ -78,6 +78,8 @@ public class CreateIncomeCommandHandler: BaseCommandHandler<CreateIncomeCommand,
 			var resultDTO     = _mapper.Map<CreateIncomeCommandResultDTO>(createdIncome);
 			var result        = CreateIncomeCommandResult.Succeeded(resultDTO);
 
+			await PublishIncomeCreatedEventAsync(createdIncome);
+
 			return result;
 		}
 		catch (Exception ex)
@@ -100,5 +102,15 @@ public class CreateIncomeCommandHandler: BaseCommandHandler<CreateIncomeCommand,
 		income.WriteCreatedAudit(user.Id);
 
 		return income;
+	}
+
+
+	private async Task PublishIncomeCreatedEventAsync(Domain.Entities.Income income)
+	{
+		var eventData    = new IncomeCreatedEventData(income.Id, income.Description, income.Amount, income.Date, income.Category.Id, income.User.Id);
+		var eventDetails = new DomainEventDetails(nameof(IncomeCreatedEvent), income.User.Id);
+		var @event       = IncomeCreatedEvent.Create(eventDetails, eventData);
+
+		await _mediator.Publish(@event);
 	}
 }

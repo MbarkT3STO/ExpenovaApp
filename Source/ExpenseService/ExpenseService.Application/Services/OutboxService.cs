@@ -139,7 +139,7 @@ public class OutboxService: IOutboxService
 	public async Task SaveMessageAsync<T>(T message, string queueName, CancellationToken cancellationToken) where T: BaseEventMessage
 	{
 		var serializedMessage = SerializeMessage(message);
-		var outboxEvent       = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
+		var outboxEvent       = new OutboxMessage(message.EventId, message.EventName, serializedMessage, queueName);
 
 		_dbContext.OutboxMessages.Add(outboxEvent);
 		await _dbContext.SaveChangesAsync(cancellationToken);
@@ -181,7 +181,7 @@ public class OutboxService: IOutboxService
 
 		if (!isExists)
 		{
-			var outboxEvent = new OutboxMessage(message.EventId, typeof(T).Name, serializedMessage, queueName);
+			var outboxEvent = new OutboxMessage(message.EventId, message.EventName, serializedMessage, queueName);
 
 			_dbContext.OutboxMessages.Add(outboxEvent);
 			await _dbContext.SaveChangesAsync(cancellationToken);

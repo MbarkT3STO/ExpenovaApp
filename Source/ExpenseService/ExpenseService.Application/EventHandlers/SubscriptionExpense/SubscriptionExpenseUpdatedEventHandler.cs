@@ -29,6 +29,7 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 		var message = new SubscriptionExpenseUpdatedMessage
 		{
 			EventId            = notification.EventDetails.EventId,
+			EventName          = notification.EventDetails.EventName,
 			Id                 = notification.EventData.Id,
 			Amount             = notification.EventData.Amount,
 			Description        = notification.EventData.Description,
@@ -39,13 +40,13 @@ public class SubscriptionExpenseUpdatedEventHandler: INotificationHandler<Subscr
 			CategoryId         = notification.EventData.CategoryId,
 			UserId             = notification.EventData.UserId,
 
-			CreatedBy     = notification.EventData.CreatedBy,
-			CreatedAt     = notification.EventData.CreatedAt,
-			LastUpdatedAt = notification.EventData.LastUpdatedAt,
-			LastUpdatedBy = notification.EventData.LastUpdatedBy,
-			IsDeleted     = notification.EventData.IsDeleted,
-			DeletedAt     = notification.EventData.DeletedAt,
-			DeletedBy     = notification.EventData.DeletedBy
+			CreatedBy          = notification.EventData.CreatedBy,
+			CreatedAt          = notification.EventData.CreatedAt,
+			LastUpdatedAt      = notification.EventData.LastUpdatedAt,
+			LastUpdatedBy      = notification.EventData.LastUpdatedBy,
+			IsDeleted          = notification.EventData.IsDeleted,
+			DeletedAt          = notification.EventData.DeletedAt,
+			DeletedBy          = notification.EventData.DeletedBy
 		};
 
 		var expenseEventSourcererQueueName = _rabbitMqOptions.HostName + "/" + ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue;

@@ -15,7 +15,7 @@ public class ExpenseUpdatedEventHandler: INotificationHandler<ExpenseUpdatedEven
 	public ExpenseUpdatedEventHandler(IOptions<RabbitMqOptions> rabbitMqOptions, IOutboxService outboxService)
 	{
 		_rabbitMqOptions = rabbitMqOptions.Value;
-		_outboxService = outboxService;
+		_outboxService   = outboxService;
 	}
 
 	public async Task Handle(ExpenseUpdatedEvent notification, CancellationToken cancellationToken)
@@ -23,6 +23,7 @@ public class ExpenseUpdatedEventHandler: INotificationHandler<ExpenseUpdatedEven
 		var message = new ExpenseUpdatedMessage
 		{
 			EventId       = notification.EventDetails.EventId,
+			EventName     = notification.EventDetails.EventName,
 			Id            = notification.EventData.Id,
 			Amount        = notification.EventData.Amount,
 			Description   = notification.EventData.Description,

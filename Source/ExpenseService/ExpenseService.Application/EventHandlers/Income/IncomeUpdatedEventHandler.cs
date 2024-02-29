@@ -27,6 +27,7 @@ public class IncomeUpdatedEventHandler: INotificationHandler<IncomeUpdatedEvent>
 		var message = new IncomeUpdatedMessage
 		{
 			EventId       = notification.EventDetails.EventId,
+			EventName     = notification.EventDetails.EventName,
 			Id            = notification.EventData.Id,
 			Amount        = notification.EventData.Amount,
 			Description   = notification.EventData.Description,

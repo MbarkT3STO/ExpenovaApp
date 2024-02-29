@@ -35,7 +35,7 @@ public static class MessageConsumersRegistrar
 		#endregion
 
 		#region ExpenseService - Income
-		// services.AddScoped<IncomeCreatedMessageConsumer>();
+		services.AddScoped<IncomeCreatedMessageConsumer>();
 		services.AddScoped<IncomeUpdatedMessageConsumer>();
 		// services.AddScoped<IncomeDeletedMessageConsumer>();
 		#endregion

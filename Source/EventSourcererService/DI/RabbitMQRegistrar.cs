@@ -46,6 +46,7 @@ public static class RabbitMQRegistrar
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.SubscriptionExpenseUpdatedEventSourcererQueue, ep => ep.Consumer<SubscriptionExpenseUpdatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.SubscriptionExpenseDeletedEventSourcererQueue, ep => ep.Consumer<SubscriptionExpenseDeletedMessageConsumer>(context));
 
+				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.IncomeCreatedEventSourcererQueue, ep => ep.Consumer<IncomeCreatedMessageConsumer>(context));
 				cfg.ReceiveEndpoint(ExpenseServiceEventSourcererQueues.IncomeUpdatedEventSourcererQueue, ep => ep.Consumer<IncomeUpdatedMessageConsumer>(context));
 			});
 		});

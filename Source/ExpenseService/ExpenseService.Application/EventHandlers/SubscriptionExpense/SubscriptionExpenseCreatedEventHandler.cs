@@ -23,6 +23,7 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 		var message = new SubscriptionExpenseCreatedMessage
 		{
 			EventId            = notification.EventDetails.EventId,
+			EventName          = notification.EventDetails.EventName,
 			Id                 = notification.EventData.Id,
 			Description        = notification.EventData.Description,
 			Amount             = notification.EventData.Amount,
@@ -32,6 +33,7 @@ public class SubscriptionExpenseCreatedEventHandler: INotificationHandler<Subscr
 			EndDate            = notification.EventData.EndDate,
 			RecurrenceInterval = (byte)notification.EventData.RecurrenceInterval,
 			BillingAmount      = notification.EventData.BillingAmount,
+
 			CreatedAt          = notification.EventData.CreatedAt,
 			CreatedBy          = notification.EventData.CreatedBy,
 			LastUpdatedAt      = notification.EventData.LastUpdatedAt,

@@ -13,7 +13,7 @@ public class IncomeCreatedEventData
 	{
 	}
 
-	public IncomeCreatedEventData(Guid id, decimal amount, string description, DateTime date, Guid categoryId, string userId)
+	public IncomeCreatedEventData(Guid id, string description, decimal amount, DateTime date, Guid categoryId, string userId)
 	{
 		Id          = id;
 		Amount      = amount;

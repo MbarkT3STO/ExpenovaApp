@@ -23,6 +23,7 @@ public class CategoryUpdatedEventHandler: INotificationHandler<CategoryUpdatedEv
 		var message = new CategoryUpdatedMessage
 		{
 			EventId        = notification.EventDetails.EventId,
+			EventName      = notification.EventDetails.EventName,
 			Id             = notification.EventData.Id,
 			NewName        = notification.EventData.NewName,
 			NewDescription = notification.EventData.NewDescription,
