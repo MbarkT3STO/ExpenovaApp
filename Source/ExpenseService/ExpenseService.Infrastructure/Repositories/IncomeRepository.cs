@@ -105,7 +105,20 @@ public class IncomeRepository : Repository, IIncomeRepository
 		return result;
 	}
 
-	public Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Income>> GetIncomesByUserAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var incomes = await _dbContext.Incomes
+									.Include(i => i.Category)
+									.Include(i => i.User)
+									.Where(i => i.UserId == userId)
+									.ToListAsync(cancellationToken);
+
+		var mappedIncomes = _mapper.Map<IEnumerable<Income>>(incomes);
+
+		return mappedIncomes;
+    }
+
+    public Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		throw new NotImplementedException();
 	}
