@@ -25,19 +25,20 @@ public class UserCreatedEventHandler: INotificationHandler<UserCreatedEvent>
 	readonly IBus _bus;
 	readonly RabbitMqOptions _rabbitMqOptions;
 	readonly AuthServiceRabbitMqEndpointsOptions _authServiceRabbitMqEndPointsOptions;
-	
+
 	public UserCreatedEventHandler(IBus bus, IOptions<RabbitMqOptions> rabbitMqOptions, IOptions<AuthServiceRabbitMqEndpointsOptions> authServiceRabbitMqEndPointsOptions)
 	{
 		_bus                                 = bus;
 		_rabbitMqOptions                     = rabbitMqOptions.Value;
 		_authServiceRabbitMqEndPointsOptions = authServiceRabbitMqEndPointsOptions.Value;
 	}
-	
+
 	public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
 	{
 		var message = new UserCreatedMessage
 		{
 			EventId   = Guid.NewGuid(),
+			EventName = "UserCreatedEvent",
 			UserId    = notification.UserId,
 			FirstName = notification.FirstName,
 			LastName  = notification.LastName,

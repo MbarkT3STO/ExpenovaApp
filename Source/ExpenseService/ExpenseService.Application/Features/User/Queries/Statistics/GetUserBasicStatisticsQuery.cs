@@ -10,6 +10,8 @@ public class GetUserBasicStatisticsQueryResultDTO
 	public int SubscriptionExpensesCount { get; set; }
 	public decimal SubscriptionExpensesSum { get; set; }
 	public decimal SubscriptionExpensesAverage { get; set; }
+	public int IncomesCount { get; set; }
+	public decimal IncomesSum { get; set; }
 }
 
 /// <summary>
@@ -46,12 +48,14 @@ public class GetUserBasicStatisticsQueryHandler: BaseQueryHandler<GetUserBasicSt
 	readonly ICategoryRepository _categoryRepository;
 	readonly IExpenseRepository _expenseRepository;
 	readonly ISubscriptionExpenseRepository _subscriptionExpenseRepository;
+	readonly IIncomeRepository _incomeRepository;
 
-	public GetUserBasicStatisticsQueryHandler(IMapper mapper, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository, ISubscriptionExpenseRepository subscriptionExpenseRepository): base(mapper)
+	public GetUserBasicStatisticsQueryHandler(IMapper mapper, ICategoryRepository categoryRepository, IExpenseRepository expenseRepository, ISubscriptionExpenseRepository subscriptionExpenseRepository, IIncomeRepository incomeRepository): base(mapper)
 	{
 		_categoryRepository            = categoryRepository;
 		_expenseRepository             = expenseRepository;
 		_subscriptionExpenseRepository = subscriptionExpenseRepository;
+		_incomeRepository              = incomeRepository;
 	}
 
 
@@ -66,6 +70,8 @@ public class GetUserBasicStatisticsQueryHandler: BaseQueryHandler<GetUserBasicSt
 			var subscriptionExpensesCount   = await _subscriptionExpenseRepository.GetCountAsync(request.UserId, cancellationToken);
 			var subscriptionExpensesSum     = await _subscriptionExpenseRepository.GetSumAsync(request.UserId, cancellationToken);
 			var subscriptionExpensesAverage = await _subscriptionExpenseRepository.GetAverageAsync(request.UserId, cancellationToken);
+			var incomesCount                = await _incomeRepository.GetCountAsync(request.UserId, cancellationToken);
+			var incomesSum                  = await _incomeRepository.GetSumAsync(request.UserId, cancellationToken);
 
 
 			var resultDTO = new GetUserBasicStatisticsQueryResultDTO
@@ -76,7 +82,9 @@ public class GetUserBasicStatisticsQueryHandler: BaseQueryHandler<GetUserBasicSt
 				ExpensesAverage             = expensesAverage,
 				SubscriptionExpensesCount   = subscriptionExpensesCount,
 				SubscriptionExpensesSum     = subscriptionExpensesSum,
-				SubscriptionExpensesAverage = subscriptionExpensesAverage
+				SubscriptionExpensesAverage = subscriptionExpensesAverage,
+				IncomesCount                = incomesCount,
+				IncomesSum                  = incomesSum
 			};
 
 			var result = GetUserBasicStatisticsQueryResult.Succeeded(resultDTO);

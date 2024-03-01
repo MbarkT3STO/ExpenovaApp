@@ -121,4 +121,67 @@ public class StatisticsController: ControllerBase
 		return Ok(result.Value);
 	}
 
+
+
+
+
+
+	[HttpGet(nameof(GetIncomesSumGroupedByMonthAndYear))]
+	public async Task<IActionResult> GetIncomesSumGroupedByMonthAndYear(string userId)
+	{
+		var query  = new GetIncomesSumGroupedByMonthAndYearQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+	[HttpGet(nameof(GetIncomesSumGroupedByYear))]
+	public async Task<IActionResult> GetIncomesSumGroupedByYear(string userId)
+	{
+		var query  = new GetIncomesSumGroupedByYearQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+	[HttpGet(nameof(GetIncomesSumGroupedByCategory))]
+	public async Task<IActionResult> GetIncomesSumGroupedByCategory(string userId)
+	{
+		var query  = new GetIncomesSumGroupedByCategoryQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
+	[HttpGet(nameof(GetTopIncomeCategory))]
+	public async Task<IActionResult> GetTopIncomeCategory(string userId)
+	{
+		var query  = new GetTopIncomeCategoryQuery(userId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
 }

@@ -8,9 +8,9 @@ namespace ExpenseService.Infrastructure.Repositories;
 /// <summary>
 /// Represents a repository for managing income entities.
 /// </summary>
-public class IncomeRepository : Repository, IIncomeRepository
+public class IncomeRepository: Repository, IIncomeRepository
 {
-	public IncomeRepository(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+	public IncomeRepository(AppDbContext dbContext, IMapper mapper): base(dbContext, mapper)
 	{
 	}
 
@@ -105,6 +105,15 @@ public class IncomeRepository : Repository, IIncomeRepository
 		return result;
 	}
 
+	public async Task<int> GetCountAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var count = await _dbContext.Incomes
+									.Where(i => i.UserId == userId)
+									.CountAsync(cancellationToken);
+
+		return count;
+	}
+
 	public async Task<IEnumerable<Income>> GetIncomesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default)
 	{
 		var incomes = await _dbContext.Incomes
@@ -129,6 +138,68 @@ public class IncomeRepository : Repository, IIncomeRepository
 		var mappedIncomes = _mapper.Map<IEnumerable<Income>>(incomes);
 
 		return mappedIncomes;
+	}
+
+	public async Task<decimal> GetSumAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var sum = await _dbContext.Incomes
+								.Where(i => i.UserId == userId)
+								.SumAsync(i => i.Amount, cancellationToken);
+
+		return sum;
+	}
+
+	public async Task<IEnumerable<(string Category, decimal Sum)>> GetSumGroupedByCategoryAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var data = await _dbContext.Incomes
+									.Where(i => i.UserId == userId)
+									.GroupBy(i => i.Category.Name)
+									.Select(g => new { Category = g.Key, Sum = g.Sum(e => e.Amount) })
+									.ToListAsync(cancellationToken);
+
+		var result = data.Select(g => (g.Category, g.Sum));
+
+		return result;
+	}
+
+	public async Task<IEnumerable<(int Month, int Year, decimal Sum)>> GetSumGroupedByMonthAndYearAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var data = await _dbContext.Incomes
+									.Where(i => i.UserId == userId)
+									.GroupBy(i => new { i.Date.Month, i.Date.Year })
+									.Select(g => new { g.Key.Month, g.Key.Year, Sum = g.Sum(e => e.Amount) })
+									.ToListAsync(cancellationToken);
+
+		var result = data.Select(g => (g.Month, g.Year, g.Sum));
+
+		return result;
+	}
+
+	public async Task<IEnumerable<(int Year, decimal Sum)>> GetSumGroupedByYearAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var data = await _dbContext.Incomes
+									.Where(i => i.UserId == userId)
+									.GroupBy(i => new { i.Date.Year })
+									.Select(g => new { g.Key.Year, Sum = g.Sum(e => e.Amount) })
+									.ToListAsync(cancellationToken);
+
+		var result = data.Select(g => (g.Year, g.Sum));
+
+		return result;
+	}
+
+	public async Task<(string Category, decimal Sum)?> GetTopCategoryAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		var data = await _dbContext.Incomes
+									.Where(i => i.UserId == userId)
+									.GroupBy(i => i.Category.Name)
+									.Select(g => new { Category = g.Key, Sum = g.Sum(e => e.Amount) })
+									.OrderByDescending(g => g.Sum)
+									.FirstOrDefaultAsync(cancellationToken);
+
+		var result = data != null ? (data.Category, data.Sum) : (null as (string Category, decimal Sum)?);
+
+		return result;
 	}
 
 	public Task ThrowIfNotExistAsync(Guid id, CancellationToken cancellationToken = default)
