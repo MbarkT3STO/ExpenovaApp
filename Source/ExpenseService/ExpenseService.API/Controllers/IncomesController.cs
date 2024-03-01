@@ -71,6 +71,21 @@ public class IncomesController: ControllerBase
 	}
 
 
+	[HttpGet(nameof(GetIncomesByUserAndCategory))]
+	public async Task<IActionResult> GetIncomesByUserAndCategory(string userId, Guid categoryId)
+	{
+		var query  = new GetIncomesByUserAndCategoryQuery(userId, categoryId);
+		var result = await _mediator.Send(query);
+
+		if (result.IsFailure)
+		{
+			return BadRequest(result.Error?.Message);
+		}
+
+		return Ok(result.Value);
+	}
+
+
 
 
 

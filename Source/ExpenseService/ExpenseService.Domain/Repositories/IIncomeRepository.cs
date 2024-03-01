@@ -17,4 +17,13 @@ public interface IIncomeRepository : IRepository<Income, Guid>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains a collection of incomes.</returns>
 	Task<IEnumerable<Income>> GetIncomesByUserAsync(string userId, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Retrieves a collection of incomes for a specific user and category.
+	/// </summary>
+	/// <param name="userId">The ID of the user.</param>
+	/// <param name="categoryId">The ID of the category.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains a collection of incomes.</returns>
+	Task<IEnumerable<Income>> GetIncomesByUserAndCategoryAsync(string userId, Guid categoryId, CancellationToken cancellationToken = default);
 }
